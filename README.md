@@ -12,12 +12,12 @@ Developers will add the attribute "data-qa-id" to the pieces of code they want t
 Web Developer Guidelines
 ------------------------
 
-1. For all elements place the data attribute tag directly on the element that will be interacted with. **This is especially important for elements that are interactive such as inputs or buttons.**
+- For all elements place the data attribute tag directly on the element that will be interacted with. **This is especially important for elements that are interactive such as inputs or buttons.**
 ```html
 // Example
 <a href="#" data-qa-id="hello-world">Hello world</a>
 ```
-2. For containers that contain repeating elements (List, Table, etc.) use square brackets at the end of the nested elements' id.
+- For containers that contain repeating elements (List, Table, etc.) use square brackets at the end of the nested elements' id.
 ```html
 // Example
 <ol>
@@ -32,7 +32,7 @@ Web Developer Guidelines
     </li>
 </ol>
 ```
-3. Certain elements will have special identifiers that should not be used elsewhere:
+- Certain elements will have special identifiers that should not be used elsewhere:
     1. Forms elements may contain:
         1. **submit** if the element is the submission button for that form
         2. **cancel** if the element is the cancel button for that form
