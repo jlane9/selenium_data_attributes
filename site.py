@@ -19,14 +19,14 @@ __all__ = ['Site']
 
 
 class Site(object):
-    """Base object for all Dimension automation testing
+    """Base object for all site automation testing
 
     """
 
     RE_URL = r'^(?:(?P<protocol>[a-zA-Z]+):\/\/)?(?P<base_url>[\w\d\.-]+\.[\w]{2,6})(?P<current_url>[\/\w\-\.\?]*)$'
 
     def __init__(self, driver):
-        """DimCore(driver) -> Selenium webdriver
+        """
 
         :param webdriver driver: Selenium webdriver
         :return:

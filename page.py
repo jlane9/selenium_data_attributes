@@ -24,7 +24,7 @@ class Page(object):
     """
 
     def __init__(self, driver, validation=""):
-        """DimCore(driver) -> Selenium webdriver
+        """
 
         :param webdriver driver: Selenium webdriver
         :return:
