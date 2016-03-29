@@ -37,7 +37,8 @@ class Site(object):
         """
 
         self.driver = driver
-
+    
+    @property
     def base_url(self):
        """Returns the base URL for a website
        
