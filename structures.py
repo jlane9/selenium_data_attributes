@@ -1,30 +1,44 @@
 """
+    selenium_data_attributes.structures
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    This module implements objects that provide easier ways to interact with common web elements
+
+    :copyright: (c) 2016 FanThreeSixty
+    :author: John Lane <jlane@fanthreesixty.com>
+    :license: MIT, see LICENSE for more details.
+
+    .. note::
+        Some structures need specific keywords to find related elements. This means it is best practice to avoid using
+        these keywords in your naming conventions.
+            * clear - Search and SearchBox both use this keyword to find its clear field button
+            * close - Modal uses this keyword to find the close modal button
+
+
 """
 
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select as SeleniumSelect
 import re
 
 from element import *
 
+__author__ = 'jlane'
+__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__all__ = ['Button', 'Dropdown', 'DropdownForm', 'Form', 'Image', 'List', 'SearchBox', 'Search', 'Select',
-           'TabNavigation', 'Table', 'Text']
+__version__ = '0.0.1'
+__contact__ = 'jlane@fanthreesixty.com'
+__status__ = 'Alpha'
+__docformat__ = 'reStructuredText'
+
+__all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'Form', 'Image', 'InputCheckbox', 'InputRadio', 'InputText',
+           'Link', 'List', 'Modal', 'Search', 'SearchBox', 'Select', 'TabNavigation', 'Table', 'Text']
 
 
 # ---------------------------------------------------- Base Structures ------------------------------------------------#
 class Field(Element):
-
-    def __init__(self, driver, path):
-        """Field Element
-
-        :param driver: Selenium webdriver
-        :param str path: Selector path
-        :return:
-        """
-
-        Element.__init__(self, driver, By.XPATH, path)
+    """Abstract class for input elements
+    """
 
     def __str__(self):
         return self.__getitem__('value')
@@ -35,7 +49,7 @@ class Field(Element):
     def is_disabled(self):
         """Returns True, if the button is disabled
 
-        :return:
+        :return: True, if the button is disabled
         :rtype: bool
         """
 
@@ -44,6 +58,43 @@ class Field(Element):
 
 # --------------------------------------------------- Simple Structures -----------------------------------------------#
 class Button(Field):
+    """
+        Clickable object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <button id="someClassId" class="someClass" on-click="javascript.function" >Click Me</button>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <button data-qa-id="some-identifier" id="someClassId" class="someClass" on-click="javascript.function">
+                Click Me
+            </button>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            b = structures.Button(driver, "//button[@data-qa-id="some-identifier"]")
+
+            # Example usage
+            b.click()
+    """
 
     def __str__(self):
         return self._text()
@@ -59,10 +110,11 @@ class Button(Field):
 
         return self._click()
 
+    @property
     def type(self):
         """Returns button, reset or submit
 
-        :return:
+        :return: "button", "reset" or "submit"
         :rtype: str
         """
 
@@ -70,19 +122,49 @@ class Button(Field):
 
 
 class Div(Element):
+    """
+        Container object
+        ~~~~~~~~~~~~~~~~
 
-    def __init__(self, driver, path):
-        """Container element. Includes body, header, footer, section
+        **Example Use:**
 
-        :param driver: Selenium webdriver
-        :param str path: Selector path
-        :return:
-        """
 
-        Element.__init__(self, driver, By.XPATH, path)
+        Let's take the following example:
+
+        .. code-block:: html
+            <div id="someClassId" class="someClass">
+                ...
+            </div>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <div data-qa-id="some-identifier" id="someClassId" class="someClass">
+                ...
+            </div>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            d = structures.Div(driver, "//div[@data-qa-id="some-identifier"]")
+    """
+
+    pass
 
 
 class Dropdown(Element):
+    """Abstract class for dropdown elements
+    """
 
     def __init__(self, driver, path, dropdown_path=None):
         """Dropdown element
@@ -92,7 +174,7 @@ class Dropdown(Element):
         :return:
         """
 
-        Element.__init__(self, driver, By.XPATH, path)
+        Element.__init__(self, driver, path)
 
         if isinstance(dropdown_path, str):
             if len(dropdown_path) > 0:
@@ -132,7 +214,7 @@ class Form(Element):
         :return:
         """
 
-        Element.__init__(self, driver, By.XPATH, path)
+        Element.__init__(self, driver, path)
 
         self._submit = Button(driver, '{0}//*[contains(@data-qa-id, "submit")]'.format(path))
         self._cancel = Button(driver, '{0}//*[contains(@data-qa-id, "cancel")]'.format(path))
@@ -163,8 +245,8 @@ class Form(Element):
     def __setitem__(self, instance, value):
         """Input (value) for field (instance)
 
-        :param instance: id selector
-        :param value: Value to set
+        :param str instance: id selector
+        :param str value: Value to set
         :return:
         """
 
@@ -252,7 +334,7 @@ class Form(Element):
     def field(self, instance):
         """Returns the field that matches the id selector
 
-        :param instance: id selector
+        :param str instance: id selector
         :return:
         :rtype: WebElement
         """
@@ -273,21 +355,46 @@ class Form(Element):
 
 
 class Image(Element):
+    """
+        Image object
+        ~~~~~~~~~~~~~~~~
 
-    def __init__(self, driver, path):
-        """Embedded image element
+        **Example Use:**
 
-        :param driver: Selenium webdriver
-        :param path: Selector path
-        :return:
-        """
 
-        Element.__init__(self, driver, By.XPATH, path)
+        Let's take the following example:
+
+        .. code-block:: html
+            <img id="someClassId" class="someClass" />
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <img data-qa-id="some-identifier" id="someClassId" class="someClass" />
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            i = structures.Image(driver, "//img[@data-qa-id="some-identifier"]")
+
+            # Returns tag attribute 'src'
+            i.source()
+    """
 
     def source(self):
         """Returns link to image file
 
-        :return:
+        :return: Image location
         :rtype: str
         """
 
@@ -295,13 +402,41 @@ class Image(Element):
 
 
 class InputCheckbox(Element):
+    """
+        Input Checkbox object
+        ~~~~~~~~~~~~~~~~
 
-    def __init__(self, driver, path):
-        """Checkable element
+        **Example Use:**
 
-        :return:
-        """
-        Element.__init__(self, driver, By.XPATH, path)
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="checkbox" class="someClass">
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <input data-qa-id="some-identifier" id="someClassId" type="checkbox" class="someClass">
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            c = structures.InputCheckbox(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Example usage
+            c.select()
+    """
 
     def deselect(self):
         """Deselect this element
@@ -348,10 +483,81 @@ class InputCheckbox(Element):
 
 
 class InputRadio(InputCheckbox):
+    """
+        Input Radio object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="radio" class="someClass">
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <input data-qa-id="some-identifier" id="someClassId" type="radio" class="someClass">
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            r = structures.InputRadio(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Input Radio inherits from InputCheckbox
+            r.select()
+    """
+
     pass
 
 
 class InputText(Field):
+    """
+        Input Text object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="text" class="someClass">
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <input data-qa-id="some-identifier" id="someClassId" type="text" class="someClass">
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            t = structures.Inputtext(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Example usage
+            t.input('Hello World')
+    """
 
     def input(self, text, clear=True):
         """Assign 'text' as input's value
@@ -365,9 +571,51 @@ class InputText(Field):
 
 
 class Link(Button):
+    """
+        Link object
+        ~~~~~~~~~~~~~~~~
 
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <a id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <a data-qa-id="some-identifier" id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            l = structures.Link(driver, "//a[@data-qa-id="some-identifier"]")
+
+            # Inherits from Button
+            l.click()
+    """
+
+    @property
     def href(self):
-        self.__getitem__('href')
+        """Returns link reference
+
+        :return: href
+        :rtype: str
+        """
+
+        return self.__getitem__('href')
 
 
 class List(Element):
@@ -376,11 +624,11 @@ class List(Element):
         """List element. Includes ol and ul
 
         :param driver: Selenium webdriver
-        :param path: Selector path
+        :param str path: Selector path
         :return:
         """
 
-        Element.__init__(self, driver, By.XPATH, path)
+        Element.__init__(self, driver, path)
 
     def items(self):
 
@@ -447,6 +695,12 @@ class List(Element):
 class Modal(Form):
 
     def __init__(self, driver, path):
+        """
+
+        :param driver: Selenium webdriver
+        :param str path: Selector path
+        :return:
+        """
 
         Form.__init__(self, driver, path)
         self._close = Button(driver, '{0}//*[contains(@data-qa-id, "close")]'.format(path))
@@ -461,6 +715,44 @@ class Modal(Form):
 
 
 class Search(Element):
+    """
+        Search object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="search" class="someClass">
+            <span class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+
+        .. code-block:: html
+            <input data-qa-id="search-identifier" id="someClassId" type="search" class="someClass">
+            <span data-qa-id="search-clear" class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            s = structures.Search(driver, "//input[@data-qa-id="search-identifier"]")
+
+            # Example usage:
+            s.results.search('Hello World')
+    """
 
     def __init__(self, driver, path):
         """Search input element
@@ -470,8 +762,8 @@ class Search(Element):
         :return:
         """
 
-        Element.__init__(self, driver, By.XPATH, path)
-        self._clear = Button(driver, '{0}/following-sibling::span'.format(path))
+        Element.__init__(self, driver, path)
+        self._clear = Button(driver, '{0}/following-sibling::*[contains(@data-qa-id, "clear")]'.format(path))
 
     def clear(self):
         """Clear search
@@ -491,17 +783,7 @@ class Search(Element):
         self._input(str(criteria))
 
 
-class Select(Element):
-
-    def __init__(self, driver, path):
-        """Select element
-
-        :param driver: Selenium webdriver
-        :param str path: Selector path
-        :return:
-        """
-
-        Element.__init__(self, driver, By.XPATH, path)
+class Select(Field):
 
     @property
     def options(self):
@@ -533,8 +815,9 @@ class Select(Element):
     def select(self, option):
         """Select an option
 
-        :param option: Visible Text, index or value
-        :return:
+        :param option: Visible text, index or value
+        :return: True, if option is selected
+        :rtype: bool
         """
 
         if isinstance(option, str):
@@ -555,8 +838,9 @@ class Select(Element):
     def deselect(self, option):
         """Deselect an option
 
-        :param option: Visible Text, index or value
-        :return:
+        :param option: Visible text, index or value
+        :return: True, if option is deselected
+        :rtype: bool
         """
 
         if isinstance(option, str):
@@ -577,13 +861,11 @@ class Select(Element):
     def deselect_all(self):
         """Deselect all options
 
-        :return:
+        :return: True, if options are deselected
+        :rtype: bool
         """
 
         return self._deselect_all()
-
-    def is_disabled(self):
-        return self.__contains__('disabled')
 
 
 class Table(Element):
@@ -591,8 +873,14 @@ class Table(Element):
     ORDERS = ('asc', 'desc', 'none')
 
     def __init__(self, driver, path):
-        Element.__init__(self, driver, By.XPATH, path)
+        """
 
+        :param driver: Selenium webdriver
+        :param str path: Selector path
+        :return:
+        """
+
+        Element.__init__(self, driver, path)
         self._rows = List(driver, '{0}//tbody'.format(path))
 
     def __getitem__(self, instance):
@@ -614,7 +902,7 @@ class Table(Element):
     def headers(self):
         """Return a list of table headers
 
-        :return:
+        :return: List of table headers
         :rtype: list
         """
 
@@ -625,7 +913,6 @@ class Table(Element):
 
         return []
 
-    # Determine this out
     @property
     def filter(self):
         """Return the web element for the current filtered header
@@ -701,7 +988,7 @@ class Table(Element):
                                 button.click()
                                 button.wait_until_present()
 
-    def filters(self, ):
+    def filters(self):
         """Return a list of all available filters
 
         :return: Filters
@@ -714,7 +1001,7 @@ class Table(Element):
     def rows(self):
         """Return a dict of all table data
 
-        :return:
+        :return: Table data
         :rtype: dict
         """
 
@@ -729,10 +1016,8 @@ class Table(Element):
         :return:
         """
 
-        element = self.element()
-
-        if element:
-            select_all = element.find_elements_by_xpath('.//th[contains(@data-qa-id, "select-all")]')
+        if self.exists():
+            select_all = self.element().find_elements_by_xpath('.//th[contains(@data-qa-id, "select-all")]')
 
             if len(select_all) > 0:
                 select_all[0].click()
@@ -745,16 +1030,45 @@ class Table(Element):
 
 
 class Text(Element):
+    """
+        Text object
+        ~~~~~~~~~~~~~~~~
 
-    def __init__(self, driver, path):
-        """Text container. Includes p, span, h1-6 and label
+        **Example Use:**
 
-        :param driver: Selenium webdriver
-        :param str path: Selector path
-        :return:
-        """
 
-        Element.__init__(self, driver, By.XPATH, path)
+        Let's take the following example:
+
+        .. code-block:: html
+            <p id="someClassId" class="someClass">
+                ...
+            </p>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <p data-qa-id="some-identifier" id="someClassId" class="someClass">
+                ...
+            </p>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            d = structures.Text(driver, "//p[@data-qa-id="some-identifier"]")
+
+            # Prints text inside text elements
+            print d
+    """
 
     def __str__(self):
         return self._text()
@@ -821,19 +1135,20 @@ class DropdownForm(Dropdown):
     def fields(self):
         """Returns all available fields for this form
 
-        :return:
+        :return: list of WebElements
+        :rtype: list
         """
 
-        self.form.fields()
+        return self.form.fields()
 
     def field(self, instance):
-        """
+        """Return field that matches 'instance' in id
 
-        :param instance:
+        :param str instance: Element id
         :return:
         """
 
-        self.form.field(instance)
+        return self.form.field(instance)
 
 
 class DropdownMenu(Dropdown):
@@ -841,7 +1156,7 @@ class DropdownMenu(Dropdown):
     def select(self, value):
         """Click item within dropdown box
 
-        :param value: id selector
+        :param str value: id selector
         :return:
         """
 
@@ -862,9 +1177,74 @@ class DropdownMenu(Dropdown):
 
 
 class SearchBox(Search):
+    """
+        Search Box object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="search" class="someClass">
+            <span class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
+            <div id="resultContainer" class="containerClass">
+                <ul>
+                    <li>
+                        <a id="result-0" href="#">Search Result 1</a>
+                    </li>
+                    <li>
+                        <a id="result-1" href="#">Search Result 2</a>
+                    </li>
+                    <li>
+                        <a id="result-2" href="#">Search Result 2</a>
+                    </li>
+                </ul>
+            </div>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+
+        .. code-block:: html
+            <input data-qa-id="search-identifier" id="someClassId" type="search" class="someClass">
+            <span data-qa-id="search-clear" class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
+            <div id="resultContainer" class="containerClass">
+                <ul>
+                    <li>
+                        <a data-qa-id="search-result[0]" id="result-0" href="#">Search Result 1</a>
+                    </li>
+                    <li>
+                        <a data-qa-id="search-result[1]" id="result-1" href="#">Search Result 2</a>
+                    </li>
+                    <li>
+                        <a data-qa-id="search-result[2]" id="result-2" href="#">Search Result 2</a>
+                    </li>
+                </ul>
+            </div>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            s = structures.SearchBox(driver, "//input[@data-qa-id="search-identifier"]")
+
+            # Example usage. This will return {'result': <webelement>}:
+            s.results.search('Hello World')
+            s.results.item(0)
+    """
 
     def __init__(self, driver, path):
-        """Search field with dropdown results
+        """
 
         :param driver: Selenium webdriver
         :param str path: Selector path
@@ -897,21 +1277,64 @@ class SearchBox(Search):
 
 
 class TabNavigation(Element):
+    """
+        Tab-Navigation object
+        ~~~~~~~~~~~~~~~~
 
-    def __init__(self, driver, path):
-        """Tan navigation element
+        **Example Use:**
 
-        :param driver: Selenium webdriver
-        :param str path: Selector path
-        :return:
-        """
 
-        Element.__init__(self, driver, By.XPATH, path)
+        Let's take the following example:
+
+        .. code-block:: html
+            <nav id="someClassId" class="someClass">
+                <ul>
+                    <li>
+                        <a href="/some/location">Nav Link 1</a>
+                    </li>
+                    <li>
+                        <a href="/other/location">Nav Link 2</a>
+                    </li>
+                </ul>
+            </nav>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <nav data-qa-id="nav-identifier" id="someClassId" class="someClass">
+                <ul>
+                    <li>
+                        <a data-qa-id="nav-link-1" href="/some/location">Nav Link 1</a>
+                    </li>
+                    <li>
+                        <a data-qa-id="nav-link-2" href="/other/location">Nav Link 2</a>
+                    </li>
+                </ul>
+            </nav>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            n = structures.TabNavigation(driver, "//nav[@data-qa-id="nav-identifier"]")
+
+            # Example usage
+            n.select('link-2')
+    """
 
     def select(self, value):
         """Click item within navigation
 
-        :param value: id selector
+        :param str value: id selector
         :return:
         """
 
@@ -934,7 +1357,7 @@ class TabNavigation(Element):
     def selected(self):
         """Return a list of elements that are selected
 
-        :return:
+        :return: List of WebElements
         :rtype: list
         """
 
