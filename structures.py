@@ -1,3 +1,6 @@
+"""
+"""
+
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select as SeleniumSelect
@@ -5,6 +8,7 @@ import re
 
 from element import *
 
+__license__ = "MIT"
 __all__ = ['Button', 'Dropdown', 'DropdownForm', 'Form', 'Image', 'List', 'SearchBox', 'Search', 'Select',
            'TabNavigation', 'Table', 'Text']
 
@@ -71,7 +75,7 @@ class Div(Element):
         """Container element. Includes body, header, footer, section
 
         :param driver: Selenium webdriver
-        :param path: Selector path
+        :param str path: Selector path
         :return:
         """
 
@@ -84,7 +88,7 @@ class Dropdown(Element):
         """Dropdown element
 
         :param driver: Selenium webdriver
-        :param path: Selector path
+        :param str path: Selector path
         :return:
         """
 
@@ -124,7 +128,7 @@ class Form(Element):
         """
 
         :param driver: Selenium webdriver
-        :param path: Selector path
+        :param str path: Selector path
         :return:
         """
 
@@ -136,7 +140,7 @@ class Form(Element):
     def __getitem__(self, instance):
         """Get (value) for field instance
 
-        :param instance: id selector
+        :param str instance: id selector
         :return:
         """
 
