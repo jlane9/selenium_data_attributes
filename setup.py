@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='selenium-data-attributes',
-      packages=['selenium-data-attributes'],
+      packages=['selenium_data_attributes'],
       version='0.2',
       description='A wrapper for Selenium. This library uses custom data attributes to accelerate testing '
                   'through the Selenium framework',
