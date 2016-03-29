@@ -206,7 +206,7 @@ class Dropdown(Element):
 
 class Form(Element):
     """
-        Dropdown Form object
+        Form object
         ~~~~~~~~~~~~~~~~
 
         **Example Use:**
@@ -215,28 +215,22 @@ class Form(Element):
         Let's take the following example:
 
         .. code-block:: html
-            <a id="dropdownOpen" class="someClass">Open Menu</a>
-            <div>
-                <form id="sampleForm">
-                    <input id="inputField" class="someClass" type="text">
-                    <button id="cancelButton" class="btn btn-primary">Cancel</button>
-                    <button id="submitButton" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
+            <form id="sampleForm">
+                <input id="inputField" class="someClass" type="text">
+                <button id="cancelButton" class="btn btn-primary">Cancel</button>
+                <button id="submitButton" class="btn btn-primary">Submit</button>
+            </form>
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
         .. code-block:: html
-            <a data-qa-id="open-dropdown" id="dropdownOpen" class="someClass">Open Menu</a>
-            <div>
-                <form data-qa-id="sample-form" id="sampleForm">
-                    <input data-qa-id="form-field-1" id="inputField" class="someClass" type="text">
-                    <button data-qa-id="form-cancel" id="cancelButton" class="btn btn-primary">Cancel</button>
-                    <button data-qa-id="form-submit" id="submitButton" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
+            <form data-qa-id="sample-form" id="sampleForm">
+                <input data-qa-id="form-field-1" id="inputField" class="someClass" type="text">
+                <button data-qa-id="form-cancel" id="cancelButton" class="btn btn-primary">Cancel</button>
+                <button data-qa-id="form-submit" id="submitButton" class="btn btn-primary">Submit</button>
+            </form>
 
 
         An example on how to interact with the element:
@@ -249,12 +243,11 @@ class Form(Element):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            f = structures.DropdownForm(driver, "//a[@data-qa-id="open-dropdown"]")
+            f = structures.Form(driver, "//form[@data-qa-id="sample-form"]")
 
             # Example usage:
-            d.expand()
-            d['field-1'] = "Hello World"
-            d.submit()
+            f['field-1'] = "Hello World"
+            f.submit()
     """
 
     def __init__(self, driver, path):
@@ -670,6 +663,63 @@ class Link(Button):
 
 
 class List(Element):
+    """
+        List object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <ul id="someList" class="someClass">
+                <li>
+                    <p id="name-0">John</p>
+                    <p id="surname-0">Smith</p>
+                    <p id="email-0">jsmith@somemail.net</p>
+                </li>
+                <li>
+                    <p id="name-1">Jane</p>
+                    <p id="surname-1">Doe</p>
+                    <p id="email-1">djoe@trashmail.com</p>
+                </li>
+            </ul>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <ul data-qa-id="some-list" id="someList" class="someClass">
+                <li>
+                    <p data-qa-id="list-name[0]" id="name-0">John</p>
+                    <p data-qa-id="list-surname[0]" id="surname-0">Smith</p>
+                    <p data-qa-id="list-email[1]" id="email-0">jsmith@somemail.net</p>
+                </li>
+                <li>
+                    <p data-qa-id="list-name[1]" id="name-1">Jane</p>
+                    <p data-qa-id="list-surname[1]" id="surname-1">Doe</p>
+                    <p data-qa-id="list-email[1]" id="email-1">djoe@trashmail.com</p>
+                </li>
+            </ul>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            l = structures.List(driver, "//ul[@data-qa-id="some-list"]")
+
+            # Example usage. Returns "John":
+            l[0]['name'].get_attribute('textContent')
+    """
 
     def __init__(self, driver, path):
         """List element. Includes ol and ul
@@ -1121,9 +1171,9 @@ class DropdownForm(Dropdown):
             f = structures.DropdownForm(driver, "//a[@data-qa-id="open-dropdown"]")
 
             # Example usage:
-            d.expand()
-            d['field-1'] = "Hello World"
-            d.submit()
+            f.expand()
+            f['field-1'] = "Hello World"
+            f.submit()
     """
 
     def __init__(self, driver, path):
