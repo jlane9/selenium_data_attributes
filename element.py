@@ -1,12 +1,14 @@
-"""Element - Automation Element class
-
-.. module:: core
-   :platform: Unix, Windows
-   :synopsis:
-
-.. moduleauthor:: John Lane <jlane@fanthreesixty.com>
-
 """
+    selenium_data_attributes.element
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    This module implements the core object used to create selenium structures.
+    
+    :copyright: (c) 2016 FanThreeSixty
+    :author: John Lane <jlane@fanthreesixty.com>
+    :license: MIT, see LICENSE for more details.
+"""
+
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select as SeleniumSelect
@@ -16,12 +18,23 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException, NoSuchElementException, \
     InvalidSelectorException
 
+
+__author__ = 'jlane'
+__copyright__ = 'Copyright (c) FanThreeSixty'
+__license__ = "MIT"
+__version__ = '0.0.1'
+__contact__ = 'jlane@fanthreesixty.com'
+__status__ = 'Alpha'
+__docformat__ = 'reStructuredText'
+
 __all__ = ['Element']
 
 
 class Element(object):
+   """Abstract web structure class
+   """
 
-    def __init__(self, web_driver, by, value):
+    def __init__(self, web_driver, value, by=By.XPATH):
         """Basic Selenium element
 
         :param web_driver: Selenium webdriver
@@ -104,7 +117,7 @@ class Element(object):
     def element(self):
         """Return the selenium webelement object
 
-        :return:
+        :return: Selenium WebElement
         :rtype: WebElement
         """
 
@@ -132,15 +145,12 @@ class Element(object):
         """Click element
 
         :return:
-        :rtype: bool
         """
 
         if self.exists():
 
             try:
-
                 self.element().click()
-                return True
 
             # If the object is not within the view try to scroll to the element
             except (ElementNotVisibleException, WebDriverException):
@@ -149,20 +159,16 @@ class Element(object):
                 self._scroll_to()
 
                 try:
-
                     self.element().click()
-                    return True
 
                 except (ElementNotVisibleException, WebDriverException):
                     pass
-
-        return False
 
     def _deselect_by_index(self, option):
         """Deselect option by index [i]
 
         :param option: Select option index
-        :return:
+        :return: True, if option is deselected
         :rtype: bool
         """
 
@@ -202,7 +208,7 @@ class Element(object):
         """Deselect option by display text
 
         :param option: Select option
-        :return:
+        :return: True, if option is deselected
         :rtype: bool
         """
 
@@ -228,7 +234,7 @@ class Element(object):
         """Deselect option by option value
 
         :param option: Select option value
-        :return:
+        :return: True, if option is deselected
         :rtype: bool
         """
 
@@ -253,7 +259,7 @@ class Element(object):
     def _deselect_all(self):
         """Deselect all selected options
 
-        :return:
+        :return: True, if all options are deselected
         :rtype: bool
         """
 
@@ -279,6 +285,7 @@ class Element(object):
         """Returns True if element can be located by selenium
 
         :return: Returns True, if the element can be located
+        :rtype: bool
         """
 
         element = self.element()
@@ -291,8 +298,7 @@ class Element(object):
     def focus(self):
         """Simulate element being in focus
 
-        :return:
-        :rtype: bool
+        :return: 
         """
 
         if self.angular_hidden():
@@ -303,8 +309,8 @@ class Element(object):
         """Send text to a input field
 
         :param str text: Text to send to the input field
-        :param bool clear: True if user wants to clear the field before
-        :return:
+        :param bool clear: True if user wants to clear the field before assigning text
+        :return: True, if text is assigned
         :rtype: bool
         """
 
@@ -324,7 +330,7 @@ class Element(object):
     def _options(self):
         """Returns all Select options
 
-        :return:
+        :return: List of options
         :rtype: list
         """
 
@@ -361,7 +367,7 @@ class Element(object):
     def _selected(self):
         """Return True if element is selected
 
-        :return: Return True, if the element is selected
+        :return: True, if the element is selected
         :rtype: bool
         """
 
@@ -416,8 +422,9 @@ class Element(object):
     def _select_by_index(self, option):
         """Select option at index [i]
 
-        :param option: Select index
-        :return:
+        :param int option: Select index
+        :return: True, if the option is selected
+        :rtype: bool
         """
 
         element = self.element()
@@ -455,8 +462,9 @@ class Element(object):
     def _select_by_text(self, option):
         """Select option by display text
 
-        :param option:
-        :return:
+        :param str option: Select option
+        :return: True, if the option is selected
+        :rtype: bool
         """
 
         element = self.element()
@@ -480,8 +488,9 @@ class Element(object):
     def _select_by_value(self, option):
         """Select option by option value
 
-        :param option: Select option value
-        :return:
+        :param str option: Select option value
+        :return: True, if the option is selected
+        :rtype: bool
         """
 
         element = self.element()
@@ -505,7 +514,7 @@ class Element(object):
     def _text(self):
         """Returns the text within an element
 
-        :return:
+        :return: Element text
         :rtype: str
         """
 
@@ -521,6 +530,10 @@ class Element(object):
             return text
 
     def wait_until_present(self):
+       """Wait until element is present
+       
+       :return:
+       """
 
         wait = WebDriverWait(self.driver, 30)
         wait.until(ec.presence_of_element_located((By.XPATH, self.search_term[1])))
