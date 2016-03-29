@@ -40,11 +40,11 @@ class Site(object):
     
     @property
     def base_url(self):
-       """Returns the base URL for a website
+        """Returns the base URL for a website
        
-       :return: Base URL string
-       :rtype: str
-       """
+        :return: Base URL string
+        :rtype: str
+        """
 
         results = re.match(self.RE_URL, self.driver.current_url.encode('ascii', 'ignore'))
 
