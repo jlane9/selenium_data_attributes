@@ -31,8 +31,8 @@ __all__ = ['Element']
 
 
 class Element(object):
-   """Abstract web structure class
-   """
+    """Abstract web structure class
+    """
 
     def __init__(self, web_driver, value, by=By.XPATH):
         """Basic Selenium element
@@ -530,10 +530,10 @@ class Element(object):
             return text
 
     def wait_until_present(self):
-       """Wait until element is present
+        """Wait until element is present
        
-       :return:
-       """
+        :return:
+        """
 
         wait = WebDriverWait(self.driver, 30)
         wait.until(ec.presence_of_element_located((By.XPATH, self.search_term[1])))
