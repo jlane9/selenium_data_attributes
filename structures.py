@@ -205,6 +205,57 @@ class Dropdown(Element):
 
 
 class Form(Element):
+    """
+        Dropdown Form object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <a id="dropdownOpen" class="someClass">Open Menu</a>
+            <div>
+                <form id="sampleForm">
+                    <input id="inputField" class="someClass" type="text">
+                    <button id="cancelButton" class="btn btn-primary">Cancel</button>
+                    <button id="submitButton" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <a data-qa-id="open-dropdown" id="dropdownOpen" class="someClass">Open Menu</a>
+            <div>
+                <form data-qa-id="sample-form" id="sampleForm">
+                    <input data-qa-id="form-field-1" id="inputField" class="someClass" type="text">
+                    <button data-qa-id="form-cancel" id="cancelButton" class="btn btn-primary">Cancel</button>
+                    <button data-qa-id="form-submit" id="submitButton" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            f = structures.DropdownForm(driver, "//a[@data-qa-id="open-dropdown"]")
+
+            # Example usage:
+            d.expand()
+            d['field-1'] = "Hello World"
+            d.submit()
+    """
 
     def __init__(self, driver, path):
         """
@@ -630,51 +681,12 @@ class List(Element):
 
         Element.__init__(self, driver, path)
 
-    def items(self):
+    def __getitem__(self, key):
 
         if self.exists():
 
             list_results = {}
             results = self.driver.find_elements_by_xpath('{0}//*[@data-qa-id]'.format(self.search_term[1]))
-
-            for result in results:
-                r = re.findall(r'-(\w+)\[(\d+)\]', result.get_attribute('data-qa-id').encode('ascii', 'ignore'))
-
-                if len(r) > 0:
-
-                    result_num = r[0][1]
-                    result_type = r[0][0]
-
-                    if result_num in list_results:
-                        list_results[result_num][result_type] = result
-
-                    else:
-                        list_results[result_num] = {result_type: result}
-
-            return list_results
-
-        return {}
-
-    def item(self, index):
-
-        if self.exists():
-
-            list_results = {}
-
-            if isinstance(index, int):
-                results = self.driver.find_elements_by_xpath('{0}//*[contains(@data-qa-id, '
-                                                             '"item[{1}]")]'.format(self.search_term[1], str(index)))
-
-            elif isinstance(index, str):
-
-                if index.isdigit():
-                    results = self.element().find_elements_by_xpath('{0}//*[contains(@data-qa-id, '
-                                                                    '"item[{1}]")]'.format(self.search_term[1], index))
-                else:
-                    return list_results
-
-            else:
-                return list_results
 
             for result in results:
                 r = re.findall(r'-(\w+)\[(\d+)\]', result.get_attribute('data-qa-id').encode('ascii', 'ignore'))
@@ -689,7 +701,13 @@ class List(Element):
                     else:
                         list_results[result_type] = result
 
-            return list_results
+            if isinstance(key, slice):
+                return [list_results[str(i)] for i in xrange(key.start, key.stop, key.step)]
+
+            elif isinstance(key, int):
+                return list_results[str(key)]
+
+        return None
 
 
 class Modal(Form):
@@ -883,20 +901,9 @@ class Table(Element):
         Element.__init__(self, driver, path)
         self._rows = List(driver, '{0}//tbody'.format(path))
 
-    def __getitem__(self, instance):
+    def __getitem__(self, key):
 
-        rows = self.rows()
-
-        if isinstance(instance, int):
-            if str(instance) in rows:
-                return rows[str(instance)]
-
-        elif isinstance(instance, str):
-            if instance.isdigit():
-                if instance in rows:
-                    return rows[instance]
-
-        return {}
+        return self._rows.__getitem__(key)
 
     @property
     def headers(self):
@@ -998,18 +1005,6 @@ class Table(Element):
         return self.driver.find_elements_by_xpath('//*[contains(@data-qa-id, "asc") or '
                                                   'contains(@data-qa-id, "desc")]/ancestor::th')
 
-    def rows(self):
-        """Return a dict of all table data
-
-        :return: Table data
-        :rtype: dict
-        """
-
-        if self._rows.exists():
-            return self._rows.items()
-
-        return {}
-
     def select_all(self):
         """Click select all checkbox in header
 
@@ -1079,6 +1074,57 @@ class Text(Element):
 
 # -------------------------------------------------- Complex Structures -----------------------------------------------#
 class DropdownForm(Dropdown):
+    """
+        Dropdown Form object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <a id="dropdownOpen" class="someClass">Open Menu</a>
+            <div>
+                <form id="sampleForm">
+                    <input id="inputField" class="someClass" type="text">
+                    <button id="cancelButton" class="btn btn-primary">Cancel</button>
+                    <button id="submitButton" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <a data-qa-id="open-dropdown" id="dropdownOpen" class="someClass">Open Menu</a>
+            <div>
+                <form data-qa-id="sample-form" id="sampleForm">
+                    <input data-qa-id="form-field-1" id="inputField" class="someClass" type="text">
+                    <button data-qa-id="form-cancel" id="cancelButton" class="btn btn-primary">Cancel</button>
+                    <button data-qa-id="form-submit" id="submitButton" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            f = structures.DropdownForm(driver, "//a[@data-qa-id="open-dropdown"]")
+
+            # Example usage:
+            d.expand()
+            d['field-1'] = "Hello World"
+            d.submit()
+    """
 
     def __init__(self, driver, path):
         """Dropdown form element
@@ -1152,6 +1198,58 @@ class DropdownForm(Dropdown):
 
 
 class DropdownMenu(Dropdown):
+    """
+        Dropdown Menu object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <a id="someClassId" class="someClass">Open Menu</a>
+            <ul>
+                <li>
+                    <a href="/some/location">Nav Link 1</a>
+                </li>
+                <li>
+                    <a href="/other/location">Nav Link 2</a>
+                </li>
+            </ul>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <a data-qa-id="dropdown-button" id="someClassId" class="someClass">Open Menu</a>
+            <ul>
+                <li>
+                    <a data-qa-id="drop-link-1" href="/some/location">Nav Link 1</a>
+                </li>
+                <li>
+                    <a data-qa-id="drop-link-2" href="/other/location">Nav Link 2</a>
+                </li>
+            </ul>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            d = structures.DropdownMenu(driver, "//div[@data-qa-id="dropdown-button"]")
+
+            # Example usage:
+            d.expand()
+            d.select('link-2')
+    """
 
     def select(self, value):
         """Click item within dropdown box
@@ -1240,7 +1338,7 @@ class SearchBox(Search):
 
             # Example usage. This will return {'result': <webelement>}:
             s.results.search('Hello World')
-            s.results.item(0)
+            s.results[0]
     """
 
     def __init__(self, driver, path):
