@@ -22,7 +22,7 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.2.4'
+__version__ = '0.3'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
@@ -66,7 +66,7 @@ class Element(object):
 
         return False
 
-    def __getitem__(self, attribute):
+    def __getattr__(self, attribute):
         """Returns the value of an attribute
 
         :param str attribute: Element attribute
@@ -74,9 +74,14 @@ class Element(object):
         :rtype: str
         """
 
-        if self.exists() and isinstance(attribute, str):
-            if self.__contains__(attribute):
-                return self.element().get_attribute(attribute).encode('ascii', 'ignore')
+        if self.exists():
+
+            if attribute == "cls":
+                    attribute = "class"
+
+            attribute = attribute.replace('_', '-')
+
+            return self.element().get_attribute(attribute).encode('ascii', 'ignore')
 
         return ''
 
@@ -88,7 +93,7 @@ class Element(object):
         """
 
         if self.exists():
-            return self.element().get_attribute('outerHTML')
+            return self.outerHTML
 
         return ''
 
@@ -99,7 +104,7 @@ class Element(object):
         :rtype: bool
         """
 
-        if 'ng-hide' in self.__getitem__('class'):
+        if 'ng-hide' in self.cls:
             return True
 
         return False

@@ -11,10 +11,11 @@
     .. note::
         Some structures need specific keywords to find related elements. This means it is best practice to avoid using
         these keywords in your naming conventions.
+            * cancel - Modal, Form and DropdownForm all use this keyword to find its cancel button
             * clear - Search and SearchBox both use this keyword to find its clear field button
             * close - Modal uses this keyword to find the close modal button
-
-
+            * select-all - Table uses this to find a select-all checkbox in the header
+            * submit - Modal, Form and DropdownForm all use this keyword to find its submit button
 """
 
 from selenium.common.exceptions import NoSuchElementException
@@ -26,13 +27,13 @@ from element import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.2.4'
+__version__ = '0.3'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
 
-__all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'Form', 'Image', 'InputCheckbox', 'InputRadio', 'InputText',
-           'Link', 'List', 'Modal', 'Search', 'SearchBox', 'Select', 'TabNavigation', 'Table', 'Text']
+__all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'DropdownMenu', 'Form', 'Image', 'InputCheckbox', 'InputRadio',
+           'InputText', 'Link', 'List', 'Modal', 'Search', 'SearchBox', 'Select', 'TabNavigation', 'Table', 'Text']
 
 
 # ---------------------------------------------------- Base Structures ------------------------------------------------#
@@ -41,10 +42,10 @@ class Field(Element):
     """
 
     def __str__(self):
-        return self.__getitem__('value')
+        return self.__getattr__('value')
 
     def __unicode__(self):
-        return self.__getitem__('value')
+        return self.__getattr__('value')
 
     def is_disabled(self):
         """Returns True, if the button is disabled
@@ -109,16 +110,6 @@ class Button(Field):
         """
 
         return self._click()
-
-    @property
-    def type(self):
-        """Returns button, reset or submit
-
-        :return: "button", "reset" or "submit"
-        :rtype: str
-        """
-
-        return self.__getitem__('type')
 
 
 class Div(Element):
@@ -435,14 +426,7 @@ class Image(Element):
             i.source()
     """
 
-    def source(self):
-        """Returns link to image file
-
-        :return: Image location
-        :rtype: str
-        """
-
-        return self.__getitem__('src')
+    pass
 
 
 class InputCheckbox(Element):
@@ -498,7 +482,7 @@ class InputCheckbox(Element):
         :rtype: str
         """
 
-        element_id = self.__getitem__('id')
+        element_id = self.id
 
         if element_id != '':
             label_element = self.driver.find_elements_by_xpath('//label[@for="{0}"]'.format(element_id))
@@ -597,7 +581,7 @@ class InputText(Field):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            t = structures.Inputtext(driver, "//input[@data-qa-id="some-identifier"]")
+            t = structures.InputText(driver, "//input[@data-qa-id="some-identifier"]")
 
             # Example usage
             t.input('Hello World')
@@ -651,15 +635,7 @@ class Link(Button):
             l.click()
     """
 
-    @property
-    def href(self):
-        """Returns link reference
-
-        :return: href
-        :rtype: str
-        """
-
-        return self.__getitem__('href')
+    pass
 
 
 class List(Element):
@@ -731,36 +707,135 @@ class List(Element):
 
         Element.__init__(self, driver, path)
 
+    def __len__(self):
+        """Returns the number of associated elements
+
+        :return: Number of associated elements
+        :rtype: int
+        """
+
+        return len(self.items())
+
     def __getitem__(self, key):
+
+        output = self.items()
+
+        try:
+
+            if isinstance(key, int):
+                return output[key]
+
+        except IndexError:
+            pass
+
+        return []
+
+    def items(self):
+        """Returns a list of associated elements
+
+        :return: List of associated elements
+        :rtype: list
+        """
 
         if self.exists():
 
             list_results = {}
             results = self.driver.find_elements_by_xpath('{0}//*[@data-qa-id]'.format(self.search_term[1]))
 
+            # Build a dictionary with all result types tied to its index
             for result in results:
-                r = re.findall(r'-(\w+)\[(\d+)\]', result.get_attribute('data-qa-id').encode('ascii', 'ignore'))
+
+                r = re.findall(r'-(\w\d+)\[(\d+)\]', result.get_attribute('data-qa-id').encode('ascii', 'ignore'))
 
                 if len(r) > 0:
 
                     result_type = r[0][0]
+                    result_index = r[0][1]
 
-                    if result_type in list_results:
-                        list_results[result_type] = result
+                    if isinstance(result_index, str):
 
-                    else:
-                        list_results[result_type] = result
+                        if result_index.isdigit():
 
-            if isinstance(key, slice):
-                return [list_results[str(i)] for i in xrange(key.start, key.stop, key.step)]
+                            result_index = int(result_index)
 
-            elif isinstance(key, int):
-                return list_results[str(key)]
+                            if result_index in list_results:
+                                list_results[result_index][result_type] = result
 
-        return None
+                            else:
+                                list_results[result_index] = {result_type: result}
+
+            # Recreate list_results as list
+            list_indexes = list_results.keys()
+            list_indexes.sort()
+
+            return [list_results[item] for item in list_indexes]
 
 
 class Modal(Form):
+    """
+        Modal object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <div id="modalId" class="modalClass">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Delete this person
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you what to delete? Enter the name of the person below to delete
+                        <input id="someId" class="inputClass" type="text">
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" on-click="close.Modal" class="cancelClass">Cancel</a>
+                        <a href="#" on-click="submit.Modal" class="submitClass">Submit</a>
+                    </div>
+                </div>
+            </div>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <div data-qa-id="sample-modal" id="modalId" class="modalClass">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Delete this person
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you what to delete? Enter the name of the person below to delete
+                        <input data-qa-id="delete-field" id="someId" class="inputClass" type="text">
+                    </div>
+                    <div class="modal-footer">
+                        <a data-qa-id="modal-cancel" href="#" on-click="close.Modal" class="cancelClass">Cancel</a>
+                        <a data-qa-id="modal-submit" href="#" on-click="submit.Modal" class="submitClass">Submit</a>
+                    </div>
+                </div>
+            </div>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            f = structures.Modal(driver, "//div[@data-qa-id="sample-modal"]")
+
+            # Example usage:
+            f['field'] = "John Dow"
+            f.submit()
+    """
 
     def __init__(self, driver, path):
         """
@@ -852,6 +927,51 @@ class Search(Element):
 
 
 class Select(Field):
+    """
+        Select object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <select id="someClassId" class="someClass">
+                <option value="1">Value 1</option>
+                <option value="2">Value 2</option>
+                <option value="3">Value 3</option>
+                <option value="4">Value 4</option>
+            </select>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <select data-qa-id="some-identifier" id="someClassId" class="someClass">
+                <option value="1">Value 1</option>
+                <option value="2">Value 2</option>
+                <option value="3">Value 3</option>
+                <option value="4">Value 4</option>
+            </select>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            s = structures.Select(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Example usage. Returns ['Value 1', 'Value 2', 'Value 3', 'Value 4']
+            s.options()
+    """
 
     @property
     def options(self):
@@ -937,6 +1057,75 @@ class Select(Field):
 
 
 class Table(Element):
+    """
+        Table object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <table id="sampleTable">
+                <thead>
+                    <tr>
+                        <th>Column 1</th>
+                        <th>Column 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Jane</td>
+                        <td>Doe</td>
+                    </tr>
+                    <tr>
+                        <td>John</td>
+                        <td>Smith</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <table data-qa-id="sample-table" id="sampleTable">
+                <thead>
+                    <tr>
+                        <th data-qa-id="column1">Column 1</th>
+                        <th data-qa-id="column2">Column 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-qa-id="column1[0]">Jane</td>
+                        <td data-qa-id="column2[0]">Doe</td>
+                    </tr>
+                    <tr>
+                        <td data-qa-id="column1[1]">John</td>
+                        <td data-qa-id="column2[1]">Smith</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            t = structures.Table(driver, "//form[@data-qa-id="sample-table"]")
+
+            # Example usage:
+            t.headers = ['Column 1', 'Column 2']
+    """
 
     ORDERS = ('asc', 'desc', 'none')
 
@@ -950,6 +1139,9 @@ class Table(Element):
 
         Element.__init__(self, driver, path)
         self._rows = List(driver, '{0}//tbody'.format(path))
+
+    def __len__(self):
+        return len(self.rows())
 
     def __getitem__(self, key):
 
@@ -966,7 +1158,8 @@ class Table(Element):
         element = self.element()
 
         if element:
-            return element.find_elements_by_xpath('.//th[@data-qa-id]')
+            return [i.get_attribute('textContent').encode('ascii', 'ignore')
+                    for i in element.find_elements_by_xpath('.//th[@data-qa-id]')]
 
         return []
 
@@ -1055,6 +1248,14 @@ class Table(Element):
         return self.driver.find_elements_by_xpath('//*[contains(@data-qa-id, "asc") or '
                                                   'contains(@data-qa-id, "desc")]/ancestor::th')
 
+    def rows(self):
+        """Returns a list of associated elements
+
+        :return: List of associated elements
+        :rtype: list
+        """
+        return self._rows.items()
+
     def select_all(self):
         """Click select all checkbox in header
 
@@ -1062,7 +1263,7 @@ class Table(Element):
         """
 
         if self.exists():
-            select_all = self.element().find_elements_by_xpath('.//th[contains(@data-qa-id, "select-all")]')
+            select_all = self.element().find_elements_by_xpath('.//th[contains(@data-qa-id, "select-all")]//input')
 
             if len(select_all) > 0:
                 select_all[0].click()
@@ -1421,7 +1622,7 @@ class SearchBox(Search):
 
         if self.exists():
             if not self.results.angular_hidden():
-                self._click()
+                self.blur()
 
 
 class TabNavigation(Element):
