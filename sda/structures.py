@@ -27,7 +27,7 @@ from element import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.3.4'
+__version__ = '0.3.5'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
@@ -755,10 +755,10 @@ class List(Element):
                     if result_index.isdigit():
 
                         if result_index in list_results.keys():
-                            list_results[int(result_index)][result_type] = result
+                            list_results[result_index][result_type] = result
 
                         else:
-                            list_results[int(result_index)] = {result_type: result}
+                            list_results[result_index] = {result_type: result}
 
             # Recreate list_results as list
             list_indexes = list_results.keys()
