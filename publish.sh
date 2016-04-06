@@ -1,19 +1,16 @@
 #!/bin/bash
 
 
-
-filename=
 while [ $# -gt 0 ]
 do
     case "$1" in
         -v)  VERSION=$2;;
-	-g)  filename="$2"; shift;;
-	--)	shift; break;;
-	-*)
-	    echo >&2 \
-	    "usage: $0 [-v] [-f file] [file ...]"
-	    exit 1;;
-	*)  break;;	# terminate while loop
+        --)	shift; break;;
+        -*)
+            echo >&2 \
+            "usage: $0 [-v] [-f file] [file ...]"
+            exit 1;;
+        *)  break;;	# terminate while loop
     esac
     shift
 done

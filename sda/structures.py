@@ -770,6 +770,44 @@ class List(Element):
 
             return [list_results[item] for item in list_indexes]
 
+    def select_by_index(self, index, selector):
+
+        if isinstance(index, int) and isinstance(selector, str):
+
+            if index in range(0, self.__len__()):
+
+                item = self.items()[index]
+
+                if selector in item.keys():
+                    item[selector].click()
+                    return
+
+        elif isinstance(index, str) and isinstance(selector, str):
+
+            if index.isdigit():
+
+                if int(index) in range(0, self.__len__()):
+
+                    item = self.items()[int(index)]
+
+                    if selector in item.keys():
+                        item[selector].click()
+                        return
+
+    def select_by_value(self, value, selector):
+
+        if isinstance(value, str) and isinstance(selector, str):
+
+            for row in self.items():
+
+                values = [item.get_attribute('textContent').encode('ascii', 'ignore').strip().lower()
+                          for item in row.values()]
+
+                if value.lower() in values:
+                    if selector in row.keys():
+                        row[selector].click()
+                        return
+
 
 class Modal(Form):
     """
