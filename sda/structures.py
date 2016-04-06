@@ -27,7 +27,7 @@ from element import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.3.3'
+__version__ = '0.3.4'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
@@ -752,21 +752,19 @@ class List(Element):
                     result_type = r[0][0]
                     result_index = r[0][1]
 
-                    if isinstance(result_index, str):
+                    if result_index.isdigit():
 
-                        if result_index.isdigit():
+                        if result_index in list_results.keys():
+                            list_results[int(result_index)][result_type] = result
 
-                            if result_index in list_results:
-                                list_results[int(result_index)][result_type] = result
-
-                            else:
-                                list_results[int(result_index)] = {result_type: result}
+                        else:
+                            list_results[int(result_index)] = {result_type: result}
 
             # Recreate list_results as list
             list_indexes = list_results.keys()
             list_indexes.sort()
 
-            return [list_results[item] for item in list_indexes]
+            return [list_results[index] for index in list_indexes]
 
     def select_by_index(self, index, selector):
 
