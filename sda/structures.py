@@ -745,7 +745,7 @@ class List(Element):
             # Build a dictionary with all result types tied to its index
             for result in results:
 
-                r = re.findall(r'-(\w\d+)\[(\d+)\]', result.get_attribute('data-qa-id').encode('ascii', 'ignore'))
+                r = re.findall(r'-([\w\d]+)\[(\d+)\]', result.get_attribute('data-qa-id').encode('ascii', 'ignore'))
 
                 if len(r) > 0:
 
@@ -756,13 +756,11 @@ class List(Element):
 
                         if result_index.isdigit():
 
-                            result_index = int(result_index)
-
                             if result_index in list_results:
-                                list_results[result_index][result_type] = result
+                                list_results[int(result_index)][result_type] = result
 
                             else:
-                                list_results[result_index] = {result_type: result}
+                                list_results[int(result_index)] = {result_type: result}
 
             # Recreate list_results as list
             list_indexes = list_results.keys()
