@@ -332,6 +332,19 @@ class Element(object):
 
         return False
 
+    def is_displayed(self):
+        """Return True, if the element is visible
+
+        :return: True, if element is visible
+        :rtype: bool
+        """
+
+        if self.exists():
+
+            return self.element().is_displayed()
+
+        return False
+
     def _options(self):
         """Returns all Select options
 
@@ -542,3 +555,12 @@ class Element(object):
 
         wait = WebDriverWait(self.driver, 30)
         wait.until(ec.presence_of_element_located((By.XPATH, self.search_term[1])))
+
+    def wait_until_disappears(self):
+        """Wait until the element disappears
+
+        :return:
+        """
+
+        wait = WebDriverWait(self.driver, 30)
+        wait.until(ec.invisibility_of_element_located((By.XPATH, self.search_term[1])))
