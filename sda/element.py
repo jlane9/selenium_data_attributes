@@ -547,20 +547,32 @@ class Element(object):
 
             return text
 
-    def wait_until_present(self):
-        """Wait until element is present
-       
+    def wait_until_present(self, timeout=30):
+        """Wait until the element is present
+
+        :param timeout: Wait timeout in seconds
         :return:
         """
 
-        wait = WebDriverWait(self.driver, 30)
+        if isinstance(timeout, int):
+            wait = WebDriverWait(self.driver, timeout)
+
+        else:
+            wait = WebDriverWait(self.driver, 30)
+
         wait.until(ec.presence_of_element_located((By.XPATH, self.search_term[1])))
 
-    def wait_until_disappears(self):
+    def wait_until_disappears(self, timeout=30):
         """Wait until the element disappears
 
+        :param timeout: Wait timeout in seconds
         :return:
         """
 
-        wait = WebDriverWait(self.driver, 30)
+        if isinstance(timeout, int):
+            wait = WebDriverWait(self.driver, timeout)
+
+        else:
+            wait = WebDriverWait(self.driver, 30)
+
         wait.until(ec.invisibility_of_element_located((By.XPATH, self.search_term[1])))
