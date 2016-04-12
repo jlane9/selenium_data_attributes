@@ -16,7 +16,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException, NoSuchElementException, \
-    InvalidSelectorException
+    InvalidSelectorException, TimeoutException
 
 
 __author__ = 'jlane'
@@ -115,8 +115,8 @@ class Element(object):
         :return:
         """
 
-        if not self.angular_hidden():
-            if self.exists():
+        if self.exists():
+            if self.is_displayed():
                 self.driver.execute_script('arguments[0].blur();', self.element())
 
     def element(self):
@@ -177,13 +177,18 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select':
 
-                if isinstance(option, int):
+                if isinstance(option, int) or isinstance(option, str):
+
+                    # Convert string to integer
+                    if isinstance(option, str):
+                        if option.isdigit():
+                            option = int(option)
 
                     select = SeleniumSelect(element)
 
@@ -193,19 +198,6 @@ class Element(object):
 
                     except NoSuchElementException:
                         pass
-
-                elif isinstance(option, str):
-
-                    if option.isdigit():
-
-                        select = SeleniumSelect(element)
-
-                        try:
-                            select.deselect_by_index(int(option))
-                            return True
-
-                        except NoSuchElementException:
-                            pass
 
         return False
 
@@ -217,9 +209,9 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select' and isinstance(option, str):
 
@@ -243,9 +235,9 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select' and isinstance(option, str):
 
@@ -268,9 +260,9 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select':
 
@@ -306,8 +298,8 @@ class Element(object):
         :return: 
         """
 
-        if self.angular_hidden():
-            if self.exists():
+        if self.exists():
+            if self.is_displayed():
                 self.driver.execute_script('arguments[0].focus();', self.element())
 
     def _input(self, text, clear=True):
@@ -340,7 +332,6 @@ class Element(object):
         """
 
         if self.exists():
-
             return self.element().is_displayed()
 
         return False
@@ -401,9 +392,9 @@ class Element(object):
         :rtype: list
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select':
 
@@ -423,9 +414,9 @@ class Element(object):
         :return:
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select':
 
@@ -445,35 +436,28 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select':
 
-                if isinstance(option, int):
+                if isinstance(option, int) or isinstance(option, str):
+
+                    # Convert string to int
+                    if isinstance(option, str):
+                        if option.isdigit():
+                            option = int(option)
 
                     select = SeleniumSelect(element)
 
                     try:
+
                         select.select_by_index(option)
                         return True
 
                     except NoSuchElementException:
                         pass
-
-                elif isinstance(option, str):
-
-                    if option.isdigit():
-
-                        select = SeleniumSelect(element)
-
-                        try:
-                            select.select_by_index(int(option))
-                            return True
-
-                        except NoSuchElementException:
-                            pass
 
         return False
 
@@ -485,9 +469,9 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select' and isinstance(option, str):
 
@@ -511,9 +495,9 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
 
             if element.tag_name == u'select' and isinstance(option, str):
 
@@ -542,10 +526,11 @@ class Element(object):
             text = element.text.encode('ascii', 'ignore').strip()
 
             if text == '':
-                return self.driver.execute_script('return arguments[0].textContent',
-                                                  element).encode('ascii', 'ignore').strip()
+                return self.driver.get_attribute('textContent').encode('ascii', 'ignore').strip()
 
             return text
+
+        return ''
 
     def wait_until_present(self, timeout=30):
         """Wait until the element is present
@@ -560,7 +545,13 @@ class Element(object):
         else:
             wait = WebDriverWait(self.driver, 30)
 
-        wait.until(ec.presence_of_element_located((By.XPATH, self.search_term[1])))
+        try:
+
+            wait.until(ec.presence_of_element_located((By.XPATH, self.search_term[1])))
+            return True
+
+        except TimeoutException:
+            return False
 
     def wait_until_disappears(self, timeout=30):
         """Wait until the element disappears
@@ -575,4 +566,10 @@ class Element(object):
         else:
             wait = WebDriverWait(self.driver, 30)
 
-        wait.until(ec.invisibility_of_element_located((By.XPATH, self.search_term[1])))
+        try:
+
+            wait.until(ec.invisibility_of_element_located((By.XPATH, self.search_term[1])))
+            return True
+
+        except TimeoutException:
+            return False

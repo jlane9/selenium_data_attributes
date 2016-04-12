@@ -181,7 +181,7 @@ class Dropdown(Element):
         """
 
         if self.exists():
-            if not self.dropdown_list.angular_hidden():
+            if not self.dropdown_list.angular_hidden() or self.dropdown_list.is_displayed():
                 self._click()
 
     def expand(self):
@@ -191,7 +191,7 @@ class Dropdown(Element):
         """
 
         if self.exists():
-            if self.dropdown_list.angular_hidden():
+            if self.dropdown_list.angular_hidden() or not self.dropdown_list.is_displayed():
                 self._click()
 
 
@@ -345,8 +345,8 @@ class Form(Element):
 
         :return:
         """
-
-        self._submit.click()
+        if self._submit.exists():
+            self._submit.click()
 
     def cancel(self):
         """Cancel form
@@ -354,7 +354,8 @@ class Form(Element):
         :return:
         """
 
-        self._cancel.click()
+        if self._cancel.exists():
+            self._cancel.click()
 
     def fields(self):
         """Returns all available fields for this form
@@ -426,7 +427,8 @@ class Image(Element):
             i.source()
     """
 
-    pass
+    def source(self):
+        return self.src
 
 
 class InputCheckbox(Element):
@@ -472,8 +474,9 @@ class InputCheckbox(Element):
         :return:
         """
 
-        if self.selected():
-            self._click()
+        if self.exists():
+            if self.selected():
+                self._click()
 
     def label(self):
         """Returns the associated label if the element has one
@@ -498,8 +501,9 @@ class InputCheckbox(Element):
         :return:
         """
 
-        if not self.selected():
-            self._click()
+        if self.exists():
+            if not self.selected():
+                self._click()
 
     def selected(self):
         """Returns True, if the element is selected
@@ -595,7 +599,8 @@ class InputText(Field):
         :return:
         """
 
-        self._input(text, clear)
+        if self.exists():
+            self._input(text, clear)
 
 
 class Link(Button):
@@ -766,9 +771,15 @@ class List(Element):
 
             return [list_results[index] for index in list_indexes]
 
+        return []
+
     def select_by_index(self, index, selector):
 
-        if isinstance(index, int) and isinstance(selector, str):
+        if (isinstance(index, int) or isinstance(index, str)) and isinstance(selector, str):
+
+            if isinstance(index, str):
+                if index.isdigit():
+                    index = int(index)
 
             if index in range(0, self.__len__()):
 
@@ -777,18 +788,6 @@ class List(Element):
                 if selector in item.keys():
                     item[selector].click()
                     return
-
-        elif isinstance(index, str) and isinstance(selector, str):
-
-            if index.isdigit():
-
-                if int(index) in range(0, self.__len__()):
-
-                    item = self.items()[int(index)]
-
-                    if selector in item.keys():
-                        item[selector].click()
-                        return
 
     def select_by_value(self, value, selector):
 
@@ -888,7 +887,8 @@ class Modal(Form):
         :return:
         """
 
-        self._close.click()
+        if self._close.exists():
+            self._close.click()
 
 
 class Search(Element):
@@ -948,7 +948,8 @@ class Search(Element):
         :return:
         """
 
-        self._clear._click()
+        if self.exists():
+            self._clear._click()
 
     def search(self, criteria):
         """Input criteria into input field
@@ -957,7 +958,8 @@ class Search(Element):
         :return:
         """
 
-        self._input(str(criteria))
+        if self.exists():
+            self._input(str(criteria))
 
 
 class Select(Field):
@@ -1087,7 +1089,8 @@ class Select(Field):
         :rtype: bool
         """
 
-        return self._deselect_all()
+        if self.exists():
+            return self._deselect_all()
 
 
 class Table(Element):
@@ -1189,9 +1192,10 @@ class Table(Element):
         :rtype: list
         """
 
-        element = self.element()
+        if self.exists():
 
-        if element:
+            element = self.element()
+
             return [i.get_attribute('textContent').encode('ascii', 'ignore')
                     for i in element.find_elements_by_xpath('.//th[@data-qa-id]')]
 
@@ -1411,7 +1415,7 @@ class DropdownForm(Dropdown):
             f.submit()
     """
 
-    def __init__(self, driver, path):
+    def __init__(self, driver, path, dropdown_path=None):
         """Dropdown form element
 
         :param driver: Selenium webdriver
@@ -1419,7 +1423,7 @@ class DropdownForm(Dropdown):
         :return:
         """
 
-        Dropdown.__init__(self, driver, path)
+        Dropdown.__init__(self, driver, path, dropdown_path)
 
         self.form = Form(driver, '{0}/following-sibling::*[self::div or self::ul or self::ol]'
                                  '//form[@data-qa-id]'.format(path))
@@ -1451,8 +1455,9 @@ class DropdownForm(Dropdown):
         :return:
         """
 
-        self.expand()
-        self.form.submit()
+        if self.exists():
+            self.expand()
+            self.form.submit()
 
     def cancel(self):
         """Cancel form
@@ -1460,8 +1465,9 @@ class DropdownForm(Dropdown):
         :return:
         """
 
-        self.expand()
-        self.form.cancel()
+        if self.exists():
+            self.expand()
+            self.form.cancel()
 
     def fields(self):
         """Returns all available fields for this form
