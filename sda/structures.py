@@ -1,21 +1,20 @@
-"""
-    selenium_data_attributes.structures
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""Structures
 
-    This module implements objects that provide easier ways to interact with common web elements
-
+.. automodule:: sda.structures
+    :platform: Unix, Windows
+    :synopsis: This module implements objects that provide easier ways to interact with common web elements.
     :copyright: (c) 2016 FanThreeSixty
-    :author: John Lane <jlane@fanthreesixty.com>
+    :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE for more details.
 
-    .. note::
-        Some structures need specific keywords to find related elements. This means it is best practice to avoid using
-        these keywords in your naming conventions.
-            * cancel - Modal, Form and DropdownForm all use this keyword to find its cancel button
-            * clear - Search and SearchBox both use this keyword to find its clear field button
-            * close - Modal uses this keyword to find the close modal button
-            * select-all - Table uses this to find a select-all checkbox in the header
-            * submit - Modal, Form and DropdownForm all use this keyword to find its submit button
+.. note::
+    Some structures need specific keywords to find related elements. This means it is best practice to avoid using
+    these keywords in your naming conventions.
+        * cancel - Modal, Form and DropdownForm all use this keyword to find its cancel button
+        * clear - Search and SearchBox both use this keyword to find its clear field button
+        * close - Modal uses this keyword to find the close modal button
+        * select-all - Table uses this to find a select-all checkbox in the header
+        * submit - Modal, Form and DropdownForm all use this keyword to find its submit button
 """
 
 from selenium.common.exceptions import NoSuchElementException

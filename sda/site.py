@@ -1,12 +1,10 @@
-"""
-    selenium_data_attributes.site
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-    This module implements an abstract object for the site as a whole
-    
+"""Site
+
+.. automodule:: sda.site
+    :synopsis: This module implements an abstract object for the site as a whole.
     :copyright: (c) 2016 FanThreeSixty
-    :author: John Lane <jlane@fanthreesixty.com>
-    :license: MIT, see LICENSE for more details.
+    :moduleauthor: John Lane <jlane@fanthreesixty.com>
+    :license: MIT, see LICENSE.txt for more details.
 """
 
 import re

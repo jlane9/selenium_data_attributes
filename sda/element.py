@@ -1,14 +1,12 @@
-"""
-    selenium_data_attributes.element
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-    This module implements the core object used to create selenium structures.
-    
+"""Element
+
+.. automodule:: sda.element
+    :platform: Unix, Windows
+    :synopsis: This module implements the core object used to create selenium structures.
     :copyright: (c) 2016 FanThreeSixty
-    :author: John Lane <jlane@fanthreesixty.com>
+    :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE for more details.
 """
-
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select as SeleniumSelect

@@ -1,11 +1,10 @@
-"""
-    selenium_data_attributes.page
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-    This module implements an abstract object for a web page.
-    
+"""Page
+
+.. automodule:: sda.page
+    :platform: Unix, Windows
+    :synopsis: This module implements an abstract object for a web page.
     :copyright: (c) 2016 FanThreeSixty
-    :author: John Lane <jlane@fanthreesixty.com>
+    :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE for more details.
 """
 
