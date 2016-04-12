@@ -20,7 +20,7 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = ''
+__version__ = '0.4.0'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
