@@ -26,7 +26,7 @@ from element import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
@@ -35,7 +35,7 @@ __all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'DropdownMenu', 'Form', 
            'InputText', 'Link', 'List', 'Modal', 'Search', 'SearchBox', 'Select', 'TabNavigation', 'Table', 'Text']
 
 
-# ---------------------------------------------------- Base Structures ------------------------------------------------#
+# ---------------------------------------------------- Base Structures ----------------------------------------------- #
 class Field(Element):
     """Abstract class for input elements
     """
@@ -56,7 +56,7 @@ class Field(Element):
         return self.__contains__('disabled')
 
 
-# --------------------------------------------------- Simple Structures -----------------------------------------------#
+# --------------------------------------------------- Simple Structures ---------------------------------------------- #
 class Button(Field):
     """
         Clickable object
@@ -1360,7 +1360,7 @@ class Text(Element):
         return self._text()
 
 
-# -------------------------------------------------- Complex Structures -----------------------------------------------#
+# -------------------------------------------------- Complex Structures ---------------------------------------------- #
 class DropdownForm(Dropdown):
     """
         Dropdown Form object
@@ -1423,6 +1423,13 @@ class DropdownForm(Dropdown):
         """
 
         Dropdown.__init__(self, driver, path, dropdown_path)
+
+        if isinstance(dropdown_path, str):
+
+            if len(dropdown_path) > 0:
+
+                self.form = Form(driver, '{0}//form[@data-qa-id]'.format(dropdown_path))
+                return
 
         self.form = Form(driver, '{0}/following-sibling::*[self::div or self::ul or self::ol]'
                                  '//form[@data-qa-id]'.format(path))
