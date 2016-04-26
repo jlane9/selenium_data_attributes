@@ -524,7 +524,7 @@ class Element(object):
             text = element.text.encode('ascii', 'ignore').strip()
 
             if text == '':
-                return self.driver.get_attribute('textContent').encode('ascii', 'ignore').strip()
+                return element.get_attribute('textContent').encode('ascii', 'ignore').strip()
 
             return text
 

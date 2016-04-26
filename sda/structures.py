@@ -179,9 +179,8 @@ class Dropdown(Element):
         :return:
         """
 
-        if self.exists():
-            if not self.dropdown_list.angular_hidden() or self.dropdown_list.is_displayed():
-                self._click()
+        if not self.dropdown_list.angular_hidden() or self.dropdown_list.is_displayed():
+            self._click()
 
     def expand(self):
         """Expand dropdown
@@ -189,9 +188,8 @@ class Dropdown(Element):
         :return:
         """
 
-        if self.exists():
-            if self.dropdown_list.angular_hidden() or not self.dropdown_list.is_displayed():
-                self._click()
+        if self.dropdown_list.angular_hidden() or not self.dropdown_list.is_displayed():
+            self._click()
 
 
 class Form(Element):
@@ -344,8 +342,8 @@ class Form(Element):
 
         :return:
         """
-        if self._submit.exists():
-            self._submit.click()
+
+        self._submit.click()
 
     def cancel(self):
         """Cancel form
@@ -353,8 +351,7 @@ class Form(Element):
         :return:
         """
 
-        if self._cancel.exists():
-            self._cancel.click()
+        self._cancel.click()
 
     def fields(self):
         """Returns all available fields for this form
@@ -473,9 +470,8 @@ class InputCheckbox(Element):
         :return:
         """
 
-        if self.exists():
-            if self.selected():
-                self._click()
+        if self.selected():
+            self._click()
 
     def label(self):
         """Returns the associated label if the element has one
@@ -500,9 +496,8 @@ class InputCheckbox(Element):
         :return:
         """
 
-        if self.exists():
-            if not self.selected():
-                self._click()
+        if not self.selected():
+            self._click()
 
     def selected(self):
         """Returns True, if the element is selected
@@ -598,8 +593,7 @@ class InputText(Field):
         :return:
         """
 
-        if self.exists():
-            self._input(text, clear)
+        self._input(text, clear)
 
 
 class Link(Button):
@@ -765,10 +759,7 @@ class List(Element):
                             list_results[result_index] = {result_type: result}
 
             # Recreate list_results as list
-            list_indexes = list_results.keys()
-            list_indexes.sort()
-
-            return [list_results[index] for index in list_indexes]
+            return [list_results[index] for index in sorted(list_results.keys(), key=int)]
 
         return []
 
@@ -886,8 +877,7 @@ class Modal(Form):
         :return:
         """
 
-        if self._close.exists():
-            self._close.click()
+        self._close.click()
 
 
 class Search(Element):
@@ -947,8 +937,7 @@ class Search(Element):
         :return:
         """
 
-        if self.exists():
-            self._clear._click()
+        self._clear._click()
 
     def search(self, criteria):
         """Input criteria into input field
@@ -957,8 +946,7 @@ class Search(Element):
         :return:
         """
 
-        if self.exists():
-            self._input(str(criteria))
+        self._input(str(criteria))
 
 
 class Select(Field):
@@ -1461,9 +1449,8 @@ class DropdownForm(Dropdown):
         :return:
         """
 
-        if self.exists():
-            self.expand()
-            self.form.submit()
+        self.expand()
+        self.form.submit()
 
     def cancel(self):
         """Cancel form
@@ -1471,9 +1458,8 @@ class DropdownForm(Dropdown):
         :return:
         """
 
-        if self.exists():
-            self.expand()
-            self.form.cancel()
+        self.expand()
+        self.form.cancel()
 
     def fields(self):
         """Returns all available fields for this form
@@ -1656,9 +1642,8 @@ class SearchBox(Search):
         :return:
         """
 
-        if self.exists():
-            if self.results.angular_hidden():
-                self._click()
+        if self.results.angular_hidden():
+            self._click()
 
     def collapse(self):
         """Close result box
@@ -1666,9 +1651,8 @@ class SearchBox(Search):
         :return:
         """
 
-        if self.exists():
-            if not self.results.angular_hidden():
-                self.blur()
+        if not self.results.angular_hidden():
+            self.blur()
 
 
 class TabNavigation(Element):
