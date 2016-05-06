@@ -1299,6 +1299,14 @@ class Table(Element):
         else:
             NoSuchElementException('Table not found.')
 
+    def select_by_index(self, index, selector):
+
+        self._rows.select_by_index(index, selector)
+
+    def select_by_value(self, value, selector):
+
+        self._rows.select_by_value(value, selector)
+
 
 class Text(Element):
     """
