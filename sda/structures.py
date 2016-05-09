@@ -9,7 +9,7 @@
 
 .. note::
     Some structures need specific keywords to find related elements. This means it is best practice to avoid using
-    these keywords in your naming conventions.
+    these keywords in your general naming conventions.
         * cancel - Modal, Form and DropdownForm all use this keyword to find its cancel button
         * clear - Search and SearchBox both use this keyword to find its clear field button
         * close - Modal uses this keyword to find the close modal button
@@ -26,7 +26,7 @@ from element import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.4.2'
+__version__ = '0.4.3'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
@@ -1197,17 +1197,20 @@ class Table(Element):
 
         filters = self.driver.find_elements_by_xpath('//*[(contains(@data-qa-id, "asc") or '
                                                      'contains(@data-qa-id, "desc")) and '
-                                                     'not(contains(@class, "ng-hide"))]/ancestor::th')
+                                                     'not(contains(@class, "ng-hide"))]')
 
         if len(filters) > 0:
+
+            column = filters[0].find_element_by_xpath('.//ancestor::th')
+
             if 'asc' in filters[0].get_attribute('data-qa-id'):
-                return filters[0], 'asc'
+                return column, 'asc'
 
             elif 'desc' in filters[0].get_attribute('data-qa-id'):
-                return filters[0], 'desc'
+                return column, 'desc'
 
             else:
-                return filters[0], 'none'
+                return column, 'none'
 
         return None
 
