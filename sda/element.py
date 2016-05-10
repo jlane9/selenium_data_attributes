@@ -8,9 +8,11 @@
     :license: MIT, see LICENSE for more details.
 """
 
+from core import DEFAULT_IDENTIFIER
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select as SeleniumSelect
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException, NoSuchElementException, \
@@ -32,17 +34,36 @@ class Element(object):
     """Abstract web structure class
     """
 
-    def __init__(self, web_driver, value, by=By.XPATH):
+    def __init__(self, web_driver, value, by=By.XPATH, identifier=DEFAULT_IDENTIFIER):
         """Basic Selenium element
 
-        :param web_driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str by: By selector
         :param str value: selection value
         :return:
         """
 
-        self.driver = web_driver
-        self.search_term = (by, value)
+        # Instantiate WebDriver
+        if isinstance(web_driver, WebDriver):
+            self.driver = web_driver
+
+        else:
+            self.driver = None
+            raise TypeError("'web_driver' MUST be a selenium WebDriver element")
+
+        # Instantiate selector
+        if (By.is_valid(by) or by == 'element') and isinstance(value, str):
+            self.search_term = (by, value)
+
+        else:
+            self.search_term = (By.XPATH, "")
+
+        # Instantiate identifier
+        if isinstance(identifier, str):
+            self._identifier = identifier
+
+        else:
+            self._identifier = DEFAULT_IDENTIFIER
 
     def __contains__(self, attribute):
         """Returns True if element contains attribute
@@ -368,6 +389,7 @@ class Element(object):
         :return:
         """
 
+        # TODO: Need more intelligent scroll.
         if self.exists():
 
             element = self.element()
@@ -549,11 +571,15 @@ class Element(object):
 
         try:
 
-            wait.until(ec.presence_of_element_located((By.XPATH, self.search_term[1])))
-            return True
+            if self.search_term[0] != 'element':
+
+                wait.until(ec.presence_of_element_located(*self.search_term))
+                return True
 
         except TimeoutException:
-            return False
+            pass
+
+        return False
 
     def wait_until_disappears(self, timeout=30):
         """Wait until the element disappears
@@ -570,8 +596,12 @@ class Element(object):
 
         try:
 
-            wait.until(ec.invisibility_of_element_located((By.XPATH, self.search_term[1])))
-            return True
+            if self.search_term[0] != 'element':
+
+                wait.until(ec.invisibility_of_element_located(*self.search_term))
+                return True
 
         except TimeoutException:
-            return False
+            pass
+
+        return False

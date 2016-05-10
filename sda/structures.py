@@ -21,6 +21,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select as SeleniumSelect
 import re
 
+from core import *
 from element import *
 
 __author__ = 'jlane'
@@ -156,7 +157,7 @@ class Dropdown(Element):
     """Abstract class for dropdown elements
     """
 
-    def __init__(self, driver, path, dropdown_path=None):
+    def __init__(self, driver, path, dropdown_path=None, identifier=DEFAULT_IDENTIFIER):
         """Dropdown element
 
         :param driver: Selenium webdriver
@@ -164,7 +165,7 @@ class Dropdown(Element):
         :return:
         """
 
-        Element.__init__(self, driver, path)
+        Element.__init__(self, driver, path, identifier=identifier)
 
         if isinstance(dropdown_path, str):
             if len(dropdown_path) > 0:
@@ -238,18 +239,19 @@ class Form(Element):
             f.submit()
     """
 
-    def __init__(self, driver, path):
+    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
-        :param driver: Selenium webdriver
+        :param WebDriver driver: Selenium webdriver
         :param str path: Selector path
+        :param str identifier: Tag identifier
         :return:
         """
 
-        Element.__init__(self, driver, path)
+        Element.__init__(self, driver, path, identifier=identifier)
 
-        self._submit = Button(driver, '{0}//*[contains(@data-qa-id, "submit")]'.format(path))
-        self._cancel = Button(driver, '{0}//*[contains(@data-qa-id, "cancel")]'.format(path))
+        self._submit = Button(driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier, SUBMIT_IDENTIFIER))
+        self._cancel = Button(driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier, CANCEL_IDENTIFIER))
 
     def __getitem__(self, instance):
         """Get (value) for field instance
@@ -260,8 +262,9 @@ class Form(Element):
 
         if self.exists():
 
-            elements = self.driver.find_elements_by_xpath('{0}//*[contains(@data-qa-id, '
-                                                          '"{1}")]'.format(self.search_term[1], str(instance)))
+            elements = self.driver.find_elements_by_xpath('{0}//*[contains(@{1}, "{2}")]'.format(self.search_term[1],
+                                                                                                 self._identifier,
+                                                                                                 str(instance)))
 
             # Get the first element that contains (instance) in the data-qa-id
             if len(elements) > 0:
@@ -284,8 +287,9 @@ class Form(Element):
 
         if self.exists():
 
-            elements = self.driver.find_elements_by_xpath('{0}//*[contains(@data-qa-id, '
-                                                          '"{1}")]'.format(self.search_term[1], str(instance)))
+            elements = self.driver.find_elements_by_xpath('{0}//*[contains(@{1}, "{2}")]'.format(self.search_term[1],
+                                                                                                 self._identifier,
+                                                                                                 str(instance)))
 
             # Click the first element that contains (instance) in the data-qa-id
             if len(elements) > 0:
@@ -360,8 +364,8 @@ class Form(Element):
         """
 
         if self.exists():
-            return self.driver.find_elements_by_xpath('{0}//*[@data-qa-id] and (self::input or self::textarea or '
-                                                      'self::button or self::select)'.format(self.search_term[1]))
+            return self.driver.find_elements_by_xpath('{0}//*[@{1}] and (self::input or self::textarea or self::button '
+                                                      'or self::select)'.format(self.search_term[1]), self._identifier)
 
     def field(self, instance):
         """Returns the field that matches the id selector
@@ -373,8 +377,9 @@ class Form(Element):
 
         if self.exists():
 
-            elements = self.driver.find_elements_by_xpath('{0}//*[contains(@data-qa-id, '
-                                                          '"{1}")]'.format(self.search_term[1], str(instance)))
+            elements = self.driver.find_elements_by_xpath('{0}//*[contains(@{1}, "{2}")]'.format(self.search_term[1],
+                                                                                                 self._identifier,
+                                                                                                 str(instance)))
 
             if len(elements) > 0:
                 return elements[0]
@@ -695,7 +700,7 @@ class List(Element):
             l[0]['name'].get_attribute('textContent')
     """
 
-    def __init__(self, driver, path):
+    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
         """List element. Includes ol and ul
 
         :param driver: Selenium webdriver
@@ -703,7 +708,7 @@ class List(Element):
         :return:
         """
 
-        Element.__init__(self, driver, path)
+        Element.__init__(self, driver, path, identifier=identifier)
 
     def __len__(self):
         """Returns the number of associated elements
@@ -738,12 +743,12 @@ class List(Element):
         if self.exists():
 
             list_results = {}
-            results = self.driver.find_elements_by_xpath('{0}//*[@data-qa-id]'.format(self.search_term[1]))
+            results = self.driver.find_elements_by_xpath('{0}//*[@{1}]'.format(self.search_term[1]), self._identifier)
 
             # Build a dictionary with all result types tied to its index
             for result in results:
 
-                r = re.findall(r'-([\w\d]+)\[(\d+)\]', result.get_attribute('data-qa-id').encode('ascii', 'ignore'))
+                r = re.findall(r'-([\w\d]+)\[(\d+)\]', result.get_attribute(self._identifier).encode('ascii', 'ignore'))
 
                 if len(r) > 0:
 
@@ -860,7 +865,7 @@ class Modal(Form):
             f.submit()
     """
 
-    def __init__(self, driver, path):
+    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
         :param driver: Selenium webdriver
@@ -868,8 +873,9 @@ class Modal(Form):
         :return:
         """
 
-        Form.__init__(self, driver, path)
-        self._close = Button(driver, '{0}//*[contains(@data-qa-id, "close")]'.format(path))
+        Form.__init__(self, driver, path, identifier=identifier)
+
+        self._close = Button(driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier, CLOSE_IDENTIFIER))
 
     def close(self):
         """Close modal
@@ -920,7 +926,7 @@ class Search(Element):
             s.results.search('Hello World')
     """
 
-    def __init__(self, driver, path):
+    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
         """Search input element
 
         :param driver: Selenium webdriver
@@ -928,8 +934,10 @@ class Search(Element):
         :return:
         """
 
-        Element.__init__(self, driver, path)
-        self._clear = Button(driver, '{0}/following-sibling::*[contains(@data-qa-id, "clear")]'.format(path))
+        Element.__init__(self, driver, path, identifier=identifier)
+
+        self._clear = Button(driver, '{0}/following-sibling::*[contains(@{1}, "{2}")]'.format(path, self._identifier,
+                                                                                              CLEAR_IDENTIFIER))
 
     def clear(self):
         """Clear search
@@ -1151,9 +1159,9 @@ class Table(Element):
             t.headers = ['Column 1', 'Column 2']
     """
 
-    ORDERS = ('asc', 'desc', 'none')
+    ORDERS = (ASC_IDENTIFIER, DESC_IDENTIFIER, 'none')
 
-    def __init__(self, driver, path):
+    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
         :param driver: Selenium webdriver
@@ -1161,7 +1169,7 @@ class Table(Element):
         :return:
         """
 
-        Element.__init__(self, driver, path)
+        Element.__init__(self, driver, path, identifier=identifier)
         self._rows = List(driver, '{0}//tbody'.format(path))
 
     def __len__(self):
@@ -1184,7 +1192,7 @@ class Table(Element):
             element = self.element()
 
             return [i.get_attribute('textContent').encode('ascii', 'ignore')
-                    for i in element.find_elements_by_xpath('.//th[@data-qa-id]')]
+                    for i in element.find_elements_by_xpath('.//th[@{0}]'.format(self._identifier))]
 
         return []
 
@@ -1195,19 +1203,21 @@ class Table(Element):
         :return:
         """
 
-        filters = self.driver.find_elements_by_xpath('//*[(contains(@data-qa-id, "asc") or '
-                                                     'contains(@data-qa-id, "desc")) and '
-                                                     'not(contains(@class, "ng-hide"))]')
+        filters = self.driver.find_elements_by_xpath('{0}//*[not(contains(@class, "ng-hide")) and '
+                                                     '(contains(@{1}, "{2}") or '
+                                                     'contains(@{1}, "{3}"))]'.format(self.search_term[1],
+                                                                                      self._identifier,
+                                                                                      ASC_IDENTIFIER, DESC_IDENTIFIER))
 
         if len(filters) > 0:
 
             column = filters[0].find_element_by_xpath('.//ancestor::th')
 
-            if 'asc' in filters[0].get_attribute('data-qa-id'):
-                return column, 'asc'
+            if ASC_IDENTIFIER in filters[0].get_attribute(self._identifier):
+                return column, ASC_IDENTIFIER
 
-            elif 'desc' in filters[0].get_attribute('data-qa-id'):
-                return column, 'desc'
+            elif DESC_IDENTIFIER in filters[0].get_attribute(self._identifier):
+                return column, DESC_IDENTIFIER
 
             else:
                 return column, 'none'
@@ -1227,20 +1237,21 @@ class Table(Element):
 
             if order.lower() in self.ORDERS:
 
-                f = self.driver.find_elements_by_xpath('{0}//*[(contains(@data-qa-id, '
-                                                       '"{1}")]'.format(self.search_term[1], value))
+                f = self.driver.find_elements_by_xpath('{0}//*[contains(@{1}, "{2}")]'.format(self.search_term[1],
+                                                                                              self._identifier, value))
 
                 if len(f) > 0:
 
-                    button = Button(self.driver, '{0}//*[(contains(@data-qa-id, "{1}")]//*[(self::button or self::a or '
-                                                 'self::input) or @ng-click]'.format(self.search_term[1], value))
+                    button = Button(self.driver, '{0}//*[contains(@{1}, "{2}")]//*[(self::button or self::a or '
+                                                 'self::input) or @ng-click]'.format(self.search_term[1],
+                                                                                     self._identifier, value))
 
                     # If the current filter is already set to the filter specified
-                    if f.get_attribute('textContent') == self.filter[0].get_attribute('textContent'):
+                    if f[0].get_attribute('textContent') == self.filter[0].get_attribute('textContent'):
 
                         # If the current filter already has the specified order
                         if order == self.filter[1]:
-                            pass
+                            return
 
                         # If the current filter does not have the specified order
                         else:
@@ -1257,7 +1268,7 @@ class Table(Element):
 
                         # If the current filter already has the specified order
                         if order == self.filter[1]:
-                            button.click()
+                            return
 
                         # If the current filter does not have the specified order
                         else:
@@ -1273,8 +1284,10 @@ class Table(Element):
         :rtype: list
         """
 
-        return self.driver.find_elements_by_xpath('//*[contains(@data-qa-id, "asc") or '
-                                                  'contains(@data-qa-id, "desc")]/ancestor::th')
+        return self.driver.find_elements_by_xpath('//*[contains(@{0}, "{1}") or '
+                                                  'contains(@{0}, "{2}")]/ancestor::th'.format(self._identifier,
+                                                                                               ASC_IDENTIFIER,
+                                                                                               DESC_IDENTIFIER))
 
     def rows(self):
         """Returns a list of associated elements
@@ -1291,7 +1304,9 @@ class Table(Element):
         """
 
         if self.exists():
-            select_all = self.element().find_elements_by_xpath('.//th[contains(@data-qa-id, "select-all")]//input')
+            select_all = self.element().find_elements_by_xpath('.//th[contains(@{0}, '
+                                                               '"{1}")]//input'.format(self._identifier,
+                                                                                       SELECT_ALL_IDENTIFIER))
 
             if len(select_all) > 0:
                 select_all[0].click()
@@ -1413,7 +1428,7 @@ class DropdownForm(Dropdown):
             f.submit()
     """
 
-    def __init__(self, driver, path, dropdown_path=None):
+    def __init__(self, driver, path, dropdown_path=None, identifier=DEFAULT_IDENTIFIER):
         """Dropdown form element
 
         :param driver: Selenium webdriver
@@ -1421,17 +1436,17 @@ class DropdownForm(Dropdown):
         :return:
         """
 
-        Dropdown.__init__(self, driver, path, dropdown_path)
+        Dropdown.__init__(self, driver, path, dropdown_path, identifier=identifier)
 
         if isinstance(dropdown_path, str):
 
             if len(dropdown_path) > 0:
 
-                self.form = Form(driver, '{0}//form[@data-qa-id]'.format(dropdown_path))
+                self.form = Form(driver, '{0}//form[@{1}]'.format(dropdown_path, self._identifier))
                 return
 
         self.form = Form(driver, '{0}/following-sibling::*[self::div or self::ul or self::ol]'
-                                 '//form[@data-qa-id]'.format(path))
+                                 '//form[@{1}]'.format(path, self._identifier))
 
     def __getitem__(self, instance):
         """Get (value) for field instance
@@ -1557,8 +1572,9 @@ class DropdownMenu(Dropdown):
             self.expand()
 
             # Find all items that we can select (click)
-            items = self.driver.find_elements_by_xpath('{0}//*[contains(@data-qa-id, '
-                                                       '"{1}")]'.format(self.dropdown_list.search_term[1], value))
+            items = self.driver.find_elements_by_xpath('{0}//*[contains(@{1}, '
+                                                       '"{2}")]'.format(self.dropdown_list.search_term[1],
+                                                                        self._identifier, value))
 
             if len(items) > 0:
                 items[0].click()
@@ -1635,7 +1651,7 @@ class SearchBox(Search):
             s.results[0]
     """
 
-    def __init__(self, driver, path):
+    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
         :param driver: Selenium webdriver
@@ -1643,7 +1659,7 @@ class SearchBox(Search):
         :return:
         """
 
-        Search.__init__(self, driver, path)
+        Search.__init__(self, driver, path, identifier=identifier)
 
         self.results = List(driver, '{0}/following-sibling::*[self::ul or self::ol or self::div]'.format(path))
 
@@ -1731,8 +1747,8 @@ class TabNavigation(Element):
         if self.exists():
 
             # Find all items that we can select (click)
-            items = self.driver.find_elements_by_xpath('{0}//*[contains(@data-qa-id, '
-                                                       '"{1}")]'.format(self.search_term[1], value))
+            items = self.driver.find_elements_by_xpath('{0}//*[contains(@{1}, '
+                                                       '"{2}")]'.format(self.search_term[1], self._identifier, value))
 
             if len(items) > 0:
                 items[0].click()
@@ -1755,7 +1771,8 @@ class TabNavigation(Element):
 
         if self.exists():
 
-            selector = '//*[(self::a or self::input or self::button) and @data-qa-id] and contains(@class, "active")'
+            selector = '//*[(self::a or self::input or self::button) and @{0}] ' \
+                       'and contains(@class, "active")'.format(self._identifier)
 
             # Find all items that we can select (click)
             items = self.driver.find_elements_by_xpath('{0}{1}'.format(self.search_term[1], selector))

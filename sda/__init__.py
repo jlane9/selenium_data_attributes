@@ -8,4 +8,4 @@
     :license: MIT, see LICENSE for more details.
 """
 
-__all__ = ['element', 'page', 'site', 'structures']
+__all__ = ['core', 'element', 'page', 'site', 'structures']

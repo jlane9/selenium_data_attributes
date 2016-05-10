@@ -8,7 +8,9 @@
     :license: MIT, see LICENSE for more details.
 """
 
+from core import *
 import re
+from selenium.webdriver.remote.webdriver import WebDriver
 
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
@@ -25,15 +27,36 @@ class Page(object):
     """Abstract class for a whole page
     """
 
-    def __init__(self, driver, validation=""):
-        """
+    def __init__(self, web_driver, validation="", identifier=DEFAULT_IDENTIFIER):
+        """Instantiate Page
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
+        :param str validation: regular expression to check URL
+        :param str identifier: Tag identifier
         :return:
         """
 
-        self.driver = driver
-        self._url_validation = validation
+        # Instantiate WebDriver
+        if isinstance(web_driver, WebDriver):
+            self.driver = web_driver
+
+        else:
+            self.driver = None
+            raise TypeError("'web_driver' MUST be a selenium WebDriver element")
+
+        # Instantiate page-level URL validation
+        if isinstance(validation, str):
+            self._url_validation = validation
+
+        else:
+            self._url_validation = ""
+
+        # Instantiate identifier
+        if isinstance(identifier, str):
+            self._identifier = identifier
+
+        else:
+            self._identifier = DEFAULT_IDENTIFIER
 
     def elements(self):
         """Returns all testable elements on a page
@@ -41,7 +64,8 @@ class Page(object):
         :return: List of WebElements
         :rtype: list
         """
-        return self.driver.find_elements_by_xpath('//*[@data-qa-id]')
+
+        return self.driver.find_elements_by_xpath('//*[@{0}]'.format(self._identifier))
 
     def in_view(self):
         """Returns True if the driver is currently within the scope of this page
@@ -51,11 +75,8 @@ class Page(object):
         """
 
         if self._url_validation != "":
-
-            if len(re.findall(self._url_validation, self.url)) > 0:
-                return True
-
-            return False
+            if len(re.findall(self._url_validation, self.url)) == 0:
+                return False
 
         return True
 
