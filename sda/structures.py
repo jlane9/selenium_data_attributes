@@ -157,22 +157,23 @@ class Dropdown(Element):
     """Abstract class for dropdown elements
     """
 
-    def __init__(self, driver, path, dropdown_path=None, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, dropdown_path=None, identifier=DEFAULT_IDENTIFIER):
         """Dropdown element
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :return:
         """
 
-        Element.__init__(self, driver, path, identifier=identifier)
+        Element.__init__(self, web_driver, path, identifier=identifier)
 
         if isinstance(dropdown_path, str):
             if len(dropdown_path) > 0:
-                self.dropdown_list = List(driver, '{0}'.format(dropdown_path))
+                self.dropdown_list = List(web_driver, '{0}'.format(dropdown_path))
                 return
 
-        self.dropdown_list = List(driver, '{0}/following-sibling::*[self::ul or self::ol or self::div]'.format(path))
+        self.dropdown_list = List(web_driver, '{0}/following-sibling::*[self::ul or '
+                                              'self::ol or self::div]'.format(path))
 
     def collapse(self):
         """Close dropdown
@@ -239,19 +240,21 @@ class Form(Element):
             f.submit()
     """
 
-    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
-        :param WebDriver driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :param str identifier: Tag identifier
         :return:
         """
 
-        Element.__init__(self, driver, path, identifier=identifier)
+        Element.__init__(self, web_driver, path, identifier=identifier)
 
-        self._submit = Button(driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier, SUBMIT_IDENTIFIER))
-        self._cancel = Button(driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier, CANCEL_IDENTIFIER))
+        self._submit = Button(web_driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier,
+                                                                                 SUBMIT_IDENTIFIER))
+        self._cancel = Button(web_driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier,
+                                                                                 CANCEL_IDENTIFIER))
 
     def __getitem__(self, instance):
         """Get (value) for field instance
@@ -700,15 +703,15 @@ class List(Element):
             l[0]['name'].get_attribute('textContent')
     """
 
-    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
         """List element. Includes ol and ul
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :return:
         """
 
-        Element.__init__(self, driver, path, identifier=identifier)
+        Element.__init__(self, web_driver, path, identifier=identifier)
 
     def __len__(self):
         """Returns the number of associated elements
@@ -865,17 +868,18 @@ class Modal(Form):
             f.submit()
     """
 
-    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :return:
         """
 
-        Form.__init__(self, driver, path, identifier=identifier)
+        Form.__init__(self, web_driver, path, identifier=identifier)
 
-        self._close = Button(driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier, CLOSE_IDENTIFIER))
+        self._close = Button(web_driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier,
+                                                                                CLOSE_IDENTIFIER))
 
     def close(self):
         """Close modal
@@ -926,18 +930,19 @@ class Search(Element):
             s.results.search('Hello World')
     """
 
-    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
         """Search input element
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :return:
         """
 
-        Element.__init__(self, driver, path, identifier=identifier)
+        Element.__init__(self, web_driver, path, identifier=identifier)
 
-        self._clear = Button(driver, '{0}/following-sibling::*[contains(@{1}, "{2}")]'.format(path, self._identifier,
-                                                                                              CLEAR_IDENTIFIER))
+        self._clear = Button(web_driver, '{0}/following-sibling::*[contains(@{1}, "{2}")]'.format(path,
+                                                                                                  self._identifier,
+                                                                                                  CLEAR_IDENTIFIER))
 
     def clear(self):
         """Clear search
@@ -1161,16 +1166,16 @@ class Table(Element):
 
     ORDERS = (ASC_IDENTIFIER, DESC_IDENTIFIER, 'none')
 
-    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :return:
         """
 
-        Element.__init__(self, driver, path, identifier=identifier)
-        self._rows = List(driver, '{0}//tbody'.format(path))
+        Element.__init__(self, web_driver, path, identifier=identifier)
+        self._rows = List(web_driver, '{0}//tbody'.format(path))
 
     def __len__(self):
         return len(self.rows())
@@ -1428,25 +1433,25 @@ class DropdownForm(Dropdown):
             f.submit()
     """
 
-    def __init__(self, driver, path, dropdown_path=None, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, dropdown_path=None, identifier=DEFAULT_IDENTIFIER):
         """Dropdown form element
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :return:
         """
 
-        Dropdown.__init__(self, driver, path, dropdown_path, identifier=identifier)
+        Dropdown.__init__(self, web_driver, path, dropdown_path, identifier=identifier)
 
         if isinstance(dropdown_path, str):
 
             if len(dropdown_path) > 0:
 
-                self.form = Form(driver, '{0}//form[@{1}]'.format(dropdown_path, self._identifier))
+                self.form = Form(web_driver, '{0}//form[@{1}]'.format(dropdown_path, self._identifier))
                 return
 
-        self.form = Form(driver, '{0}/following-sibling::*[self::div or self::ul or self::ol]'
-                                 '//form[@{1}]'.format(path, self._identifier))
+        self.form = Form(web_driver, '{0}/following-sibling::*[self::div or self::ul or self::ol]'
+                                     '//form[@{1}]'.format(path, self._identifier))
 
     def __getitem__(self, instance):
         """Get (value) for field instance
@@ -1651,17 +1656,17 @@ class SearchBox(Search):
             s.results[0]
     """
 
-    def __init__(self, driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
         """
 
-        :param driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium webdriver
         :param str path: Selector path
         :return:
         """
 
-        Search.__init__(self, driver, path, identifier=identifier)
+        Search.__init__(self, web_driver, path, identifier=identifier)
 
-        self.results = List(driver, '{0}/following-sibling::*[self::ul or self::ol or self::div]'.format(path))
+        self.results = List(web_driver, '{0}/following-sibling::*[self::ul or self::ol or self::div]'.format(path))
 
     def expand(self):
         """Expand result box

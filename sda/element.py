@@ -34,7 +34,7 @@ class Element(object):
     """Abstract web structure class
     """
 
-    def __init__(self, web_driver, value, by=By.XPATH, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, by=By.XPATH, identifier=DEFAULT_IDENTIFIER):
         """Basic Selenium element
 
         :param WebDriver web_driver: Selenium webdriver
@@ -52,8 +52,8 @@ class Element(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate selector
-        if (By.is_valid(by) or by == 'element') and isinstance(value, str):
-            self.search_term = (by, value)
+        if (By.is_valid(by) or by == 'element') and isinstance(path, str):
+            self.search_term = (by, path)
 
         else:
             self.search_term = (By.XPATH, "")
@@ -573,7 +573,7 @@ class Element(object):
 
             if self.search_term[0] != 'element':
 
-                wait.until(ec.presence_of_element_located(*self.search_term))
+                wait.until(ec.presence_of_element_located(self.search_term))
                 return True
 
         except TimeoutException:
@@ -598,7 +598,7 @@ class Element(object):
 
             if self.search_term[0] != 'element':
 
-                wait.until(ec.invisibility_of_element_located(*self.search_term))
+                wait.until(ec.invisibility_of_element_located(self.search_term))
                 return True
 
         except TimeoutException:
