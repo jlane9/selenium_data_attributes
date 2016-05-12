@@ -8,6 +8,14 @@
     :license: MIT, see LICENSE for more details.
 """
 
+__author__ = 'jlane'
+__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
+__license__ = "MIT"
+__version__ = '0.4.6'
+__contact__ = 'jlane@fanthreesixty.com'
+__status__ = 'Alpha'
+__docformat__ = 'reStructuredText'
+
 __all__ = ['ASC_IDENTIFIER', 'CANCEL_IDENTIFIER', 'CLEAR_IDENTIFIER', 'CLOSE_IDENTIFIER', 'DEFAULT_IDENTIFIER',
            'DESC_IDENTIFIER', 'SELECT_ALL_IDENTIFIER', 'SUBMIT_IDENTIFIER', 'encode_ascii']
 
@@ -23,6 +31,7 @@ SELECT_ALL_IDENTIFIER = 'select-all'
 SUBMIT_IDENTIFIER = 'submit'
 
 
+# Shortcuts
 def encode_ascii(func):
     """
 
