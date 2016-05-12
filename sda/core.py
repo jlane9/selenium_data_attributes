@@ -39,9 +39,9 @@ def encode_ascii(func):
     :return:
     """
 
-    def func_wrapper(self):
+    def func_wrapper(self, *args, **kwargs):
 
-        text = func(self)
+        text = func(self, *args, **kwargs)
 
         # Convert UNICODE to ASCII
         if isinstance(text, unicode) or isinstance(text, str):
