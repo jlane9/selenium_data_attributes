@@ -32,26 +32,38 @@ SUBMIT_IDENTIFIER = 'submit'
 
 
 # Shortcuts
-def encode_ascii(func):
-    """
+def encode_ascii(clean=False):
+    """Function returns text as ascii
 
-    :param func: Function returns text as ascii
+    :param clean: True, to delete trailing spaces
     :return:
     """
+    def encode_ascii_decorator(func):
 
-    def func_wrapper(self, *args, **kwargs):
+        def func_wrapper(self, *args, **kwargs):
 
-        text = func(self, *args, **kwargs)
+            text = func(self, *args, **kwargs)
 
-        # Convert UNICODE to ASCII
-        if isinstance(text, unicode) or isinstance(text, str):
-            return text.encode('ascii', 'ignore')
+            # Convert UNICODE to ASCII
+            if isinstance(text, unicode) or isinstance(text, str):
 
-        # Iterate list of UNICODE strings to ASCII
-        elif isinstance(text, list) or isinstance(text, tuple):
-            return [item.encode('ascii', 'ignore') for item in text
-                    if isinstance(item, unicode) or isinstance(item, str)]
+                if clean:
+                    return text.encode('ascii', 'ignore').strip()
 
-        return ''
+                return text.encode('ascii', 'ignore')
 
-    return func_wrapper
+            # Iterate list of UNICODE strings to ASCII
+            elif isinstance(text, list) or isinstance(text, tuple):
+
+                if clean:
+                    return [item.encode('ascii', 'ignore').strip() for item in text
+                            if isinstance(item, unicode) or isinstance(item, str)]
+
+                return [item.encode('ascii', 'ignore') for item in text
+                        if isinstance(item, unicode) or isinstance(item, str)]
+
+            return ''
+
+        return func_wrapper
+
+    return encode_ascii_decorator

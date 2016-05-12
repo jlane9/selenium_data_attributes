@@ -23,6 +23,7 @@ import re
 
 from core import *
 from element import *
+from mixins import *
 
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
@@ -36,29 +37,8 @@ __all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'DropdownMenu', 'Form', 
            'InputText', 'Link', 'List', 'Modal', 'Search', 'SearchBox', 'Select', 'TabNavigation', 'Table', 'Text']
 
 
-# ---------------------------------------------------- Base Structures ----------------------------------------------- #
-class Field(Element):
-    """Abstract class for input elements
-    """
-
-    def __str__(self):
-        return self.__getattr__('value')
-
-    def __unicode__(self):
-        return self.__getattr__('value')
-
-    def is_disabled(self):
-        """Returns True, if the button is disabled
-
-        :return: True, if the button is disabled
-        :rtype: bool
-        """
-
-        return self.__contains__('disabled')
-
-
 # --------------------------------------------------- Simple Structures ---------------------------------------------- #
-class Button(Field):
+class Button(Element, ClickMixin, TextMixin):
     """
         Clickable object
         ~~~~~~~~~~~~~~~~
@@ -97,19 +77,7 @@ class Button(Field):
             b.click()
     """
 
-    def __str__(self):
-        return self._text()
-
-    def __unicode__(self):
-        return self._text()
-
-    def click(self):
-        """Click button
-
-        :return:
-        """
-
-        return self._click()
+    pass
 
 
 class Div(Element):
@@ -153,7 +121,7 @@ class Div(Element):
     pass
 
 
-class Dropdown(Element):
+class Dropdown(Element, DropdownMixin):
     """Abstract class for dropdown elements
     """
 
@@ -168,30 +136,13 @@ class Dropdown(Element):
         Element.__init__(self, web_driver, path, identifier=identifier)
 
         if isinstance(dropdown_path, str):
+
             if len(dropdown_path) > 0:
-                self.dropdown_list = List(web_driver, '{0}'.format(dropdown_path))
+
+                self.container = List(web_driver, dropdown_path)
                 return
 
-        self.dropdown_list = List(web_driver, '{0}/following-sibling::*[self::ul or '
-                                              'self::ol or self::div]'.format(path))
-
-    def collapse(self):
-        """Close dropdown
-
-        :return:
-        """
-
-        if not self.dropdown_list.angular_hidden() or self.dropdown_list.is_displayed():
-            self._click()
-
-    def expand(self):
-        """Expand dropdown
-
-        :return:
-        """
-
-        if self.dropdown_list.angular_hidden() or not self.dropdown_list.is_displayed():
-            self._click()
+        self.container = List(web_driver, '{0}/following-sibling::*[self::ul or self::ol or self::div]'.format(path))
 
 
 class Form(Element):
@@ -436,7 +387,7 @@ class Image(Element):
         return self.src
 
 
-class InputCheckbox(Element):
+class InputCheckbox(Element, SelectiveMixin):
     """
         Input Checkbox object
         ~~~~~~~~~~~~~~~~
@@ -473,48 +424,16 @@ class InputCheckbox(Element):
             c.select()
     """
 
-    def deselect(self):
-        """Deselect this element
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
 
-        :return:
-        """
+        Element.__init__(self, web_driver, path, identifier=identifier)
 
-        if self.selected():
-            self._click()
+        if self.id:
 
-    def label(self):
-        """Returns the associated label if the element has one
+            self.label = Text(web_driver, '//label[@for="{0}"]'.format(self.id))
+            return
 
-        :return: Checkbox label
-        :rtype: str
-        """
-
-        element_id = self.id
-
-        if element_id != '':
-            label_element = self.driver.find_elements_by_xpath('//label[@for="{0}"]'.format(element_id))
-
-            if len(label_element) > 0:
-                return label_element[0].get_attribute('textContent').encode('ascii', 'ignore')
-
-        return ''
-
-    def select(self):
-        """Select this element
-
-        :return:
-        """
-
-        if not self.selected():
-            self._click()
-
-    def selected(self):
-        """Returns True, if the element is selected
-
-        :return:
-        """
-
-        return self._selected()
+        self.label = ''
 
 
 class InputRadio(InputCheckbox):
@@ -557,7 +476,7 @@ class InputRadio(InputCheckbox):
     pass
 
 
-class InputText(Field):
+class InputText(Element, InputMixin):
     """
         Input Text object
         ~~~~~~~~~~~~~~~~
@@ -594,15 +513,7 @@ class InputText(Field):
             t.input('Hello World')
     """
 
-    def input(self, text, clear=True):
-        """Assign 'text' as input's value
-
-        :param str text: Text value
-        :param bool clear: True, to clear element of previous value
-        :return:
-        """
-
-        self._input(text, clear)
+    pass
 
 
 class Link(Button):
@@ -891,7 +802,7 @@ class Modal(Form):
         self._close.click()
 
 
-class Search(Element):
+class Search(Element, InputMixin):
     """
         Search object
         ~~~~~~~~~~~~~~~~
@@ -957,7 +868,7 @@ class Search(Element):
         :return:
         """
 
-        self._clear._click()
+        self._clear.click()
 
     def search(self, criteria):
         """Input criteria into input field
@@ -966,10 +877,10 @@ class Search(Element):
         :return:
         """
 
-        self._input(str(criteria))
+        self.input(str(criteria))
 
 
-class Select(Field):
+class Select(Element, SelectMixin):
     """
         Select object
         ~~~~~~~~~~~~~~~~
@@ -1016,88 +927,7 @@ class Select(Field):
             s.options()
     """
 
-    @property
-    def options(self):
-        """Return select options
-
-        :return:
-        """
-
-        return self._options()
-
-    @property
-    def selected(self):
-        """Return which options are selected
-
-        :return:
-        """
-
-        return self._selected_options()
-
-    @property
-    def selected_first(self):
-        """Returns the first selected option
-
-        :return:
-        """
-
-        return self._selected_first()
-
-    def select(self, option):
-        """Select an option
-
-        :param option: Visible text, index or value
-        :return: True, if option is selected
-        :rtype: bool
-        """
-
-        if isinstance(option, str):
-
-            result = self._select_by_text(option=option)
-
-            if not result:
-                return self._select_by_value(option=option)
-
-            else:
-                return result
-
-        elif isinstance(option, int):
-            return self._select_by_index(option=option)
-
-        return False
-
-    def deselect(self, option):
-        """Deselect an option
-
-        :param option: Visible text, index or value
-        :return: True, if option is deselected
-        :rtype: bool
-        """
-
-        if isinstance(option, str):
-
-            result = self._deselect_by_text(option=option)
-
-            if not result:
-                return self._deselect_by_value(option=option)
-
-            else:
-                return result
-
-        elif isinstance(option, int):
-            return self._deselect_by_index(option=option)
-
-        return False
-
-    def deselect_all(self):
-        """Deselect all options
-
-        :return: True, if options are deselected
-        :rtype: bool
-        """
-
-        if self.exists():
-            return self._deselect_all()
+    pass
 
 
 class Table(Element):
@@ -1338,7 +1168,7 @@ class Table(Element):
         self._rows.select_by_value(value, selector)
 
 
-class Text(Element):
+class Text(Element, TextMixin):
     """
         Text object
         ~~~~~~~~~~~~~~~~
@@ -1379,11 +1209,7 @@ class Text(Element):
             print d
     """
 
-    def __str__(self):
-        return self._text()
-
-    def __unicode__(self):
-        return self._text()
+    pass
 
 
 # -------------------------------------------------- Complex Structures ---------------------------------------------- #
@@ -1579,7 +1405,7 @@ class DropdownMenu(Dropdown):
         :return:
         """
 
-        if self.dropdown_list.exists():
+        if self.container.exists():
 
             self.expand()
 
@@ -1596,7 +1422,7 @@ class DropdownMenu(Dropdown):
                 raise NoSuchElementException(error)
 
 
-class SearchBox(Search):
+class SearchBox(Search, DropdownMixin):
     """
         Search Box object
         ~~~~~~~~~~~~~~~~
@@ -1663,7 +1489,7 @@ class SearchBox(Search):
             s.results[0]
     """
 
-    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, result_path=None, identifier=DEFAULT_IDENTIFIER):
         """
 
         :param WebDriver web_driver: Selenium webdriver
@@ -1673,25 +1499,14 @@ class SearchBox(Search):
 
         Search.__init__(self, web_driver, path, identifier=identifier)
 
-        self.results = List(web_driver, '{0}/following-sibling::*[self::ul or self::ol or self::div]'.format(path))
+        if isinstance(result_path, str):
 
-    def expand(self):
-        """Expand result box
+            if len(result_path) > 0:
 
-        :return:
-        """
+                self.container = List(web_driver, result_path)
+                return
 
-        if self.results.angular_hidden() or self.results.is_displayed():
-            self._click()
-
-    def collapse(self):
-        """Close result box
-
-        :return:
-        """
-
-        if not self.results.angular_hidden() or not self.results.is_displayed():
-            self.blur()
+        self.container = List(web_driver, '{0}/following-sibling::*[self::ul or self::ol or self::div]'.format(path))
 
 
 class TabNavigation(Element):
