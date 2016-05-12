@@ -7,6 +7,7 @@
     :license: MIT, see LICENSE.txt for more details.
 """
 
+from core import encode_ascii
 import re
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -29,10 +30,11 @@ class Site(object):
     RE_URL = r'^(?:(?P<protocol>[a-zA-Z]+):\/\/)?(?P<base_url>[\w\d\.-]+\.[\w]{2,6})(?P<current_url>[\/\w\-\.\?]*)$'
 
     def __init__(self, web_driver):
-        """Instantiate Site
+        """Website element
 
         :param WebDriver web_driver: Selenium webdriver
         :return:
+        :raises TypeError: If web_driver is not a Selenium WebDriver
         """
 
         # Instantiate WebDriver
@@ -49,17 +51,23 @@ class Site(object):
        
         :return: Base URL string
         :rtype: str
-        :raises NotImplementedError: If element driver is not a WebDriver
         """
 
-        if isinstance(self.driver, WebDriver):
-            results = re.match(self.RE_URL, self.driver.current_url.encode('ascii', 'ignore'))
-
-        else:
-            raise NotImplementedError("WebDriver was not instantiated!")
+        results = re.match(self.RE_URL, self.url)
 
         try:
             return results.group("base_url")
 
         except IndexError:
             return ''
+
+    @property
+    @encode_ascii
+    def url(self):
+        """Current page URL
+
+        :return: Page URL
+        :rtype: str
+        """
+
+        return self.driver.current_url

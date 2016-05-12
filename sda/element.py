@@ -8,7 +8,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from core import DEFAULT_IDENTIFIER
+from core import DEFAULT_IDENTIFIER, encode_ascii
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select as SeleniumSelect
 from selenium.webdriver.remote.webelement import WebElement
@@ -39,7 +39,7 @@ class Element(object):
 
         :param WebDriver web_driver: Selenium webdriver
         :param str by: By selector
-        :param str value: selection value
+        :param str path: selection value
         :return:
         """
 
@@ -85,6 +85,7 @@ class Element(object):
 
         return False
 
+    @encode_ascii
     def __getattr__(self, attribute):
         """Returns the value of an attribute
 
@@ -95,19 +96,17 @@ class Element(object):
 
         if self.exists():
 
+            # Special cases
             if attribute == "cls":
                     attribute = "class"
 
             attribute = attribute.replace('_', '-')
 
-            try:
-                return self.element().get_attribute(attribute).encode('ascii', 'ignore')
-
-            except AttributeError:
-                pass
+            return self.element().get_attribute(attribute)
 
         return ''
 
+    @encode_ascii
     def __repr__(self):
         """Returns HTML representation of the element
 
@@ -584,7 +583,7 @@ class Element(object):
     def wait_until_disappears(self, timeout=30):
         """Wait until the element disappears
 
-        :param timeout: Wait timeout in seconds
+        :param int timeout: Wait timeout in seconds
         :return:
         """
 

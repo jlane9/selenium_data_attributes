@@ -9,7 +9,7 @@
 
 .. note::
     Some structures need specific keywords to find related elements. This means it is best practice to avoid using
-    these keywords in your general naming conventions.
+    these keywords in your general naming conventions. See core module for more details.
         * cancel - Modal, Form and DropdownForm all use this keyword to find its cancel button
         * clear - Search and SearchBox both use this keyword to find its clear field button
         * close - Modal uses this keyword to find the close modal button
@@ -256,6 +256,7 @@ class Form(Element):
         self._cancel = Button(web_driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier,
                                                                                  CANCEL_IDENTIFIER))
 
+    @encode_ascii
     def __getitem__(self, instance):
         """Get (value) for field instance
 
@@ -271,7 +272,7 @@ class Form(Element):
 
             # Get the first element that contains (instance) in the data-qa-id
             if len(elements) > 0:
-                return elements[0].get_attribute('value').encode('ascii', 'ignore')
+                return elements[0].get_attribute('value')
 
             else:
                 error = 'Form field {0} cannot be found.'.format(str(instance))
@@ -746,7 +747,7 @@ class List(Element):
         if self.exists():
 
             list_results = {}
-            results = self.driver.find_elements_by_xpath('{0}//*[@{1}]'.format(self.search_term[1]), self._identifier)
+            results = self.driver.find_elements_by_xpath('{0}//*[@{1}]'.format(self.search_term[1], self._identifier))
 
             # Build a dictionary with all result types tied to its index
             for result in results:
@@ -930,7 +931,7 @@ class Search(Element):
             s.results.search('Hello World')
     """
 
-    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, path, clear_path=None, identifier=DEFAULT_IDENTIFIER):
         """Search input element
 
         :param WebDriver web_driver: Selenium webdriver
@@ -940,9 +941,15 @@ class Search(Element):
 
         Element.__init__(self, web_driver, path, identifier=identifier)
 
-        self._clear = Button(web_driver, '{0}/following-sibling::*[contains(@{1}, "{2}")]'.format(path,
-                                                                                                  self._identifier,
-                                                                                                  CLEAR_IDENTIFIER))
+        if isinstance(clear_path, str):
+
+            if len(clear_path) > 0:
+
+                self._clear = Button(web_driver, '{0}'.format(clear_path))
+                return
+
+        self._clear = Button(web_driver, '{0}/following-sibling::*[contains(@{1}, '
+                                         '"{2}")]'.format(path, self._identifier, CLEAR_IDENTIFIER))
 
     def clear(self):
         """Clear search
@@ -1674,7 +1681,7 @@ class SearchBox(Search):
         :return:
         """
 
-        if self.results.angular_hidden():
+        if self.results.angular_hidden() or self.results.is_displayed():
             self._click()
 
     def collapse(self):
@@ -1683,7 +1690,7 @@ class SearchBox(Search):
         :return:
         """
 
-        if not self.results.angular_hidden():
+        if not self.results.angular_hidden() or not self.results.is_displayed():
             self.blur()
 
 

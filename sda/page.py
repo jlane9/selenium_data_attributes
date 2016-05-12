@@ -24,16 +24,17 @@ __all__ = ['Page']
 
 
 class Page(object):
-    """Abstract class for a whole page
+    """Abstract class for a web page
     """
 
     def __init__(self, web_driver, validation="", identifier=DEFAULT_IDENTIFIER):
-        """Instantiate Page
+        """Web page element
 
         :param WebDriver web_driver: Selenium webdriver
         :param str validation: regular expression to check URL
         :param str identifier: Tag identifier
         :return:
+        :raises TypeError: If web_driver is not a Selenium WebDriver
         """
 
         # Instantiate WebDriver
@@ -81,6 +82,7 @@ class Page(object):
         return True
 
     @property
+    @encode_ascii
     def title(self):
         """Return page title
         
@@ -88,9 +90,10 @@ class Page(object):
         :rtype: str
         """
         
-        return self.driver.title.encode('ascii', 'ignore')
+        return self.driver.title
 
     @property
+    @encode_ascii
     def url(self):
         """Current page URL
         
@@ -98,4 +101,4 @@ class Page(object):
         :rtype: str
         """
        
-        return self.driver.current_url.encode('ascii', 'ignore')
+        return self.driver.current_url
