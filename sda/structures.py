@@ -37,7 +37,7 @@ __all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'DropdownMenu', 'Form', 
            'InputText', 'Link', 'List', 'Modal', 'Search', 'SearchBox', 'Select', 'TabNavigation', 'Table', 'Text']
 
 
-# --------------------------------------------------- Simple Structures ---------------------------------------------- #
+# --------------------------------------------------- Base Elements -------------------------------------------------- #
 class Button(Element, ClickMixin, TextMixin):
     """
         Clickable object
@@ -121,6 +121,311 @@ class Div(Element):
     pass
 
 
+class Image(Element):
+    """
+        Image object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <img id="someClassId" class="someClass" />
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <img data-qa-id="some-identifier" id="someClassId" class="someClass" />
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            i = structures.Image(driver, "//img[@data-qa-id="some-identifier"]")
+
+            # Returns tag attribute 'src'
+            i.source()
+    """
+
+    def source(self):
+        return self.src
+
+
+class InputCheckbox(Element, SelectiveMixin):
+    """
+        Input Checkbox object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="checkbox" class="someClass">
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <input data-qa-id="some-identifier" id="someClassId" type="checkbox" class="someClass">
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            c = structures.InputCheckbox(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Example usage
+            c.select()
+    """
+
+    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
+
+        Element.__init__(self, web_driver, path, identifier=identifier)
+
+        if self.id:
+
+            self.label = Text(web_driver, '//label[@for="{0}"]'.format(self.id))
+            return
+
+        self.label = ''
+
+
+class InputRadio(InputCheckbox):
+    """
+        Input Radio object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="radio" class="someClass">
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <input data-qa-id="some-identifier" id="someClassId" type="radio" class="someClass">
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            r = structures.InputRadio(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Input Radio inherits from InputCheckbox
+            r.select()
+    """
+
+    pass
+
+
+class InputText(Element, InputMixin):
+    """
+        Input Text object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <input id="someClassId" type="text" class="someClass">
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <input data-qa-id="some-identifier" id="someClassId" type="text" class="someClass">
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            t = structures.InputText(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Example usage
+            t.input('Hello World')
+    """
+
+    pass
+
+
+class Link(Button):
+    """
+        Link object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <a id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <a data-qa-id="some-identifier" id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            l = structures.Link(driver, "//a[@data-qa-id="some-identifier"]")
+
+            # Inherits from Button
+            l.click()
+    """
+
+    pass
+
+
+class Select(Element, SelectMixin):
+    """
+        Select object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <select id="someClassId" class="someClass">
+                <option value="1">Value 1</option>
+                <option value="2">Value 2</option>
+                <option value="3">Value 3</option>
+                <option value="4">Value 4</option>
+            </select>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <select data-qa-id="some-identifier" id="someClassId" class="someClass">
+                <option value="1">Value 1</option>
+                <option value="2">Value 2</option>
+                <option value="3">Value 3</option>
+                <option value="4">Value 4</option>
+            </select>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            s = structures.Select(driver, "//input[@data-qa-id="some-identifier"]")
+
+            # Example usage. Returns ['Value 1', 'Value 2', 'Value 3', 'Value 4']
+            s.options()
+    """
+
+    pass
+
+
+class Text(Element, TextMixin):
+    """
+        Text object
+        ~~~~~~~~~~~~~~~~
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+            <p id="someClassId" class="someClass">
+                ...
+            </p>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+            <p data-qa-id="some-identifier" id="someClassId" class="someClass">
+                ...
+            </p>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            d = structures.Text(driver, "//p[@data-qa-id="some-identifier"]")
+
+            # Prints text inside text elements
+            print d
+    """
+
+    pass
+
+
+# --------------------------------------------------- Simple Structures ---------------------------------------------- #
 class Dropdown(Element, DropdownMixin):
     """Abstract class for dropdown elements
     """
@@ -344,216 +649,6 @@ class Form(Element):
 
         else:
             raise NoSuchElementException('Form cannot be found.')
-
-
-class Image(Element):
-    """
-        Image object
-        ~~~~~~~~~~~~~~~~
-
-        **Example Use:**
-
-
-        Let's take the following example:
-
-        .. code-block:: html
-            <img id="someClassId" class="someClass" />
-
-
-        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
-        "data-qa-id" with a unique value.
-
-        .. code-block:: html
-            <img data-qa-id="some-identifier" id="someClassId" class="someClass" />
-
-
-        An example on how to interact with the element:
-
-        .. code-block:: python
-
-            import selenium
-            from selenium_data_attributes import structures
-
-            driver = webdriver.FireFox()
-            driver.get('http://www.some-url.com')
-
-            i = structures.Image(driver, "//img[@data-qa-id="some-identifier"]")
-
-            # Returns tag attribute 'src'
-            i.source()
-    """
-
-    def source(self):
-        return self.src
-
-
-class InputCheckbox(Element, SelectiveMixin):
-    """
-        Input Checkbox object
-        ~~~~~~~~~~~~~~~~
-
-        **Example Use:**
-
-
-        Let's take the following example:
-
-        .. code-block:: html
-            <input id="someClassId" type="checkbox" class="someClass">
-
-
-        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
-        "data-qa-id" with a unique value.
-
-        .. code-block:: html
-            <input data-qa-id="some-identifier" id="someClassId" type="checkbox" class="someClass">
-
-
-        An example on how to interact with the element:
-
-        .. code-block:: python
-
-            import selenium
-            from selenium_data_attributes import structures
-
-            driver = webdriver.FireFox()
-            driver.get('http://www.some-url.com')
-
-            c = structures.InputCheckbox(driver, "//input[@data-qa-id="some-identifier"]")
-
-            # Example usage
-            c.select()
-    """
-
-    def __init__(self, web_driver, path, identifier=DEFAULT_IDENTIFIER):
-
-        Element.__init__(self, web_driver, path, identifier=identifier)
-
-        if self.id:
-
-            self.label = Text(web_driver, '//label[@for="{0}"]'.format(self.id))
-            return
-
-        self.label = ''
-
-
-class InputRadio(InputCheckbox):
-    """
-        Input Radio object
-        ~~~~~~~~~~~~~~~~
-
-        **Example Use:**
-
-
-        Let's take the following example:
-
-        .. code-block:: html
-            <input id="someClassId" type="radio" class="someClass">
-
-
-        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
-        "data-qa-id" with a unique value.
-
-        .. code-block:: html
-            <input data-qa-id="some-identifier" id="someClassId" type="radio" class="someClass">
-
-
-        An example on how to interact with the element:
-
-        .. code-block:: python
-
-            import selenium
-            from selenium_data_attributes import structures
-
-            driver = webdriver.FireFox()
-            driver.get('http://www.some-url.com')
-
-            r = structures.InputRadio(driver, "//input[@data-qa-id="some-identifier"]")
-
-            # Input Radio inherits from InputCheckbox
-            r.select()
-    """
-
-    pass
-
-
-class InputText(Element, InputMixin):
-    """
-        Input Text object
-        ~~~~~~~~~~~~~~~~
-
-        **Example Use:**
-
-
-        Let's take the following example:
-
-        .. code-block:: html
-            <input id="someClassId" type="text" class="someClass">
-
-
-        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
-        "data-qa-id" with a unique value.
-
-        .. code-block:: html
-            <input data-qa-id="some-identifier" id="someClassId" type="text" class="someClass">
-
-
-        An example on how to interact with the element:
-
-        .. code-block:: python
-
-            import selenium
-            from selenium_data_attributes import structures
-
-            driver = webdriver.FireFox()
-            driver.get('http://www.some-url.com')
-
-            t = structures.InputText(driver, "//input[@data-qa-id="some-identifier"]")
-
-            # Example usage
-            t.input('Hello World')
-    """
-
-    pass
-
-
-class Link(Button):
-    """
-        Link object
-        ~~~~~~~~~~~~~~~~
-
-        **Example Use:**
-
-
-        Let's take the following example:
-
-        .. code-block:: html
-            <a id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
-
-
-        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
-        "data-qa-id" with a unique value.
-
-        .. code-block:: html
-            <a data-qa-id="some-identifier" id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
-
-
-        An example on how to interact with the element:
-
-        .. code-block:: python
-
-            import selenium
-            from selenium_data_attributes import structures
-
-            driver = webdriver.FireFox()
-            driver.get('http://www.some-url.com')
-
-            l = structures.Link(driver, "//a[@data-qa-id="some-identifier"]")
-
-            # Inherits from Button
-            l.click()
-    """
-
-    pass
 
 
 class List(Element):
@@ -880,56 +975,6 @@ class Search(Element, InputMixin):
         self.input(str(criteria))
 
 
-class Select(Element, SelectMixin):
-    """
-        Select object
-        ~~~~~~~~~~~~~~~~
-
-        **Example Use:**
-
-
-        Let's take the following example:
-
-        .. code-block:: html
-            <select id="someClassId" class="someClass">
-                <option value="1">Value 1</option>
-                <option value="2">Value 2</option>
-                <option value="3">Value 3</option>
-                <option value="4">Value 4</option>
-            </select>
-
-
-        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
-        "data-qa-id" with a unique value.
-
-        .. code-block:: html
-            <select data-qa-id="some-identifier" id="someClassId" class="someClass">
-                <option value="1">Value 1</option>
-                <option value="2">Value 2</option>
-                <option value="3">Value 3</option>
-                <option value="4">Value 4</option>
-            </select>
-
-
-        An example on how to interact with the element:
-
-        .. code-block:: python
-
-            import selenium
-            from selenium_data_attributes import structures
-
-            driver = webdriver.FireFox()
-            driver.get('http://www.some-url.com')
-
-            s = structures.Select(driver, "//input[@data-qa-id="some-identifier"]")
-
-            # Example usage. Returns ['Value 1', 'Value 2', 'Value 3', 'Value 4']
-            s.options()
-    """
-
-    pass
-
-
 class Table(Element):
     """
         Table object
@@ -1166,50 +1211,6 @@ class Table(Element):
     def select_by_value(self, value, selector):
 
         self._rows.select_by_value(value, selector)
-
-
-class Text(Element, TextMixin):
-    """
-        Text object
-        ~~~~~~~~~~~~~~~~
-
-        **Example Use:**
-
-
-        Let's take the following example:
-
-        .. code-block:: html
-            <p id="someClassId" class="someClass">
-                ...
-            </p>
-
-
-        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
-        "data-qa-id" with a unique value.
-
-        .. code-block:: html
-            <p data-qa-id="some-identifier" id="someClassId" class="someClass">
-                ...
-            </p>
-
-
-        An example on how to interact with the element:
-
-        .. code-block:: python
-
-            import selenium
-            from selenium_data_attributes import structures
-
-            driver = webdriver.FireFox()
-            driver.get('http://www.some-url.com')
-
-            d = structures.Text(driver, "//p[@data-qa-id="some-identifier"]")
-
-            # Prints text inside text elements
-            print d
-    """
-
-    pass
 
 
 # -------------------------------------------------- Complex Structures ---------------------------------------------- #
