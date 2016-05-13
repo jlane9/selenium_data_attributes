@@ -38,9 +38,9 @@ def encode_ascii(clean=False):
     :param clean: True, to delete trailing spaces
     :return:
     """
-    def encode_ascii_decorator(func):
+    def encode_ascii_decorator(func, *args, **kwargs):
 
-        def func_wrapper(self, *args, **kwargs):
+        def func_wrapper(self):
 
             text = func(self, *args, **kwargs)
 
