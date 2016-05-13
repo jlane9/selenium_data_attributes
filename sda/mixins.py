@@ -37,19 +37,13 @@ class ElementMixin(object):
         pass
 
     # This function will be overridden by the base class this extends
-    @property
-    def driver(self):
-        return WebDriver()
+    def element(self):
+        if self.exists():
+            return WebElement(WebDriver(), 'html')
 
     # This function will be overridden by the base class this extends
-    @staticmethod
-    def element():
-        return WebElement(WebDriver(), 'html')
-
-    # This function will be overridden by the base class this extends
-    @staticmethod
-    def exists():
-        return
+    def exists(self):
+        pass
 
     def is_disabled(self):
         """Returns True, if the button is disabled
