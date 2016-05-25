@@ -81,7 +81,8 @@ class Page(object):
 
         return True
 
-    @encode_ascii
+    @property
+    @encode_ascii()
     def title(self):
         """Return page title
         
@@ -91,7 +92,8 @@ class Page(object):
         
         return self.driver.title
 
-    @encode_ascii
+    @property
+    @encode_ascii()
     def url(self):
         """Current page URL
         

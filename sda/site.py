@@ -61,6 +61,7 @@ class Site(object):
         except IndexError:
             return ''
 
+    @property
     @encode_ascii
     def url(self):
         """Current page URL

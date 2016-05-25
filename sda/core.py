@@ -38,11 +38,11 @@ def encode_ascii(clean=False):
     :param clean: True, to delete trailing spaces
     :return:
     """
-    def encode_ascii_decorator(func, *args, **kwargs):
+    def encode_ascii_decorator(func):
 
-        def func_wrapper(self):
+        def func_wrapper(*args, **kwargs):
 
-            text = func(self, *args, **kwargs)
+            text = func(*args, **kwargs)
 
             # Convert UNICODE to ASCII
             if isinstance(text, unicode) or isinstance(text, str):

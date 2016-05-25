@@ -83,6 +83,7 @@ class Element(object):
 
         return False
 
+    @encode_ascii()
     def __getattr__(self, attribute):
         """Returns the value of an attribute
 
@@ -99,10 +100,11 @@ class Element(object):
 
             attribute = attribute.replace('_', '-')
 
-            return self.element().get_attribute(attribute).encode('ascii', 'ignore')
+            return self.element().get_attribute(attribute)
 
         return ''
 
+    @encode_ascii()
     def __repr__(self):
         """Returns HTML representation of the element
 
@@ -111,7 +113,7 @@ class Element(object):
         """
 
         if self.exists():
-            return self.outerHTML.encode('ascii', 'ignore')
+            return self.outerHTML
 
         return ''
 
@@ -202,7 +204,8 @@ class Element(object):
             # Scroll to Element
             self.driver.execute_script("window.scrollTo(0, %i)" % (element.location['y'] - element.size['height']))
 
-    @encode_ascii
+    @property
+    @encode_ascii()
     def tag_name(self):
         """Returns element tag name
 
