@@ -205,7 +205,7 @@ class InputCheckbox(Element, SelectiveMixin):
 
         if self.id:
 
-            self.label = Text(web_driver, '//label[@for="{0}"]'.format(self.id))
+            self.label = Text(web_driver, '//label[@for="{0}"]'.format(str(self.id)))
             return
 
         self.label = ''
@@ -512,7 +512,6 @@ class Form(Element):
         self._cancel = Button(web_driver, '{0}//*[contains(@{1}, "{2}")]'.format(path, self._identifier,
                                                                                  CANCEL_IDENTIFIER))
 
-    @encode_ascii
     def __getitem__(self, instance):
         """Get (value) for field instance
 
@@ -528,7 +527,7 @@ class Form(Element):
 
             # Get the first element that contains (instance) in the data-qa-id
             if len(elements) > 0:
-                return elements[0].get_attribute('value')
+                return elements[0].get_attribute('value').encode('ascii', 'ignore')
 
             else:
                 error = 'Form field {0} cannot be found.'.format(str(instance))

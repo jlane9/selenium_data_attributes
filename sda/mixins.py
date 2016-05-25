@@ -28,6 +28,8 @@ __all__ = ['ClickMixin', 'DropdownMixin', 'InputMixin', 'SelectMixin', 'Selectiv
 
 
 class ElementMixin(object):
+    """General mixin for element
+    """
 
     def __getattr__(self, item):
         return item
@@ -60,6 +62,8 @@ class ElementMixin(object):
 
 
 class ClickMixin(ElementMixin):
+    """Mixin adds click and hover functions for element
+    """
 
     def click(self):
         """Click element
@@ -94,6 +98,8 @@ class ClickMixin(ElementMixin):
 
 
 class DropdownMixin(ClickMixin):
+    """Mixin adds collapse and expand functions for element
+    """
 
     container = None
 
@@ -122,6 +128,8 @@ class DropdownMixin(ClickMixin):
 
 
 class InputMixin(ElementMixin):
+    """Mixin adds input and value functions for element
+    """
 
     def __str__(self):
         return self.value()
@@ -152,7 +160,7 @@ class InputMixin(ElementMixin):
     def value(self):
         """Return value of input
 
-        :return:
+        :return: Input value
         :rtype: str
         """
 
@@ -163,6 +171,9 @@ class InputMixin(ElementMixin):
 
 
 class SelectMixin(ElementMixin):
+    """Mixin adds deselect_all, deselect_by_index, deselect_by_text, deselect_by_value, options, selected_first,
+    selected_options, select_by_index, select_by_text and select_by_value functions for element
+    """
 
     def deselect_all(self):
         """Deselect all selected options
@@ -300,7 +311,8 @@ class SelectMixin(ElementMixin):
     def selected_first(self):
         """Select first option
 
-        :return:
+        :return: First option element
+        :rtype: WebElement
         """
 
         if self.exists():
@@ -427,6 +439,8 @@ class SelectMixin(ElementMixin):
 
 
 class SelectiveMixin(ClickMixin):
+    """Mixin adds deselect, select and selected functions for element
+    """
 
     def deselect(self):
         """Deselect this element
@@ -460,6 +474,8 @@ class SelectiveMixin(ClickMixin):
 
 
 class TextMixin(ElementMixin):
+    """Mixin adds text and visible_text functions for element
+    """
 
     def __str__(self):
         return self.text()
