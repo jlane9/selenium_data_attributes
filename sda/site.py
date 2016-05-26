@@ -62,7 +62,7 @@ class Site(object):
             return ''
 
     @property
-    @encode_ascii
+    @encode_ascii()
     def url(self):
         """Current page URL
 

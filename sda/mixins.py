@@ -156,7 +156,7 @@ class InputMixin(ElementMixin):
 
         return False
 
-    @encode_ascii
+    @encode_ascii()
     def value(self):
         """Return value of input
 
