@@ -9,12 +9,13 @@
 """
 
 from core import DEFAULT_IDENTIFIER, encode_ascii
+from lxml import html
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException, TimeoutException
+from selenium.common.exceptions import InvalidSelectorException, TimeoutException
 
 
 __author__ = 'jlane'
@@ -73,13 +74,13 @@ class Element(object):
 
         if self.exists() and isinstance(attribute, str):
 
-            try:
+            source = self.outerHTML
+            tree = html.fromstring(source)
+            root = tree.xpath('.')
 
-                self.element().find_element_by_xpath('//self::*[@{0}]'.format(attribute))
-                return True
-
-            except NoSuchElementException:
-                pass
+            if len(root) > 0:
+                if 'required' in root[0].keys():
+                    return True
 
         return False
 
