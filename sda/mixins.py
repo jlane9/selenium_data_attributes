@@ -3,7 +3,6 @@
 .. automodule:: sda.mixins
     :platform: Unix, Windows
     :synopsis: This module implements reusable mixin classes for web elements.
-    :copyright: (c) 2016 FanThreeSixty
     :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE for more details.
 """
@@ -19,7 +18,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.6'
+__version__ = '0.5.7'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'

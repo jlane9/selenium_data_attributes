@@ -3,7 +3,6 @@
 .. automodule:: sda.structures
     :platform: Unix, Windows
     :synopsis: This module implements objects that provide easier ways to interact with common web elements.
-    :copyright: (c) 2016 FanThreeSixty
     :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE for more details.
 
@@ -28,7 +27,7 @@ from mixins import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.6'
+__version__ = '0.5.7'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
@@ -40,8 +39,9 @@ __all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'DropdownMenu', 'Form', 
 # --------------------------------------------------- Base Elements -------------------------------------------------- #
 class Button(Element, ClickMixin, TextMixin):
     """
+        ****************
         Clickable object
-        ----------------
+        ****************
 
         **Example Use:**
 
@@ -50,13 +50,16 @@ class Button(Element, ClickMixin, TextMixin):
 
         .. highlight:: html
 
-        <button id="someClassId" class="someClass" on-click="javascript.function" >Click Me</button>
+        ::
+            <button id="someClassId" class="someClass" on-click="javascript.function" >Click Me</button>
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <button data-qa-id="some-identifier" id="someClassId" class="someClass" on-click="javascript.function">
                 Click Me
@@ -84,8 +87,9 @@ class Button(Element, ClickMixin, TextMixin):
 
 class Div(Element):
     """
+        ****************
         Container object
-        ----------------
+        ****************
 
         **Example Use:**
 
@@ -93,6 +97,8 @@ class Div(Element):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <div id="someClassId" class="someClass">
                 ...
@@ -103,6 +109,8 @@ class Div(Element):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <div data-qa-id="some-identifier" id="someClassId" class="someClass">
                 ...
@@ -127,8 +135,9 @@ class Div(Element):
 
 class Image(Element):
     """
+        ************
         Image object
-        ------------
+        ************
 
         **Example Use:**
 
@@ -137,6 +146,8 @@ class Image(Element):
 
         .. highlight:: html
 
+        ::
+
             <img id="someClassId" class="someClass" />
 
 
@@ -144,6 +155,8 @@ class Image(Element):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <img data-qa-id="some-identifier" id="someClassId" class="someClass" />
 
@@ -176,8 +189,9 @@ class Image(Element):
 
 class InputCheckbox(Element, SelectiveMixin):
     """
+        *********************
         Input Checkbox object
-        ---------------------
+        *********************
 
         **Example Use:**
 
@@ -186,6 +200,8 @@ class InputCheckbox(Element, SelectiveMixin):
 
         .. highlight:: html
 
+        ::
+
             <input id="someClassId" type="checkbox" class="someClass">
 
 
@@ -193,6 +209,8 @@ class InputCheckbox(Element, SelectiveMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <input data-qa-id="some-identifier" id="someClassId" type="checkbox" class="someClass">
 
@@ -227,8 +245,9 @@ class InputCheckbox(Element, SelectiveMixin):
 
 class InputRadio(InputCheckbox, SelectiveMixin):
     """
+        ******************
         Input Radio object
-        ------------------
+        ******************
 
         **Example Use:**
 
@@ -237,6 +256,8 @@ class InputRadio(InputCheckbox, SelectiveMixin):
 
         .. highlight:: html
 
+        ::
+
             <input id="someClassId" type="radio" class="someClass">
 
 
@@ -244,6 +265,8 @@ class InputRadio(InputCheckbox, SelectiveMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <input data-qa-id="some-identifier" id="someClassId" type="radio" class="someClass">
 
@@ -269,8 +292,9 @@ class InputRadio(InputCheckbox, SelectiveMixin):
 
 class InputText(Element, InputMixin):
     """
+        *****************
         Input Text object
-        -----------------
+        *****************
 
         **Example Use:**
 
@@ -279,6 +303,8 @@ class InputText(Element, InputMixin):
 
         .. highlight:: html
 
+        ::
+
             <input id="someClassId" type="text" class="someClass">
 
 
@@ -286,6 +312,8 @@ class InputText(Element, InputMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <input data-qa-id="some-identifier" id="someClassId" type="text" class="someClass">
 
@@ -311,8 +339,9 @@ class InputText(Element, InputMixin):
 
 class Link(Button, ClickMixin, TextMixin):
     """
+        ***********
         Link object
-        -----------
+        ***********
 
         **Example Use:**
 
@@ -321,6 +350,8 @@ class Link(Button, ClickMixin, TextMixin):
 
         .. highlight:: html
 
+        ::
+
             <a id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
 
 
@@ -328,6 +359,8 @@ class Link(Button, ClickMixin, TextMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <a data-qa-id="some-identifier" id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
 
@@ -353,8 +386,9 @@ class Link(Button, ClickMixin, TextMixin):
 
 class Select(Element, SelectMixin):
     """
+        *************
         Select object
-        -------------
+        *************
 
         **Example Use:**
 
@@ -362,6 +396,8 @@ class Select(Element, SelectMixin):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <select id="someClassId" class="someClass">
                 <option value="1">Value 1</option>
@@ -375,6 +411,8 @@ class Select(Element, SelectMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <select data-qa-id="some-identifier" id="someClassId" class="someClass">
                 <option value="1">Value 1</option>
@@ -405,8 +443,9 @@ class Select(Element, SelectMixin):
 
 class Text(Element, TextMixin):
     """
+        ***********
         Text object
-        -----------
+        ***********
 
         **Example Use:**
 
@@ -414,6 +453,8 @@ class Text(Element, TextMixin):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <p id="someClassId" class="someClass">
                 ...
@@ -424,6 +465,8 @@ class Text(Element, TextMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <p data-qa-id="some-identifier" id="someClassId" class="someClass">
                 ...
@@ -476,8 +519,9 @@ class Dropdown(Element, DropdownMixin):
 
 class Form(Element):
     """
+        ***********
         Form object
-        -----------
+        ***********
 
         **Example Use:**
 
@@ -485,6 +529,8 @@ class Form(Element):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <form id="sampleForm">
                 <input id="inputField" class="someClass" type="text">
@@ -497,6 +543,8 @@ class Form(Element):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <form data-qa-id="sample-form" id="sampleForm">
                 <input data-qa-id="form-field-1" id="inputField" class="someClass" type="text">
@@ -679,8 +727,9 @@ class Form(Element):
 
 class List(Element):
     """
+        ***********
         List object
-        -----------
+        ***********
 
         **Example Use:**
 
@@ -688,6 +737,8 @@ class List(Element):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <ul id="someList" class="someClass">
                 <li>
@@ -707,6 +758,8 @@ class List(Element):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <ul data-qa-id="some-list" id="someList" class="someClass">
                 <li>
@@ -839,8 +892,9 @@ class List(Element):
 
 class Modal(Form):
     """
+        ************
         Modal object
-        ------------
+        ************
 
         **Example Use:**
 
@@ -848,6 +902,8 @@ class Modal(Form):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <div id="modalId" class="modalClass">
                 <div class="modal-content">
@@ -870,6 +926,8 @@ class Modal(Form):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <div data-qa-id="sample-modal" id="modalId" class="modalClass">
                 <div class="modal-content">
@@ -929,8 +987,9 @@ class Modal(Form):
 
 class Search(Element, InputMixin):
     """
+        *************
         Search object
-        -------------
+        *************
 
         **Example Use:**
 
@@ -938,6 +997,8 @@ class Search(Element, InputMixin):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <input id="someClassId" type="search" class="someClass">
             <span class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
@@ -948,6 +1009,8 @@ class Search(Element, InputMixin):
 
 
         .. highlight:: html
+
+        ::
 
             <input data-qa-id="search-identifier" id="someClassId" type="search" class="someClass">
             <span data-qa-id="search-clear" class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
@@ -1009,8 +1072,9 @@ class Search(Element, InputMixin):
 
 class Table(Element):
     """
+        ************
         Table object
-        ------------
+        ************
 
         **Example Use:**
 
@@ -1018,6 +1082,8 @@ class Table(Element):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <table id="sampleTable">
                 <thead>
@@ -1043,6 +1109,8 @@ class Table(Element):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <table data-qa-id="sample-table" id="sampleTable">
                 <thead>
@@ -1250,8 +1318,9 @@ class Table(Element):
 # -------------------------------------------------- Complex Structures ---------------------------------------------- #
 class DropdownForm(Dropdown, DropdownMixin):
     """
+        ********************
         Dropdown Form object
-        --------------------
+        ********************
 
         **Example Use:**
 
@@ -1259,6 +1328,8 @@ class DropdownForm(Dropdown, DropdownMixin):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <a id="dropdownOpen" class="someClass">Open Menu</a>
             <div>
@@ -1274,6 +1345,8 @@ class DropdownForm(Dropdown, DropdownMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <a data-qa-id="open-dropdown" id="dropdownOpen" class="someClass">Open Menu</a>
             <div>
@@ -1383,8 +1456,9 @@ class DropdownForm(Dropdown, DropdownMixin):
 
 class DropdownMenu(Dropdown, DropdownMixin):
     """
+        ********************
         Dropdown Menu object
-        --------------------
+        ********************
 
         **Example Use:**
 
@@ -1392,6 +1466,8 @@ class DropdownMenu(Dropdown, DropdownMixin):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <a id="someClassId" class="someClass">Open Menu</a>
             <ul>
@@ -1408,6 +1484,8 @@ class DropdownMenu(Dropdown, DropdownMixin):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <a data-qa-id="dropdown-button" id="someClassId" class="someClass">Open Menu</a>
             <ul>
@@ -1463,8 +1541,9 @@ class DropdownMenu(Dropdown, DropdownMixin):
 
 class SearchBox(Search, DropdownMixin):
     """
+        *****************
         Search Box object
-        -----------------
+        *****************
 
         **Example Use:**
 
@@ -1472,6 +1551,8 @@ class SearchBox(Search, DropdownMixin):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <input id="someClassId" type="search" class="someClass">
             <span class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
@@ -1495,6 +1576,8 @@ class SearchBox(Search, DropdownMixin):
 
 
         .. highlight:: html
+
+        ::
 
             <input data-qa-id="search-identifier" id="someClassId" type="search" class="someClass">
             <span data-qa-id="search-clear" class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
@@ -1552,8 +1635,9 @@ class SearchBox(Search, DropdownMixin):
 
 class TabNavigation(Element):
     """
+        *********************
         Tab-Navigation object
-        ---------------------
+        *********************
 
         **Example Use:**
 
@@ -1561,6 +1645,8 @@ class TabNavigation(Element):
         Let's take the following example:
 
         .. highlight:: html
+
+        ::
 
             <nav id="someClassId" class="someClass">
                 <ul>
@@ -1578,6 +1664,8 @@ class TabNavigation(Element):
         "data-qa-id" with a unique value.
 
         .. highlight:: html
+
+        ::
 
             <nav data-qa-id="nav-identifier" id="someClassId" class="someClass">
                 <ul>

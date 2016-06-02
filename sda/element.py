@@ -3,7 +3,6 @@
 .. automodule:: sda.element
     :platform: Unix, Windows
     :synopsis: This module implements the core object used to create selenium structures.
-    :copyright: (c) 2016 FanThreeSixty
     :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE for more details.
 """
@@ -21,7 +20,7 @@ from selenium.common.exceptions import InvalidSelectorException, TimeoutExceptio
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.6'
+__version__ = '0.5.7'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
