@@ -3,14 +3,13 @@
 .. automodule:: sda.core
     :platform: Unix, Windows
     :synopsis: This module stores common functionality throughout sda
-    :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE for more details.
 """
 
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.7'
+__version__ = '0.5.8'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'

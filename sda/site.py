@@ -2,7 +2,6 @@
 
 .. automodule:: sda.site
     :synopsis: This module implements an abstract object for the site as a whole.
-    :moduleauthor: John Lane <jlane@fanthreesixty.com>
     :license: MIT, see LICENSE.txt for more details.
 """
 
@@ -14,7 +13,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.7'
+__version__ = '0.5.8'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
