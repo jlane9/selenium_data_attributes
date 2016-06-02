@@ -271,7 +271,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   (master_doc, 'SeleniumDataAttributes', u'Selenium Data Attributes Documentation',
-   author, 'SeleniumDataAttributes', 'One line description of project.',
+   author, 'SeleniumDataAttributes', 'Automated testing framework that extends selenium.',
    'Miscellaneous'),
 ]
 
