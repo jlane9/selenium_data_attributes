@@ -1,8 +1,4 @@
 """Element
-
-.. automodule:: sda.element
-    :platform: Unix, Windows
-    :synopsis: This module implements the core object used to create selenium structures.
 """
 
 from core import DEFAULT_IDENTIFIER, encode_ascii
@@ -18,7 +14,7 @@ from selenium.common.exceptions import InvalidSelectorException, TimeoutExceptio
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.9'
+__version__ = '0.6.0'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'

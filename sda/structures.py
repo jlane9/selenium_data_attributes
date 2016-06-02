@@ -1,9 +1,5 @@
 """Structures
 
-.. automodule:: sda.structures
-    :platform: Unix, Windows
-    :synopsis: This module implements objects that provide easier ways to interact with common web elements.
-
 .. note::
     Some structures need specific keywords to find related elements. This means it is best practice to avoid using
     these keywords in your general naming conventions. See core module for more details.
@@ -25,7 +21,7 @@ from mixins import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.9'
+__version__ = '0.6.0'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'

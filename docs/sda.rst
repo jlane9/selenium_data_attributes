@@ -35,12 +35,3 @@ sda.structures module
     :members:
     :undoc-members:
     :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: sda
-    :members:
-    :undoc-members:
-    :show-inheritance:
