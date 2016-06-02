@@ -41,21 +41,23 @@ __all__ = ['Button', 'Div', 'Dropdown', 'DropdownForm', 'DropdownMenu', 'Form', 
 class Button(Element, ClickMixin, TextMixin):
     """
         Clickable object
-        ~~~~~~~~~~~~~~~~
+        ----------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
-            <button id="someClassId" class="someClass" on-click="javascript.function" >Click Me</button>
+        .. highlight:: html
+
+        <button id="someClassId" class="someClass" on-click="javascript.function" >Click Me</button>
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <button data-qa-id="some-identifier" id="someClassId" class="someClass" on-click="javascript.function">
                 Click Me
             </button>
@@ -83,14 +85,15 @@ class Button(Element, ClickMixin, TextMixin):
 class Div(Element):
     """
         Container object
-        ~~~~~~~~~~~~~~~~
+        ----------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <div id="someClassId" class="someClass">
                 ...
             </div>
@@ -99,7 +102,8 @@ class Div(Element):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <div data-qa-id="some-identifier" id="someClassId" class="someClass">
                 ...
             </div>
@@ -124,21 +128,23 @@ class Div(Element):
 class Image(Element):
     """
         Image object
-        ~~~~~~~~~~~~~~~~
+        ------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <img id="someClassId" class="someClass" />
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <img data-qa-id="some-identifier" id="someClassId" class="someClass" />
 
 
@@ -159,27 +165,35 @@ class Image(Element):
     """
 
     def source(self):
+        """Returns image source URL
+
+        :return: Image source URL
+        :rtype: str
+        """
+
         return self.src
 
 
 class InputCheckbox(Element, SelectiveMixin):
     """
         Input Checkbox object
-        ~~~~~~~~~~~~~~~~
+        ---------------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input id="someClassId" type="checkbox" class="someClass">
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input data-qa-id="some-identifier" id="someClassId" type="checkbox" class="someClass">
 
 
@@ -211,24 +225,26 @@ class InputCheckbox(Element, SelectiveMixin):
         self.label = ''
 
 
-class InputRadio(InputCheckbox):
+class InputRadio(InputCheckbox, SelectiveMixin):
     """
         Input Radio object
-        ~~~~~~~~~~~~~~~~
+        ------------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input id="someClassId" type="radio" class="someClass">
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input data-qa-id="some-identifier" id="someClassId" type="radio" class="someClass">
 
 
@@ -254,21 +270,23 @@ class InputRadio(InputCheckbox):
 class InputText(Element, InputMixin):
     """
         Input Text object
-        ~~~~~~~~~~~~~~~~
+        -----------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input id="someClassId" type="text" class="someClass">
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input data-qa-id="some-identifier" id="someClassId" type="text" class="someClass">
 
 
@@ -291,24 +309,26 @@ class InputText(Element, InputMixin):
     pass
 
 
-class Link(Button):
+class Link(Button, ClickMixin, TextMixin):
     """
         Link object
-        ~~~~~~~~~~~~~~~~
+        -----------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <a id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
 
 
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <a data-qa-id="some-identifier" id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
 
 
@@ -334,14 +354,15 @@ class Link(Button):
 class Select(Element, SelectMixin):
     """
         Select object
-        ~~~~~~~~~~~~~~~~
+        -------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <select id="someClassId" class="someClass">
                 <option value="1">Value 1</option>
                 <option value="2">Value 2</option>
@@ -353,7 +374,8 @@ class Select(Element, SelectMixin):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <select data-qa-id="some-identifier" id="someClassId" class="someClass">
                 <option value="1">Value 1</option>
                 <option value="2">Value 2</option>
@@ -384,14 +406,15 @@ class Select(Element, SelectMixin):
 class Text(Element, TextMixin):
     """
         Text object
-        ~~~~~~~~~~~~~~~~
+        -----------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <p id="someClassId" class="someClass">
                 ...
             </p>
@@ -400,7 +423,8 @@ class Text(Element, TextMixin):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <p data-qa-id="some-identifier" id="someClassId" class="someClass">
                 ...
             </p>
@@ -453,14 +477,15 @@ class Dropdown(Element, DropdownMixin):
 class Form(Element):
     """
         Form object
-        ~~~~~~~~~~~~~~~~
+        -----------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <form id="sampleForm">
                 <input id="inputField" class="someClass" type="text">
                 <button id="cancelButton" class="btn btn-primary">Cancel</button>
@@ -471,7 +496,8 @@ class Form(Element):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <form data-qa-id="sample-form" id="sampleForm">
                 <input data-qa-id="form-field-1" id="inputField" class="someClass" type="text">
                 <button data-qa-id="form-cancel" id="cancelButton" class="btn btn-primary">Cancel</button>
@@ -654,14 +680,15 @@ class Form(Element):
 class List(Element):
     """
         List object
-        ~~~~~~~~~~~~~~~~
+        -----------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <ul id="someList" class="someClass">
                 <li>
                     <p id="name-0">John</p>
@@ -679,7 +706,8 @@ class List(Element):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <ul data-qa-id="some-list" id="someList" class="someClass">
                 <li>
                     <p data-qa-id="list-name[0]" id="name-0">John</p>
@@ -812,14 +840,15 @@ class List(Element):
 class Modal(Form):
     """
         Modal object
-        ~~~~~~~~~~~~~~~~
+        ------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <div id="modalId" class="modalClass">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -840,7 +869,8 @@ class Modal(Form):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <div data-qa-id="sample-modal" id="modalId" class="modalClass">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -900,14 +930,15 @@ class Modal(Form):
 class Search(Element, InputMixin):
     """
         Search object
-        ~~~~~~~~~~~~~~~~
+        -------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input id="someClassId" type="search" class="someClass">
             <span class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
 
@@ -916,7 +947,8 @@ class Search(Element, InputMixin):
         "data-qa-id" with a unique value.
 
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input data-qa-id="search-identifier" id="someClassId" type="search" class="someClass">
             <span data-qa-id="search-clear" class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
 
@@ -978,14 +1010,15 @@ class Search(Element, InputMixin):
 class Table(Element):
     """
         Table object
-        ~~~~~~~~~~~~~~~~
+        ------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <table id="sampleTable">
                 <thead>
                     <tr>
@@ -1009,7 +1042,8 @@ class Table(Element):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <table data-qa-id="sample-table" id="sampleTable">
                 <thead>
                     <tr>
@@ -1214,17 +1248,18 @@ class Table(Element):
 
 
 # -------------------------------------------------- Complex Structures ---------------------------------------------- #
-class DropdownForm(Dropdown):
+class DropdownForm(Dropdown, DropdownMixin):
     """
         Dropdown Form object
-        ~~~~~~~~~~~~~~~~
+        --------------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <a id="dropdownOpen" class="someClass">Open Menu</a>
             <div>
                 <form id="sampleForm">
@@ -1238,7 +1273,8 @@ class DropdownForm(Dropdown):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <a data-qa-id="open-dropdown" id="dropdownOpen" class="someClass">Open Menu</a>
             <div>
                 <form data-qa-id="sample-form" id="sampleForm">
@@ -1345,17 +1381,18 @@ class DropdownForm(Dropdown):
         return self.form.field(instance)
 
 
-class DropdownMenu(Dropdown):
+class DropdownMenu(Dropdown, DropdownMixin):
     """
         Dropdown Menu object
-        ~~~~~~~~~~~~~~~~
+        --------------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <a id="someClassId" class="someClass">Open Menu</a>
             <ul>
                 <li>
@@ -1370,7 +1407,8 @@ class DropdownMenu(Dropdown):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <a data-qa-id="dropdown-button" id="someClassId" class="someClass">Open Menu</a>
             <ul>
                 <li>
@@ -1426,14 +1464,15 @@ class DropdownMenu(Dropdown):
 class SearchBox(Search, DropdownMixin):
     """
         Search Box object
-        ~~~~~~~~~~~~~~~~
+        -----------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input id="someClassId" type="search" class="someClass">
             <span class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
             <div id="resultContainer" class="containerClass">
@@ -1455,7 +1494,8 @@ class SearchBox(Search, DropdownMixin):
         "data-qa-id" with a unique value.
 
 
-        .. code-block:: html
+        .. highlight:: html
+
             <input data-qa-id="search-identifier" id="someClassId" type="search" class="someClass">
             <span data-qa-id="search-clear" class="closeButton" on-click="search.clear"><i class="closeIcon"></i></span>
             <div id="resultContainer" class="containerClass">
@@ -1513,14 +1553,15 @@ class SearchBox(Search, DropdownMixin):
 class TabNavigation(Element):
     """
         Tab-Navigation object
-        ~~~~~~~~~~~~~~~~
+        ---------------------
 
         **Example Use:**
 
 
         Let's take the following example:
 
-        .. code-block:: html
+        .. highlight:: html
+
             <nav id="someClassId" class="someClass">
                 <ul>
                     <li>
@@ -1536,7 +1577,8 @@ class TabNavigation(Element):
         If the user wants to make the code above recognizable to the testing framework, they would add the attribute
         "data-qa-id" with a unique value.
 
-        .. code-block:: html
+        .. highlight:: html
+
             <nav data-qa-id="nav-identifier" id="someClassId" class="someClass">
                 <ul>
                     <li>
