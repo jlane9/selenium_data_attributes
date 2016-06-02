@@ -55,11 +55,15 @@ class Site(object):
 
         results = re.match(self.RE_URL, self.url)
 
-        try:
-            return results.group("base_url")
+        if results:
 
-        except IndexError:
-            return ''
+            try:
+                return results.group("base_url")
+
+            except IndexError:
+                pass
+
+        return ''
 
     @property
     @encode_ascii()
