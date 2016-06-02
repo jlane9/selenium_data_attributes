@@ -3,7 +3,6 @@
 .. automodule:: sda.structures
     :platform: Unix, Windows
     :synopsis: This module implements objects that provide easier ways to interact with common web elements.
-    :license: MIT, see LICENSE for more details.
 
 .. note::
     Some structures need specific keywords to find related elements. This means it is best practice to avoid using
@@ -26,7 +25,7 @@ from mixins import *
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.5.8'
+__version__ = '0.5.9'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
@@ -463,6 +462,7 @@ class Form(Element):
         Let's take the following example:
 
         .. code-block:: html
+        
             <form id="sampleForm">
                 <input id="inputField" class="someClass" type="text">
                 <button id="cancelButton" class="btn btn-primary">Cancel</button>
