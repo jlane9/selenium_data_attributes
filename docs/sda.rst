@@ -4,13 +4,14 @@ sda package
 Submodules
 ----------
 
-sda.element module
+sda.core module
 ------------------
 
 .. automodule:: sda.element
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 sda.page module
 ---------------
@@ -24,6 +25,22 @@ sda.site module
 ---------------
 
 .. automodule:: sda.site
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sda.element module
+------------------
+
+.. automodule:: sda.element
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sda.mixins module
+------------------
+
+.. automodule:: sda.element
     :members:
     :undoc-members:
     :show-inheritance:
