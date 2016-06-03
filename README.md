@@ -48,5 +48,9 @@ Web Developer Guidelines
         1. **asc** or **desc** ties to the sort order icon
 
 
-Tester Guidelines
------------------
+
+
+Documentation
+-------------
+
+For more information go to http://jlane9.github.io/selenium_data_attributes/index.html
