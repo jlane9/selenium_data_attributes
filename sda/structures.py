@@ -1,13 +1,4 @@
 """Structures
-
-.. note::
-    Some structures need specific keywords to find related elements. This means it is best practice to avoid using
-    these keywords in your general naming conventions. See core module for more details.
-    * cancel - Modal, Form and DropdownForm all use this keyword to find its cancel button
-    * clear - Search and SearchBox both use this keyword to find its clear field button
-    * close - Modal uses this keyword to find the close modal button
-    * select-all - Table uses this to find a select-all checkbox in the header
-    * submit - Modal, Form and DropdownForm all use this keyword to find its submit button
 """
 
 from selenium.common.exceptions import NoSuchElementException
