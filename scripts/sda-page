@@ -1,0 +1,66 @@
+#!/usr/local/bin/python
+
+import os
+from optparse import OptionParser
+
+if __name__ == "__main__":
+
+    parser = OptionParser()
+    (options, args) = parser.parse_args()
+
+    if len(args) > 0:
+
+        for arg in args:
+
+            try:
+
+                # Create folder
+                os.mkdir(os.path.join(os.getcwd(), str(arg)))
+
+                # Create package file
+                with open(os.path.join(os.getcwd(), str(arg), '__init__.py'), 'w') as f:
+                    f.write('from page import *\n')
+
+                # Create fixtures file
+                with open(os.path.join(os.getcwd(), str(arg), 'fixtures.py'), 'w') as f:
+
+                    lines = ['from sda.fixtures import *\n', 'from sda.fixtures import *\n',
+                             'from sda.structures import *\n\n', '# Implement custom fixtures below\n']
+
+                    f.writelines(lines)
+
+                # Create locators file
+                with open(os.path.join(os.getcwd(), str(arg), 'locators.py'), 'w') as f:
+
+                    _class = '\n\nclass {0}PageLocators(Locators)\n\n'.format(str(arg).lower().title())
+
+                    lines = ['from sda.locators import Locators\n',
+                             'from selenium.webdriver.common.by import By\n',
+                             _class,
+                             '\t# --- Add your locators below ---\n\n',
+                             '\t# An example would be:\n',
+                             '\t# USERNAME = (By.ID, "id_username")\n\n',
+                             '\tpass\n']
+
+                    f.writelines(lines)
+
+                # Create page file
+                with open(os.path.join(os.getcwd(), str(arg), 'page.py'), 'w') as f:
+
+                    _class = '\n\nclass {0}Page(Page)\n\n'.format(str(arg).lower().title())
+
+                    lines = ['from sda.fixtures import *\n',
+                             'from sda.page import *\n',
+                             'from sda.structures import *\n',
+                             _class,
+                             '\tdef __init__(self, driver):\n\n',
+                             '\t# --- Add your page elements below ---\n\n',
+                             '\t# An example might be:\n',
+                             '\t# self.username = InputText(driver, By.ID, "id_username")\n\n'
+                             '\tpass\n']
+
+                    f.writelines(lines)
+
+            except OSError:
+                print "Unable to create '{0}'. Please make sure the " \
+                      "path is valid and does not already exist".format(os.path.join(os.getcwd(), str(arg)))

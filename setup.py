@@ -1,10 +1,11 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
     name='sda',
     version='0.6.0',
-    packages=['sda'],
+    packages=find_packages(),
+    scripts=['scripts/sda-page'],
     description='A wrapper for Selenium. This library uses custom data attributes to accelerate testing '
     'through the Selenium framework',
     author='John Lane',
@@ -12,7 +13,7 @@ setup(
     url='https://github.com/jlane9/selenium-data-attributes',
     download_url='https://github.com/jlane9/selenium-data-attributes/tarball/0.6.0',
     keywords='testing selenium qa web automation',
-    install_requires=['selenium>=2.48.0'],
+    install_requires=[],
     license='MIT',
     classifiers=['Development Status :: 3 - Alpha',
                  'Intended Audience :: Developers',
