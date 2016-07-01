@@ -1,8 +1,10 @@
 """Page
 """
 
-from core import *
+from element import *
+import inspect
 import re
+from shortcuts import encode_ascii
 from selenium.webdriver.remote.webdriver import WebDriver
 
 __author__ = 'jlane'
@@ -20,12 +22,11 @@ class Page(object):
     """Abstract class for a web page
     """
 
-    def __init__(self, web_driver, validation="", identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, validation="", **kwargs):
         """Web page element
 
         :param WebDriver web_driver: Selenium webdriver
         :param str validation: regular expression to check URL
-        :param str identifier: Tag identifier
         :return:
         :raises TypeError: If web_driver is not a Selenium WebDriver
         """
@@ -39,27 +40,16 @@ class Page(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate page-level URL validation
-        if isinstance(validation, str):
-            self._url_validation = validation
-
-        else:
-            self._url_validation = ""
-
-        # Instantiate identifier
-        if isinstance(identifier, str):
-            self._identifier = identifier
-
-        else:
-            self._identifier = DEFAULT_IDENTIFIER
+        self._url_validation = validation if isinstance(validation, str) else ""
 
     def elements(self):
         """Returns all testable elements on a page
         
-        :return: List of WebElements
-        :rtype: list
+        :return: Dictionary of WebElements
+        :rtype: dict
         """
 
-        return self.driver.find_elements_by_xpath('//*[@{0}]'.format(self._identifier))
+        return dict(inspect.getmembers(self, self.is_element))
 
     def in_view(self):
         """Returns True if the driver is currently within the scope of this page
@@ -68,11 +58,18 @@ class Page(object):
         :rtype: bool
         """
 
-        if self._url_validation != "":
-            if len(re.findall(self._url_validation, self.url)) == 0:
-                return False
+        return len(re.findall(self._url_validation, self.url)) == 0 if self._url_validation != "" else False
 
-        return True
+    @staticmethod
+    def is_element(attrib=None):
+        """Returns True if the class attribute is a valid locator
+
+        :param attrib: Class attribute
+        :return: True, if the class attribute is a valid locator
+        :rtype: bool
+        """
+
+        return not(inspect.isroutine(attrib)) and isinstance(attrib, Element)
 
     @property
     @encode_ascii()

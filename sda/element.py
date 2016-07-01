@@ -1,7 +1,7 @@
 """Element
 """
 
-from core import DEFAULT_IDENTIFIER, encode_ascii
+
 from lxml import html
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -9,6 +9,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import InvalidSelectorException, TimeoutException
+from shortcuts import encode_ascii
 
 
 __author__ = 'jlane'
@@ -23,10 +24,85 @@ __all__ = ['Element']
 
 
 class Element(object):
-    """Abstract web structure class
+    """The Element implementation
+
+    An abstract class for interacting with web elements. Example use below:
+
+    Example file structure:
+
+    my_project
+        - __init__.py
+        - main.py
+        - my_web_page
+            - __init__.py
+            - fixtures.py
+            - locators.py
+            - page.py
+
+
+    The following example demonstrates a user creating a custom fixture (SomeElement) for an element on their web page,
+    using a locator class to store the selenium selector and implement a web page view to interact with that web page
+    and its elements:
+
+    fixtures.py
+
+    .. code-block:: python
+
+        from selenium_data_attributes.element import Element
+        from selenium_data_attributes.mixins import ClickMixin
+
+        class SomeElement(Element, ClickMixin):
+
+            pass
+
+
+    locators.py
+
+    .. code-block:: python
+
+        from selenium_data_attributes.locators import Locators
+        from selenium.webdriver.common.by import By
+
+        class MyWebLocators(Locators):
+
+            EXAMPLE_BUTTON = (By.XPATH, '//some//path[@id="id_example"])
+
+
+    page.py
+
+    .. code-block:: python
+
+        from selenium_data_attributes.page import Page
+
+        from my_project.my_web_page.fixtures import SomeElement
+        from my_project.my_web_page.locators import MyWebLocators
+
+        class MyWebPage(Page):
+
+            def __init__(self, web_driver):
+
+                self.driver = web_driver
+
+                self.example_button = SomeElement(driver, *MyWebLocators.EXAMPLE_BUTTON)
+
+
+    main.py
+
+    .. code-block:: python
+
+        from my_project.my_web_page.page import MyWebPage
+        from selenium import webdriver
+
+        # Instantiate webdriver
+        wd = webdriver.Firefox()
+
+        web_page = MyWebPage(wd)
+
+        web_page.example_button.click()
+
     """
 
-    def __init__(self, web_driver, path, by=By.XPATH, identifier=DEFAULT_IDENTIFIER):
+    def __init__(self, web_driver, by=By.XPATH, path=None, **kwargs):
         """Basic Selenium element
 
         :param WebDriver web_driver: Selenium webdriver
@@ -44,18 +120,11 @@ class Element(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate selector
-        if (By.is_valid(by) or by == 'element') and isinstance(path, str):
-            self.search_term = (by, path)
+        self.search_term = (by, path) if (By.is_valid(by) or by == 'element') and path else (By.XPATH, "")
 
-        else:
-            self.search_term = (By.XPATH, "")
-
-        # Instantiate identifier
-        if isinstance(identifier, str):
-            self._identifier = identifier
-
-        else:
-            self._identifier = DEFAULT_IDENTIFIER
+        # Add any additional attributes
+        for extra in kwargs.keys():
+            self.__setattr__(extra, kwargs[extra])
 
     def __contains__(self, attribute):
         """Returns True if element contains attribute
@@ -106,20 +175,15 @@ class Element(object):
         :rtype: str
         """
 
-        if self.exists():
-            return self.outerHTML
-
-        return ''
+        return self.outerHTML if self.exists() else ''
 
     def blur(self):
-        """Simulate moving the cursor out of focus of this element
+        """Simulate moving the cursor out of focus of this element.
 
         :return:
         """
 
-        if self.exists():
-            if self.is_displayed():
-                self.driver.execute_script('arguments[0].blur();', self.element())
+        return self.driver.execute_script('arguments[0].blur();', self.element()) if self.is_displayed() else None
 
     def element(self):
         """Return the selenium webelement object
@@ -155,12 +219,7 @@ class Element(object):
         :rtype: bool
         """
 
-        element = self.element()
-
-        if element:
-            return True
-
-        return False
+        return True if self.element() else False
 
     def focus(self):
         """Simulate element being in focus
@@ -168,9 +227,7 @@ class Element(object):
         :return: 
         """
 
-        if self.exists():
-            if self.is_displayed():
-                self.driver.execute_script('arguments[0].focus();', self.element())
+        return self.driver.execute_script('arguments[0].focus();', self.element()) if self.is_displayed() else None
 
     def is_displayed(self):
         """Return True, if the element is visible
@@ -179,10 +236,7 @@ class Element(object):
         :rtype: bool
         """
 
-        if self.exists():
-            return self.element().is_displayed()
-
-        return False
+        return self.element().is_displayed() if self.exists() else False
 
     def scroll_to(self):
         """Scroll to the location of the element
@@ -207,10 +261,7 @@ class Element(object):
         :rtype: str
         """
 
-        if self.exists():
-            return self.element().tag_name
-
-        return ''
+        return self.element().tag_name if self.exists() else ''
 
     def wait_until_present(self, timeout=30):
         """Wait until the element is present
@@ -237,7 +288,7 @@ class Element(object):
 
         return False
 
-    def wait_until_disappears(self, timeout=30):
+    def wait_until_disappears(self, timeout=30, **kwargs):
         """Wait until the element disappears
 
         :param int timeout: Wait timeout in seconds

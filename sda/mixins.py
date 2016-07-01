@@ -1,7 +1,7 @@
 """Mixins
 """
 
-from core import encode_ascii
+from shortcuts import encode_ascii
 
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -33,8 +33,7 @@ class ElementMixin(object):
 
     # This function will be overridden by the base class this extends
     def element(self):
-        if self.exists():
-            return WebElement(WebDriver(), 'html')
+        return WebElement(WebDriver(), 'html') if self.exists() else None
 
     # This function will be overridden by the base class this extends
     def exists(self):
@@ -102,22 +101,19 @@ class DropdownMixin(ClickMixin):
         :return:
         """
 
-        if self.container.is_displayed():
-
-            if (self.tag_name == 'input' and self.__getattr__('type') == 'text') or self.tag_name == 'textarea':
-                return self.blur()
-
-            else:
-                return self.click()
+        if self.container:
+            if self.container.is_displayed():
+                return self.blur() if (self.tag_name == 'input' and self.__getattr__('type') == 'text') or \
+                                      self.tag_name == 'textarea' else self.click()
 
     def expand(self):
         """Expand dropdown
 
         :return:
         """
-
-        if not self.container.is_displayed():
-            return self.click()
+        if self.container:
+            if not self.container.is_displayed():
+                return self.click()
 
 
 class InputMixin(ElementMixin):
@@ -157,10 +153,7 @@ class InputMixin(ElementMixin):
         :rtype: str
         """
 
-        if self.exists():
-            return self.element().get_attribute('value')
-
-        return ''
+        return self.element().get_attribute('value') if self.exists() else ''
 
 
 class SelectMixin(ElementMixin):
@@ -441,8 +434,7 @@ class SelectiveMixin(ClickMixin):
         :return:
         """
 
-        if self.selected():
-            self.click()
+        return self.click() if self.selected() else None
 
     def select(self):
         """Select this element
@@ -450,8 +442,7 @@ class SelectiveMixin(ClickMixin):
         :return:
         """
 
-        if not self.selected():
-            self.click()
+        return self.click() if not self.selected() else None
 
     def selected(self):
         """Return True if element is selected
@@ -460,10 +451,7 @@ class SelectiveMixin(ClickMixin):
         :rtype: bool
         """
 
-        if self.exists():
-            return self.element().is_selected()
-
-        return False
+        return self.element().is_selected() if self.exists() else False
 
 
 class TextMixin(ElementMixin):
@@ -481,10 +469,7 @@ class TextMixin(ElementMixin):
         :rtype: str
         """
 
-        if self.exists():
-            return self.element().get_attribute('textContent')
-
-        return ''
+        return self.element().get_attribute('textContent') if self.exists() else ''
 
     @encode_ascii(clean=True)
     def visible_text(self):
@@ -494,7 +479,4 @@ class TextMixin(ElementMixin):
         :rtype: str
         """
 
-        if self.exists():
-            return self.element().text
-
-        return ''
+        return self.element().text if self.exists() else ''

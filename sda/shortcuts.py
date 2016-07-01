@@ -1,4 +1,4 @@
-"""Core
+"""Shortcuts
 """
 
 __author__ = 'jlane'
@@ -9,19 +9,7 @@ __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
 
-__all__ = ['ASC_IDENTIFIER', 'CANCEL_IDENTIFIER', 'CLEAR_IDENTIFIER', 'CLOSE_IDENTIFIER', 'DEFAULT_IDENTIFIER',
-           'DESC_IDENTIFIER', 'SELECT_ALL_IDENTIFIER', 'SUBMIT_IDENTIFIER', 'encode_ascii']
-
-# GLOBAL VARIABLES
-DEFAULT_IDENTIFIER = 'data-qa-id'
-
-ASC_IDENTIFIER = 'asc'
-CANCEL_IDENTIFIER = 'cancel'
-CLEAR_IDENTIFIER = 'clear'
-CLOSE_IDENTIFIER = 'close'
-DESC_IDENTIFIER = 'desc'
-SELECT_ALL_IDENTIFIER = 'select-all'
-SUBMIT_IDENTIFIER = 'submit'
+__all__ = ['encode_ascii']
 
 
 # Shortcuts
