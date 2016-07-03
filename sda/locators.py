@@ -2,7 +2,6 @@
 """
 
 import inspect
-from selenium.webdriver.common.by import By
 
 __all__ = ['is_iterable', 'Locators']
 
@@ -65,7 +64,8 @@ class Locators(object):
         :rtype: bool
         """
 
-        return True if By.is_valid(by) and path else False
+        return True if by in ('class name', 'css selector', 'id', 'link text',
+                              'name', 'partial link text', 'tag name', 'xpath') and path else False
 
     def is_locator(self, attrib=None):
         """Returns True if the class attribute is a valid locator

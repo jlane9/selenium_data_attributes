@@ -120,7 +120,8 @@ class Element(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate selector
-        self.search_term = (by, path) if (By.is_valid(by) or by == 'element') and path else (By.XPATH, "")
+        self.search_term = (by, path) if by in ('class name', 'css selector', 'element', 'id', 'link text', 'name',
+                                                'partial link text', 'tag name', 'xpath') and path else (By.XPATH, "")
 
         # Add any additional attributes
         for extra in kwargs.keys():
@@ -197,7 +198,8 @@ class Element(object):
             return self.search_term[1]
 
         # If the search term is a valid term
-        elif By.is_valid(self.search_term[0]):
+        elif self.search_term[0] in ('class name', 'css selector', 'id', 'link text',
+                                     'name', 'partial link text', 'tag name', 'xpath'):
 
             try:
 
