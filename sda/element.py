@@ -111,12 +111,9 @@ class Element(object):
         :return:
         """
 
-        # Instantiate WebDriver
-        if isinstance(web_driver, WebDriver):
-            self.driver = web_driver
+        self.driver = web_driver if isinstance(web_driver, WebDriver) else None
 
-        else:
-            self.driver = None
+        if not self.driver:
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate selector
@@ -142,8 +139,7 @@ class Element(object):
             root = tree.xpath('.')
 
             if len(root) > 0:
-                if 'required' in root[0].keys():
-                    return True
+                return True if 'required' in root[0].keys() else False
 
         return False
 
@@ -185,6 +181,19 @@ class Element(object):
         """
 
         return self.driver.execute_script('arguments[0].blur();', self.element()) if self.is_displayed() else None
+
+    @encode_ascii()
+    def css_property(self, prop):
+        """Return the value of a CSS property for the element
+
+        .. warning::
+            value_of_css_property does not work with Firefox
+
+        :param str prop: CSS Property
+        :return:
+        """
+
+        return self.element().value_of_css_property(prop) if self.exists() else None
 
     def element(self):
         """Return the selenium webelement object
@@ -269,14 +278,11 @@ class Element(object):
         """Wait until the element is present
 
         :param timeout: Wait timeout in seconds
-        :return:
+        :return: True, if the wait does not timeout
+        :rtype: bool
         """
 
-        if isinstance(timeout, int):
-            wait = WebDriverWait(self.driver, timeout)
-
-        else:
-            wait = WebDriverWait(self.driver, 30)
+        wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
 
         try:
 
@@ -290,18 +296,15 @@ class Element(object):
 
         return False
 
-    def wait_until_disappears(self, timeout=30, **kwargs):
+    def wait_until_disappears(self, timeout=30):
         """Wait until the element disappears
 
         :param int timeout: Wait timeout in seconds
-        :return:
+        :return: True, if the wait does not timeout
+        :rtype: bool
         """
 
-        if isinstance(timeout, int):
-            wait = WebDriverWait(self.driver, timeout)
-
-        else:
-            wait = WebDriverWait(self.driver, 30)
+        wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
 
         try:
 

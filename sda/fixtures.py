@@ -314,8 +314,7 @@ class List(Element):
             if isinstance(index, str):
                 index = int(index) if index.isdigit() else 0
 
-            if index in range(0, self.__len__()):
-                return self.items()[index]
+            return self.items()[index] if index in range(0, self.__len__()) else None
 
     def get_by_value(self, value, selector):
         """Select item value where values match
@@ -328,8 +327,7 @@ class List(Element):
 
         if isinstance(value, str) and isinstance(selector, str):
             for item in self.items():
-                if item.__getattr__(selector) == value:
-                    return item
+                return item if item.__getattr__(selector) == value else None
 
 
 class Search(Element, InputMixin):
