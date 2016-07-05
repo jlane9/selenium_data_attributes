@@ -21,7 +21,7 @@ __all__ = ['ClickMixin', 'DropdownMixin', 'InputMixin', 'SelectMixin', 'Selectiv
 
 
 class ElementMixin(object):
-    """General mixin for element
+    """The ElementMixin Implementation
     """
 
     def __getattr__(self, item):
@@ -29,20 +29,35 @@ class ElementMixin(object):
 
     # This function will be overridden by the base class this extends
     def blur(self):
+        """Simulate moving out of focus
+
+        :return:
+        """
+
         pass
 
     # This function will be overridden by the base class this extends
     def element(self):
+        """Returns the element
+
+        :return:
+        """
+
         return WebElement(WebDriver(), 'html') if self.exists() else None
 
     # This function will be overridden by the base class this extends
     def exists(self):
+        """Return True if the element exists
+
+        :return:
+        """
+
         pass
 
     def is_disabled(self):
-        """Returns True, if the button is disabled
+        """Returns True, if the element is disabled
 
-        :return: True, if the button is disabled
+        :return: True, if the element is disabled
         :rtype: bool
         """
 
@@ -50,11 +65,16 @@ class ElementMixin(object):
 
     # This function will be overridden by the base class this extends
     def scroll_to(self):
+        """Simulate scrolling to element
+
+        :return:
+        """
+
         pass
 
 
 class ClickMixin(ElementMixin):
-    """Mixin adds click and hover functions for element
+    """The ClickMixin Implementation
     """
 
     def click(self):
@@ -90,7 +110,7 @@ class ClickMixin(ElementMixin):
 
 
 class DropdownMixin(ClickMixin):
-    """Mixin adds collapse and expand functions for element
+    """The DropdownMixin implementation
     """
 
     container = None
@@ -112,12 +132,11 @@ class DropdownMixin(ClickMixin):
         :return:
         """
         if self.container:
-            if not self.container.is_displayed():
-                return self.click()
+            return self.click() if not self.container.is_displayed() else None
 
 
 class InputMixin(ElementMixin):
-    """Mixin adds input and value functions for element
+    """The InputMixin implementation
     """
 
     def __str__(self):
@@ -157,8 +176,7 @@ class InputMixin(ElementMixin):
 
 
 class SelectMixin(ElementMixin):
-    """Mixin adds deselect_all, deselect_by_index, deselect_by_text, deselect_by_value, options, selected_first,
-    selected_options, select_by_index, select_by_text and select_by_value functions for element
+    """The SelectMixin implementation
     """
 
     def deselect_all(self):
@@ -425,7 +443,7 @@ class SelectMixin(ElementMixin):
 
 
 class SelectiveMixin(ClickMixin):
-    """Mixin adds deselect, select and selected functions for element
+    """The SelectiveMixin implementation
     """
 
     def deselect(self):
@@ -455,7 +473,7 @@ class SelectiveMixin(ClickMixin):
 
 
 class TextMixin(ElementMixin):
-    """Mixin adds text and visible_text functions for element
+    """The TextMixin implementation
     """
 
     def __str__(self):

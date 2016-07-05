@@ -19,6 +19,7 @@ def encode_ascii(clean=False):
     :param clean: True, to delete trailing spaces
     :return:
     """
+
     def encode_ascii_decorator(func):
 
         def func_wrapper(*args, **kwargs):
@@ -27,11 +28,7 @@ def encode_ascii(clean=False):
 
             # Convert UNICODE to ASCII
             if isinstance(text, unicode) or isinstance(text, str):
-
-                if clean:
-                    return text.encode('ascii', 'ignore').strip()
-
-                return text.encode('ascii', 'ignore')
+                return text.encode('ascii', 'ignore').strip() if clean else text.encode('ascii', 'ignore')
 
             # Iterate list of UNICODE strings to ASCII
             elif isinstance(text, list) or isinstance(text, tuple):

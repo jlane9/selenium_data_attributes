@@ -6,9 +6,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   sda/core
    sda/element
+   sda/locators
    sda/mixins
    sda/page
+   sda/shortcuts
    sda/site
    sda/structures

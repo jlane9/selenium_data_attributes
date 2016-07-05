@@ -28,28 +28,29 @@ class Locators(object):
 
         .. code-block:: python
 
-        from selenium_data_attributes.locators import Locators
+            from selenium_data_attributes.locators import Locators
 
-        # Let's assume the user uses the Locators class to define some locators
-        # for the elements on their web page.
+            # Let's assume the user uses the Locators class to define some locators
+            # for the elements on their web page.
 
-        class SomeLocators(Locators):
+            class SomeLocators(Locators):
 
-            USER_NAME = (By.ID, 'username')
-            PASSWORD = (By.ID, 'password')
+                USER_NAME = (By.ID, 'username')
+                PASSWORD = (By.ID, 'password')
 
-        # If that user wanted to return all locators associated with this class
-        # i.e. "USER_NAME" and "PASSWORD" and return the values of both
-        # they'd use 'as_dict'
+            # If that user wanted to return all locators associated with this class
+            # i.e. "USER_NAME" and "PASSWORD" and return the values of both
+            # they'd use 'as_dict'
 
-        l = SomeLocators()
+            l = SomeLocators()
 
-        l.as_dict()
+            l.as_dict()
 
-        # Returns
-        # {'USER_NAME': (By.ID, 'username'), 'PASSWORD': (By.ID, 'password')}
+            # Returns
+            # {'USER_NAME': (By.ID, 'username'), 'PASSWORD': (By.ID, 'password')}
 
         :return:
+        :rtype: dict
         """
 
         return dict(inspect.getmembers(self, self.is_locator))

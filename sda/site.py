@@ -64,7 +64,7 @@ class Site(object):
 
     RE_URL = r'^(?:(?P<protocol>[a-zA-Z]+):\/\/)?(?P<domain>[\w\d\.-]+\.[\w]{2,6})(?P<path>[\/\w\-\.\?]*)$'
 
-    def __init__(self, web_driver, **kwargs):
+    def __init__(self, web_driver):
         """Website element
 
         :param WebDriver web_driver: Selenium webdriver
@@ -73,13 +73,11 @@ class Site(object):
         """
 
         # Instantiate WebDriver
-        if isinstance(web_driver, WebDriver):
-            self.driver = web_driver
+        self.driver = web_driver if isinstance(web_driver, WebDriver) else None
 
-        else:
-            self.driver = None
+        if not self.driver:
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
-    
+
     @property
     def domain(self):
         """Returns the domain for a website

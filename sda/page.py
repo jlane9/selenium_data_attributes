@@ -19,10 +19,10 @@ __all__ = ['Page']
 
 
 class Page(object):
-    """Abstract class for a web page
+    """The Page Implementation
     """
 
-    def __init__(self, web_driver, validation="", **kwargs):
+    def __init__(self, web_driver, validation=""):
         """Web page element
 
         :param WebDriver web_driver: Selenium webdriver
@@ -31,12 +31,9 @@ class Page(object):
         :raises TypeError: If web_driver is not a Selenium WebDriver
         """
 
-        # Instantiate WebDriver
-        if isinstance(web_driver, WebDriver):
-            self.driver = web_driver
+        self.driver = web_driver if isinstance(web_driver, WebDriver) else None
 
-        else:
-            self.driver = None
+        if not self.driver:
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate page-level URL validation

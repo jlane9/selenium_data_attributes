@@ -18,7 +18,7 @@ __all__ = ['Button', 'Div', 'Image', 'InputCheckbox', 'InputRadio', 'InputText',
 
 
 class Button(Element, ClickMixin, TextMixin):
-    """Clickable object
+    """The Button implementation
 
         **Example Use:**
 
@@ -62,7 +62,7 @@ class Button(Element, ClickMixin, TextMixin):
 
 
 class Div(Element):
-    """Container object
+    """The Div implementation
 
         **Example Use:**
 
@@ -106,7 +106,7 @@ class Div(Element):
 
 
 class Image(Element):
-    """Image object
+    """The Image implementation
 
         **Example Use:**
 
@@ -155,7 +155,7 @@ class Image(Element):
 
 
 class InputCheckbox(Element, SelectiveMixin):
-    """Input checkbox object
+    """The InputCheckbox implementation
 
         **Example Use:**
 
@@ -196,7 +196,8 @@ class InputCheckbox(Element, SelectiveMixin):
     def label(self):
         """Returns the label for the input item
 
-        :return:
+        :return: Returns Text object for label
+        :rtype: Text
         """
 
         if self.exists():
@@ -205,7 +206,7 @@ class InputCheckbox(Element, SelectiveMixin):
 
 
 class InputRadio(InputCheckbox, SelectiveMixin):
-    """Input radio object
+    """The InputRadio implementation
 
         **Example Use:**
 
@@ -246,7 +247,7 @@ class InputRadio(InputCheckbox, SelectiveMixin):
 
 
 class InputText(Element, InputMixin):
-    """Input text object
+    """The InputText implementation
 
         **Example Use:**
 
@@ -287,7 +288,8 @@ class InputText(Element, InputMixin):
     def label(self):
         """Returns the label for the input item
 
-        :return:
+        :return: Text object for label
+        :rtype: Text
         """
 
         if self.exists():
@@ -296,7 +298,7 @@ class InputText(Element, InputMixin):
 
 
 class Link(Button, ClickMixin, TextMixin):
-    """Link object
+    """The Link implementation
 
         **Example Use:**
 
@@ -338,7 +340,7 @@ class Link(Button, ClickMixin, TextMixin):
 
 
 class Select(Element, SelectMixin):
-    """Select object
+    """The Select implementation
 
         **Example Use:**
 
@@ -390,7 +392,7 @@ class Select(Element, SelectMixin):
 
 
 class Text(Element, TextMixin):
-    """Text object
+    """The Text implementation
 
         **Example Use:**
 

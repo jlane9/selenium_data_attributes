@@ -11,9 +11,9 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   getting-started
-   sda
-
+   1. Installation <installation>
+   2. Getting Started <getting-started>
+   3. Reference <sda>
 
 
 
