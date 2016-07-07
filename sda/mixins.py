@@ -151,7 +151,7 @@ class InputMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists() and isinstance(text, str):
+        if self.exists() and (isinstance(text, str) or isinstance(text, unicode)):
 
             element = self.element()
 

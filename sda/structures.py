@@ -246,7 +246,7 @@ class InputRadio(InputCheckbox, SelectiveMixin):
     pass
 
 
-class InputText(Element, InputMixin):
+class InputText(Element, InputMixin, ClickMixin):
     """The InputText implementation
 
         **Example Use:**
@@ -391,7 +391,7 @@ class Select(Element, SelectMixin):
     pass
 
 
-class Text(Element, TextMixin):
+class Text(Element, TextMixin, ClickMixin):
     """The Text implementation
 
         **Example Use:**
