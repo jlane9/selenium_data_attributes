@@ -10,7 +10,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = ''
+__version__ = '0.7.3'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Alpha'
 __docformat__ = 'reStructuredText'
