@@ -24,15 +24,15 @@ if __name__ == "__main__":
                 # Create fixtures file
                 with open(os.path.join(os.getcwd(), str(arg), 'fixtures.py'), 'w') as f:
 
-                    lines = ['from sda.fixtures import *\n', 'from sda.fixtures import *\n',
-                             'from sda.structures import *\n\n', '# Implement custom fixtures below\n']
+                    lines = ['# from sda.fixtures import *\n', '# from sda.fixtures import *\n',
+                             '# from sda.structures import *\n\n', '# Implement custom fixtures below\n']
 
                     f.writelines(lines)
 
                 # Create locators file
                 with open(os.path.join(os.getcwd(), str(arg), 'locators.py'), 'w') as f:
 
-                    _class = '\n\nclass {0}PageLocators(Locators)\n\n'.format(str(arg).lower().title())
+                    _class = '\n\nclass {0}PageLocators(Locators):\n\n'.format(str(arg).lower().title())
 
                     lines = ['from sda.locators import Locators\n',
                              '# from selenium.webdriver.common.by import By\n',
@@ -47,14 +47,15 @@ if __name__ == "__main__":
                 # Create page file
                 with open(os.path.join(os.getcwd(), str(arg), 'page.py'), 'w') as f:
 
-                    _class = '\n\nclass {0}Page(Page):\n\n'.format(str(arg).lower().title())
+                    page = str(arg).lower().title()
+                    _class = '\n\nclass {0}Page(Page):\n\n'.format(page)
 
                     lines = ['# from sda.fixtures import *\n',
                              'from sda.page import *\n',
                              '# from sda.structures import *\n',
                              _class,
                              '    def __init__(self, driver):\n\n',
-                             '        super(CommunicationsPage, self).__init__(web_driver=driver)',
+                             '        super({0}Page, self).__init__(web_driver=driver)\n'.format(page),
                              '        # --- Add your page elements below ---\n\n',
                              '        # An example might be:\n',
                              '        # self.username = InputText(driver, By.ID, "id_username")\n\n'
