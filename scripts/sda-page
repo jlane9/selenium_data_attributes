@@ -35,29 +35,30 @@ if __name__ == "__main__":
                     _class = '\n\nclass {0}PageLocators(Locators)\n\n'.format(str(arg).lower().title())
 
                     lines = ['from sda.locators import Locators\n',
-                             'from selenium.webdriver.common.by import By\n',
+                             '# from selenium.webdriver.common.by import By\n',
                              _class,
-                             '\t# --- Add your locators below ---\n\n',
-                             '\t# An example would be:\n',
-                             '\t# USERNAME = (By.ID, "id_username")\n\n',
-                             '\tpass\n']
+                             '    # --- Add your locators below ---\n\n',
+                             '    # An example would be:\n',
+                             '    # USERNAME = (By.ID, "id_username")\n\n',
+                             '    pass\n']
 
                     f.writelines(lines)
 
                 # Create page file
                 with open(os.path.join(os.getcwd(), str(arg), 'page.py'), 'w') as f:
 
-                    _class = '\n\nclass {0}Page(Page)\n\n'.format(str(arg).lower().title())
+                    _class = '\n\nclass {0}Page(Page):\n\n'.format(str(arg).lower().title())
 
-                    lines = ['from sda.fixtures import *\n',
+                    lines = ['# from sda.fixtures import *\n',
                              'from sda.page import *\n',
-                             'from sda.structures import *\n',
+                             '# from sda.structures import *\n',
                              _class,
-                             '\tdef __init__(self, driver):\n\n',
-                             '\t# --- Add your page elements below ---\n\n',
-                             '\t# An example might be:\n',
-                             '\t# self.username = InputText(driver, By.ID, "id_username")\n\n'
-                             '\tpass\n']
+                             '    def __init__(self, driver):\n\n',
+                             '        super(CommunicationsPage, self).__init__(web_driver=driver)',
+                             '        # --- Add your page elements below ---\n\n',
+                             '        # An example might be:\n',
+                             '        # self.username = InputText(driver, By.ID, "id_username")\n\n'
+                             '        pass\n']
 
                     f.writelines(lines)
 
