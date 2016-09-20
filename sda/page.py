@@ -1,4 +1,8 @@
-"""Page
+# -*- coding: utf-8 -*-
+"""sda.page
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
 
 from element import *

@@ -1,5 +1,10 @@
-"""Structures
+# -*- coding: utf-8 -*-
+"""sda.structures
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
+
 
 from selenium.webdriver.common.by import By
 

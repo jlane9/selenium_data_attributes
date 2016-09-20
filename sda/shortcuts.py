@@ -1,4 +1,8 @@
-"""Shortcuts
+# -*- coding: utf-8 -*-
+"""sda.shortcuts
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
 
 __author__ = 'jlane'

@@ -1,5 +1,10 @@
-"""Mixins
+# -*- coding: utf-8 -*-
+"""sda.mixins
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
+
 
 from shortcuts import encode_ascii
 
@@ -22,6 +27,9 @@ __all__ = ['ClickMixin', 'DropdownMixin', 'InputMixin', 'SelectMixin', 'Selectiv
 
 class ElementMixin(object):
     """The ElementMixin Implementation
+
+    .. note::
+        This is a dummy class.
     """
 
     def __getattr__(self, item):
@@ -34,7 +42,8 @@ class ElementMixin(object):
         :return:
         """
 
-        pass
+        if self:
+            pass
 
     # This function will be overridden by the base class this extends
     def element(self):
@@ -52,7 +61,8 @@ class ElementMixin(object):
         :return:
         """
 
-        pass
+        if self:
+            pass
 
     def is_disabled(self):
         """Returns True, if the element is disabled
@@ -70,7 +80,8 @@ class ElementMixin(object):
         :return:
         """
 
-        pass
+        if self:
+            pass
 
 
 class ClickMixin(ElementMixin):

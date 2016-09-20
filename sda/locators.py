@@ -1,7 +1,20 @@
-"""Locators
+# -*- coding: utf-8 -*-
+"""sda.locators
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
 
 import inspect
+
+
+__author__ = 'jlane'
+__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
+__license__ = "MIT"
+__version__ = '0.7.3'
+__contact__ = 'jlane@fanthreesixty.com'
+__status__ = 'Alpha'
+__docformat__ = 'reStructuredText'
 
 __all__ = ['is_iterable', 'Locators']
 

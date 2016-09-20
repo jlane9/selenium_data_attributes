@@ -1,5 +1,10 @@
-"""Site
+# -*- coding: utf-8 -*-
+"""sda.site
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
+
 
 from shortcuts import encode_ascii
 import re

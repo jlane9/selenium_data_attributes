@@ -1,4 +1,8 @@
-"""Element
+# -*- coding: utf-8 -*-
+"""sda.element
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
 
 
