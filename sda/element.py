@@ -259,13 +259,16 @@ class Element(object):
         :return:
         """
 
-        # TODO: Need more intelligent scroll.
         if self.exists():
 
             element = self.element()
 
+            script = "var vHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);" \
+                     "var eTop = arguments[0].getBoundingClientRect().top;" \
+                     "window.scrollBy(0, eTop-(vHeight/2));"
+
             # Scroll to Element
-            self.driver.execute_script("window.scrollTo(0, %i)" % (element.location['y'] - element.size['height']))
+            self.driver.execute_script(script % element)
 
     @property
     @encode_ascii()
