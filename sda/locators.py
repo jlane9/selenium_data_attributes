@@ -34,7 +34,8 @@ class Locators(object):
     """The Locators implementation
     """
 
-    def as_dict(self):
+    @classmethod
+    def as_dict(cls):
         """Return all locators
 
         Example:
@@ -66,7 +67,7 @@ class Locators(object):
         :rtype: dict
         """
 
-        return dict(inspect.getmembers(self, self.is_locator))
+        return dict(inspect.getmembers(cls, cls.is_locator))
 
     @staticmethod
     def is_valid(by='', path=None):
