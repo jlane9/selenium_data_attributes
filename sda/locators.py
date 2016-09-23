@@ -11,7 +11,7 @@ import inspect
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.7.6'
+__version__ = '0.7.5'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Beta'
 __docformat__ = 'reStructuredText'
