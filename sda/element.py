@@ -21,7 +21,7 @@ __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
 __version__ = '0.7.5'
 __contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Alpha'
+__status__ = 'Beta'
 __docformat__ = 'reStructuredText'
 
 __all__ = ['Element']
@@ -194,7 +194,8 @@ class Element(object):
             value_of_css_property does not work with Firefox
 
         :param str prop: CSS Property
-        :return:
+        :return: Value of a CSS property
+        :rtype: str
         """
 
         return self.element().value_of_css_property(prop) if self.exists() else None

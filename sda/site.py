@@ -16,7 +16,7 @@ __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
 __version__ = '0.7.5'
 __contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Alpha'
+__status__ = 'Beta'
 __docformat__ = 'reStructuredText'
 
 __all__ = ['Site']

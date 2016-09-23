@@ -15,7 +15,10 @@ setup(
     keywords='testing selenium qa web automation',
     install_requires=[],
     license='MIT',
-    classifiers=['Development Status :: 3 - Alpha',
+    classifiers=['Development Status :: 4 - Beta',
                  'Intended Audience :: Developers',
                  'Programming Language :: Python :: 2.6',
-                 'Programming Language :: Python :: 2.7'])
+                 'Programming Language :: Python :: 2.7',
+                 'License :: OSI Approved :: MIT License',
+                 'Topic :: Software Development :: Quality Assurance',
+                 'Topic :: Software Development :: Testing'])
