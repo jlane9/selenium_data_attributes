@@ -14,7 +14,7 @@ sda (Selenium Data Attributes) only supported python version in 2.7 and is avail
 1.2 PyPi
 ^^^^^^^^
 
-To install via PyPi make sure you first install `Pip <https://pip.pypa.io/en/stable/installing/>`_
+To install via PyPi make sure you first install `Pip <https://pip.pypa.io/en/stable/installing/>`_.
 Afterwards run the following command in your terminal::
 
     sudo pip install sda
@@ -55,3 +55,16 @@ To install sda using Setuptools:
 In case you are unable to install selenium from the dependencies, install using easy_install::
 
     sudo python easy_install selenium
+
+1.5 Updating
+^^^^^^^^^^^^
+
+To update SDA just run::
+
+    sudo pip install -U sda
+
+To be on the bleeding edge (not recommended) use::
+
+    sudo pip install git+git://github.com/jlane9/selenium_data_attributes.git@master#egg=sda
+
+

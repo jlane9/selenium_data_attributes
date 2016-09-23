@@ -16,9 +16,9 @@ that page. An example would look like:
 
         def __init__(self, driver):
 
-        Page.__init__(self, driver, '\/category\/sub-category\/page')  # Make sure that this is a regular expression
+            Page.__init__(self, driver, '\/category\/sub-category\/page')  # Make sure that this is a regular expression
 
-        self.foo = Button(driver, '//button[@id="buttonFoo"]')
+            self.foo = Button(driver, '//button[@id="buttonFoo"]')
 
     wd = webdriver.Firefox()
     h = HelloWorld(wd)
