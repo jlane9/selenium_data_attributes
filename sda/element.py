@@ -269,7 +269,7 @@ class Element(object):
                      "window.scrollBy(0, eTop-(vHeight/2));"
 
             # Scroll to Element
-            self.driver.execute_script(script % element)
+            self.driver.execute_script(script, element)
 
     @property
     @encode_ascii()
