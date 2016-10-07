@@ -8,6 +8,7 @@
 from element import *
 import inspect
 from mixins import *
+from shortcuts import encode_ascii
 from selenium.webdriver.common.by import By
 
 __author__ = 'jlane'
@@ -19,6 +20,34 @@ __status__ = 'Beta'
 __docformat__ = 'reStructuredText'
 
 __all__ = ['Dropdown', 'DropdownMenu', 'List', 'Search', 'SearchBox', 'TabNavigation']
+
+
+class SpectrumColorPicker(Element):
+
+    def input(self, color):
+        """Send text to a input field
+
+        :param str color: Color to send to the input field
+        :return: True, if text is assigned
+        :rtype: bool
+        """
+
+        if self.exists() and (isinstance(color, str) or isinstance(color, unicode)):
+
+            self.driver.execute_script('$(arguments[0]).spectrum("set", arguments[1]);', self.element(), color)
+            return True
+
+        return False
+
+    @encode_ascii()
+    def value(self):
+        """Return value of input
+
+        :return: Input value
+        :rtype: str
+        """
+
+        return self.element().get_attribute('value') if self.exists() else ''
 
 
 class Dropdown(Element, DropdownMixin):
