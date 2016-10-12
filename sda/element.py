@@ -122,7 +122,7 @@ class Element(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate selector
-        self.search_term = normalize(by, path)
+        self.search_term = normalize(by=by, path=path)
 
         # Add any additional attributes
         for extra in kwargs.keys():
@@ -327,7 +327,7 @@ class Element(object):
         return False
 
 
-def normalize(by, path, *args, **kwargs):
+def normalize(path, by=By.XPATH, *args, **kwargs):
     """
 
     :param str by: Selenium selector
