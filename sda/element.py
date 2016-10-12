@@ -7,6 +7,7 @@
 
 
 from lxml import html
+from lxml.cssselect import CSSSelector, SelectorError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -24,7 +25,7 @@ __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Beta'
 __docformat__ = 'reStructuredText'
 
-__all__ = ['Element']
+__all__ = ['Element', 'normalize', 'join']
 
 
 class Element(object):
@@ -121,8 +122,7 @@ class Element(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate selector
-        self.search_term = (by, path) if by in ('class name', 'css selector', 'element', 'id', 'link text', 'name',
-                                                'partial link text', 'tag name', 'xpath') and path else (By.XPATH, "")
+        self.search_term = normalize(by, path)
 
         # Add any additional attributes
         for extra in kwargs.keys():
@@ -136,10 +136,10 @@ class Element(object):
         :rtype: bool
         """
 
-        if self.exists() and isinstance(attribute, str):
+        if self.exists() and isinstance(attribute, basestring):
 
             source = self.outerHTML
-            tree = html.fromstring(source)
+            tree = html.fromstring(str(source))
             root = tree.xpath('.')
 
             if len(root) > 0:
@@ -156,13 +156,13 @@ class Element(object):
         :rtype: str
         """
 
-        if self.exists():
+        if self.exists() and isinstance(attribute, basestring):
 
             # Special cases
             if attribute == "cls":
-                    attribute = "class"
+                attribute = "class"
 
-            attribute = attribute.replace('_', '-')
+            attribute = str(attribute).replace('_', '-')
 
             return self.element().get_attribute(attribute)
 
@@ -198,7 +198,7 @@ class Element(object):
         :rtype: str
         """
 
-        return self.element().value_of_css_property(prop) if self.exists() else None
+        return self.element().value_of_css_property(str(prop)) if self.exists() else None
 
     def element(self):
         """Return the selenium webelement object
@@ -240,7 +240,7 @@ class Element(object):
     def focus(self):
         """Simulate element being in focus
 
-        :return: 
+        :return:
         """
 
         return self.driver.execute_script('arguments[0].focus();', self.element()) if self.is_displayed() else None
@@ -325,3 +325,64 @@ class Element(object):
             pass
 
         return False
+
+
+def normalize(by, path, *args, **kwargs):
+    """
+
+    :param str by: Selenium selector
+    :param str path: Selector value
+    :param args:
+    :param kwargs:
+    :return:
+    """
+
+    if args or kwargs:
+        pass
+
+    if by == 'class name':
+        return By.XPATH, 'descendant-or-self::[contains(@class, "%s")]' % str(path)
+
+    elif by == 'css selector':
+
+        try:
+            return CSSSelector(str(path)).path
+
+        except SelectorError:
+            pass
+
+    elif by == 'element':
+        if isinstance(path, Element):
+            return By.XPATH, path.search_term
+
+    elif by == 'id':
+        return By.XPATH, 'descendant-or-self::[@id="%s"]' % str(path)
+
+    elif by == 'link text':
+        return By.XPATH, '(//a|//input|//button)[normalize-space(text()) = "%s"]' % str(path)
+
+    elif by == 'name':
+        return By.XPATH, 'descendant-or-self::*[@name="%s"]' % str(path)
+
+    elif by == 'partial link text':
+        return By.XPATH, '(//a|//input|//button)[contains(normalize-space(text()), "%s")]' % str(path)
+
+    elif by == 'tag name':
+        return By.XPATH, 'descendant-or-self::%s' % str(path)
+
+    elif by == 'xpath':
+        return by, path
+
+    # All other cases return an empty statement
+    return By.XPATH, ''
+
+
+def join(*args):
+    """Join 'x' locator paths into a single path
+
+    :param args: Locator path tuples (by, path)
+    :return: Locator path
+    :rtype: str
+    """
+
+    return By.XPATH, '/'.join([normalize(*item)[1] for item in args if isinstance(item, (list, tuple))])
