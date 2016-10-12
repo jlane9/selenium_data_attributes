@@ -162,7 +162,7 @@ class InputMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists() and (isinstance(text, str) or isinstance(text, unicode)):
+        if self.exists() and isinstance(text, basestring):
 
             element = self.element()
 
@@ -229,7 +229,7 @@ class SelectMixin(ElementMixin):
 
             if element.tag_name == u'select':
 
-                if isinstance(option, int) or isinstance(option, str):
+                if isinstance(option, int) or isinstance(option, basestring):
 
                     # Convert string to integer
                     if isinstance(option, str):
@@ -259,7 +259,7 @@ class SelectMixin(ElementMixin):
 
             element = self.element()
 
-            if element.tag_name == u'select' and isinstance(option, str):
+            if element.tag_name == u'select' and isinstance(option, basestring):
 
                 select = SeleniumSelect(element)
 
@@ -285,7 +285,7 @@ class SelectMixin(ElementMixin):
 
             element = self.element()
 
-            if element.tag_name == u'select' and isinstance(option, str):
+            if element.tag_name == u'select' and isinstance(option, basestring):
 
                 select = SeleniumSelect(element)
 
@@ -381,7 +381,7 @@ class SelectMixin(ElementMixin):
 
             if element.tag_name == u'select':
 
-                if isinstance(option, int) or isinstance(option, str):
+                if isinstance(option, int) or isinstance(option, basestring):
 
                     # Convert string to int
                     if isinstance(option, str):
@@ -412,7 +412,7 @@ class SelectMixin(ElementMixin):
 
             element = self.element()
 
-            if element.tag_name == u'select' and isinstance(option, str):
+            if element.tag_name == u'select' and isinstance(option, basestring):
 
                 select = SeleniumSelect(element)
 
@@ -438,7 +438,7 @@ class SelectMixin(ElementMixin):
 
             element = self.element()
 
-            if element.tag_name == u'select' and isinstance(option, str):
+            if element.tag_name == u'select' and isinstance(option, basestring):
 
                 select = SeleniumSelect(element)
 
