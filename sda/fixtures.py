@@ -14,15 +14,17 @@ from selenium.webdriver.common.by import By
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
 __license__ = "MIT"
-__version__ = '0.7.8'
+__version__ = '0.8'
 __contact__ = 'jlane@fanthreesixty.com'
 __status__ = 'Beta'
 __docformat__ = 'reStructuredText'
 
-__all__ = ['Dropdown', 'DropdownMenu', 'List', 'Search', 'SearchBox', 'TabNavigation']
+__all__ = ['Dropdown', 'DropdownMenu', 'List', 'Search', 'SearchBox', 'SpectrumColorPicker', 'TabNavigation']
 
 
 class SpectrumColorPicker(Element):
+    """The SpectrumColorPicker implementation
+    """
 
     def input(self, color):
         """Send text to a input field
