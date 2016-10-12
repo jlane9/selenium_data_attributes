@@ -327,7 +327,7 @@ class Element(object):
         return False
 
 
-def normalize(path, by=By.XPATH, *args, **kwargs):
+def normalize(by, path, *args, **kwargs):
     """
 
     :param str by: Selenium selector
@@ -341,34 +341,36 @@ def normalize(path, by=By.XPATH, *args, **kwargs):
         pass
 
     if by == 'class name':
-        return By.XPATH, 'descendant-or-self::[contains(@class, "%s")]' % str(path)
+        return By.XPATH, '/descendant-or-self::[contains(@class, "%s")]' % str(path)
 
     elif by == 'css selector':
 
         try:
-            return CSSSelector(str(path)).path
+            return By.XPATH, '/%s' % CSSSelector(str(path)).path
 
         except SelectorError:
             pass
 
     elif by == 'element':
         if isinstance(path, Element):
-            return By.XPATH, path.search_term
+            return path.search_term
 
     elif by == 'id':
-        return By.XPATH, 'descendant-or-self::[@id="%s"]' % str(path)
+        return By.XPATH, '/descendant-or-self::[@id="%s"]' % str(path)
 
     elif by == 'link text':
-        return By.XPATH, '(//a|//input|//button)[normalize-space(text()) = "%s"]' % str(path)
+        return By.XPATH, '/descendant-or-self::*[contains("input a button", name()) ' \
+                         'and normalize-space(text()) = "%s"]' % str(path)
 
     elif by == 'name':
-        return By.XPATH, 'descendant-or-self::*[@name="%s"]' % str(path)
+        return By.XPATH, '/descendant-or-self::*[@name="%s"]' % str(path)
 
     elif by == 'partial link text':
-        return By.XPATH, '(//a|//input|//button)[contains(normalize-space(text()), "%s")]' % str(path)
+        return By.XPATH, '/descendant-or-self::*[contains("input a button", name()) ' \
+                         'and contains(normalize-space(text()), "%s")]' % str(path)
 
     elif by == 'tag name':
-        return By.XPATH, 'descendant-or-self::%s' % str(path)
+        return By.XPATH, '/descendant-or-self::%s' % str(path)
 
     elif by == 'xpath':
         return by, path
@@ -385,4 +387,4 @@ def join(*args):
     :rtype: str
     """
 
-    return By.XPATH, '/'.join([normalize(*item)[1] for item in args if isinstance(item, (list, tuple))])
+    return By.XPATH, ''.join([normalize(*item)[1] for item in args if isinstance(item, (list, tuple))])
