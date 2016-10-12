@@ -7,7 +7,7 @@
 
 
 from shortcuts import encode_ascii
-import re
+from urlparse import urlparse
 from selenium.webdriver.remote.webdriver import WebDriver
 
 
@@ -67,8 +67,6 @@ class Site(object):
 
     """
 
-    RE_URL = r'^(?:(?P<protocol>[a-zA-Z]+):\/\/)?(?P<domain>[\w\d\.-]+\.[\w]{2,6})(?P<path>[\/\w\-\.\?]*)$'
-
     def __init__(self, web_driver):
         """Website element
 
@@ -91,17 +89,7 @@ class Site(object):
         :rtype: str
         """
 
-        results = re.match(self.RE_URL, self.url)
-
-        if results:
-
-            try:
-                return results.group("domain")
-
-            except IndexError:
-                pass
-
-        return ''
+        return urlparse(self.url).netloc
 
     @property
     def path(self):
@@ -111,17 +99,7 @@ class Site(object):
         :rtype: str
         """
 
-        results = re.match(self.RE_URL, self.url)
-
-        if results:
-
-            try:
-                return results.group("path")
-
-            except IndexError:
-                pass
-
-        return ''
+        return urlparse(self.url).path
 
     @property
     @encode_ascii()

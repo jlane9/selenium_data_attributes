@@ -7,9 +7,9 @@
 
 from element import *
 import inspect
-import re
 from shortcuts import encode_ascii
 from selenium.webdriver.remote.webdriver import WebDriver
+from urlparse import urlparse
 
 __author__ = 'jlane'
 __copyright__ = 'Copyright (c) 2016 FanThreeSixty'
@@ -41,7 +41,7 @@ class Page(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate page-level URL validation
-        self._url_validation = validation if isinstance(validation, str) else ""
+        self._url_validation = str(validation) if isinstance(validation, basestring) else ""
 
     def elements(self):
         """Returns all testable elements on a page
@@ -59,7 +59,10 @@ class Page(object):
         :rtype: bool
         """
 
-        return len(re.findall(self._url_validation, self.url)) == 0 if self._url_validation != "" else False
+        page_url = ''.join([urlparse(self._url_validation).netloc, urlparse(self._url_validation).path])
+        current_url = ''.join([urlparse(self.url).netloc, urlparse(self.url).path])
+
+        return page_url == current_url if page_url != "" else True
 
     @staticmethod
     def is_element(attrib=None):
