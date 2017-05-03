@@ -103,6 +103,113 @@ class Div(Element):
     pass
 
 
+class Dropdown(Element, ClickMixin, TextMixin):
+    """The Dropdown implementation
+
+    .. note:: This structure is specifically for a Bootstrap dropdown
+
+    **Example Use:**
+
+    .. code-block:: html
+
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">HTML</a></li>
+                    ...
+                </ul>
+            </div>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value as well as "data-qa-model" with a type.
+
+        .. code-block:: html
+
+            <div class="dropdown" data-qa-id="some.identifier" data-qa-model="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">HTML</a></li>
+                    ...
+                </ul>
+            </div>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            from selenium.webdriver import Chrome
+            from sampyl import App
+
+            wd = webdriver.Chrome('/path/to/chromedriver')
+            app = App(wd, "http://someurl.com/path")
+
+            # Opens the dropdown
+            app.page.some.identifier.expand()
+
+    """
+
+    _toggle_xpath = (By.XPATH, '/descendant-or-self::*[(contains(@class, "dropdown-toggle") or '
+                               '@ng-mouseover or @ng-click)]')
+
+    @property
+    def _container(self):
+        """Dropdown container
+
+        :return:
+        """
+
+        xpath = '/following-sibling::*[(contains(@class, "dropdown-menu") or contains(@class, "tree") or @ng-show) ' \
+                'and (self::div or self::ul)]'
+        child = '/descendant-or-self::*[(contains(@class, "dropdown-menu") or contains(@class, "tree") or @ng-show) ' \
+                'and (self::div or self::ul)]'
+
+        xpath_term = join(self.search_term, self._toggle, (By.XPATH, xpath))
+        child_term = join(self.search_term, self._toggle, (By.XPATH, child))
+
+        return Div(self.driver, By.XPATH, '|'.join([xpath_term[1], child_term[1]]))
+
+    @property
+    def _toggle(self):
+        """Show/hide toggle button
+
+        :return:
+        """
+
+        return Button(self.driver, *join(self.search_term, self._toggle_xpath))
+
+    def expand(self, hover=False):
+        """Show dropdown
+
+        :return:
+        """
+
+        if not self._container.is_displayed():
+
+            if hover:
+                self._toggle.hover()
+            else:
+                self._toggle.click()
+
+            return self._container.wait_until_appears()
+
+    def collapse(self, hover=False):
+        """Hide dropdown
+
+        :return:
+        """
+
+        if self._container.is_displayed():
+
+            if hover:
+                self._toggle.hover()
+            else:
+                self._toggle.click()
+
+            return self._container.wait_until_disappears()
 class Image(Element):
     """The Image implementation
 
