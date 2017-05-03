@@ -86,20 +86,40 @@ class ClickMixin(ElementMixin):
 
         if self.exists():
 
+            element = self.element()
+
             try:
-                self.element().click()
 
-            # If the object is not within the view try to scroll to the element
+                if not element.is_displayed():
+                    self.scroll_to()
+
+                element.click()
+                return True
+
             except (ElementNotVisibleException, WebDriverException):
+                pass
 
-                # Scroll to Element
-                self.scroll_to()
+        return False
 
-                try:
-                    self.element().click()
+    def double_click(self):
+        """Double-click element
 
-                except (ElementNotVisibleException, WebDriverException):
-                    pass
+        :return:
+        """
+
+        if self.exists():
+
+            element = self.element()
+
+            try:
+
+                if not element.is_displayed():
+                    self.scroll_to()
+
+                return ActionChains(self.driver).double_click(element).perform()
+
+            except (ElementNotVisibleException, WebDriverException):
+                pass
 
     def hover(self):
         """Simulate hovering over element
@@ -107,33 +127,19 @@ class ClickMixin(ElementMixin):
         :return:
         """
 
-        return ActionChains(self.driver).move_to_element(self.element()).perform()
+        if self.exists():
 
+            element = self.element()
 
-class DropdownMixin(ClickMixin):
-    """The DropdownMixin implementation
-    """
+            try:
 
-    container = None
+                if not element.is_displayed():
+                    self.scroll_to()
 
-    def collapse(self):
-        """Close dropdown
+                return ActionChains(self.driver).move_to_element(element).perform()
 
-        :return:
-        """
-
-        if self.container:
-            if self.container.is_displayed():
-                return self.blur() if (self.tag_name == 'input' and self.__getattr__('type') == 'text') or \
-                                      self.tag_name == 'textarea' else self.click()
-
-    def expand(self):
-        """Expand dropdown
-
-        :return:
-        """
-        if self.container:
-            return self.click() if not self.container.is_displayed() else None
+            except (ElementNotVisibleException, WebDriverException):
+                pass
 
 
 class InputMixin(ElementMixin):
@@ -141,30 +147,31 @@ class InputMixin(ElementMixin):
     """
 
     def __str__(self):
-        return self.value()
+        return self.value
 
-    def input(self, text, clear=True):
-        """Send text to a input field
+    def input(self, *args, **kwargs):
+        """
 
-        :param str text: Text to send to the input field
-        :param bool clear: True if user wants to clear the field before assigning text
+        :param args: Text to send to the input field
+        :param kwargs: clear - True if user wants to clear the field before assigning text
         :return: True, if text is assigned
         :rtype: bool
         """
 
-        if self.exists() and isinstance(text, basestring):
+        if self.exists():
 
             element = self.element()
 
-            if clear:
+            if 'clear' in kwargs:
                 element.clear()
 
-            element.send_keys(text)
+            element.send_keys(*args)
 
             return True
 
         return False
 
+    @property
     @encode_ascii()
     def value(self):
         """Return value of input
@@ -175,10 +182,47 @@ class InputMixin(ElementMixin):
 
         return self.element().get_attribute('value') if self.exists() else ''
 
+    @value.setter
+    def value(self, value):
+
+        if self.exists():
+            self.driver.execute_script('arguments[0].value = arguments[1]', self.element(), str(value))
+
 
 class SelectMixin(ElementMixin):
     """The SelectMixin implementation
     """
+
+    @staticmethod
+    def _to_int(value):
+        """Coerce string to int
+
+        :param str value: String integer
+        :return:
+        :rtype: int
+        """
+
+        if isinstance(value, int) or isinstance(value, basestring):
+
+            if isinstance(value, basestring):
+                if value.isdigit():
+                    return int(value)
+
+            return value
+
+    def _get_selenium_select(self):
+        """Returns a SeleniumSelect representation of a select element
+
+        :return:
+        :rtype: SeleniumSelect
+        """
+
+        if self.exists():
+
+            element = self.element()
+
+            if element.tag_name == u'select':
+                return SeleniumSelect(element)
 
     def deselect_all(self):
         """Deselect all selected options
@@ -187,21 +231,12 @@ class SelectMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
 
-            element = self.element()
+        if select:
 
-            if element.tag_name == u'select':
-
-                select = SeleniumSelect(element)
-
-                try:
-
-                    select.deselect_all()
-                    return True
-
-                except NotImplementedError:
-                    pass
+            select.deselect_all()
+            return True
 
         return False
 
@@ -213,27 +248,18 @@ class SelectMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
+        option = self._to_int(option)
 
-            element = self.element()
+        if select and isinstance(option, int):
 
-            if element.tag_name == u'select':
+            try:
 
-                if isinstance(option, int) or isinstance(option, basestring):
+                select.deselect_by_index(option)
+                return True
 
-                    # Convert string to integer
-                    if isinstance(option, str):
-                        if option.isdigit():
-                            option = int(option)
-
-                    select = SeleniumSelect(element)
-
-                    try:
-                        select.deselect_by_index(option)
-                        return True
-
-                    except NoSuchElementException:
-                        pass
+            except NoSuchElementException:
+                pass
 
         return False
 
@@ -245,21 +271,17 @@ class SelectMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
 
-            element = self.element()
+        if select and isinstance(option, basestring):
 
-            if element.tag_name == u'select' and isinstance(option, basestring):
+            try:
 
-                select = SeleniumSelect(element)
+                select.deselect_by_visible_text(option)
+                return True
 
-                try:
-
-                    select.deselect_by_visible_text(option)
-                    return True
-
-                except NoSuchElementException:
-                    pass
+            except NoSuchElementException:
+                pass
 
         return False
 
@@ -271,21 +293,17 @@ class SelectMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
 
-            element = self.element()
+        if select and isinstance(option, basestring):
 
-            if element.tag_name == u'select' and isinstance(option, basestring):
+            try:
 
-                select = SeleniumSelect(element)
+                select.deselect_by_value(option)
+                return True
 
-                try:
-
-                    select.deselect_by_value(option)
-                    return True
-
-                except NoSuchElementException:
-                    pass
+            except NoSuchElementException:
+                pass
 
         return False
 
@@ -296,22 +314,15 @@ class SelectMixin(ElementMixin):
         :rtype: list
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
+        options = []
 
-            element = self.element()
+        if select:
 
-            if element.tag_name == u'select':
+            for option in select.options:
+                options.append(option.text.encode('ascii', 'ignore'))
 
-                select = SeleniumSelect(element)
-
-                options = []
-
-                for option in select.options:
-                    options.append(option.text.encode('ascii', 'ignore'))
-
-                return options
-
-        return []
+        return options
 
     def selected_first(self):
         """Select first option
@@ -320,17 +331,14 @@ class SelectMixin(ElementMixin):
         :rtype: WebElement
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
 
-            element = self.element()
+        if select:
 
-            if element.tag_name == u'select':
+            options = select.all_selected_options
 
-                select = SeleniumSelect(element)
-                options = select.all_selected_options
-
-                if len(options) > 0:
-                    return options[0]
+            if len(options) > 0:
+                return options[0]
 
         return None
 
@@ -341,52 +349,34 @@ class SelectMixin(ElementMixin):
         :rtype: list
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
+        options = []
 
-            element = self.element()
+        if select:
+            options = [option.text.encode('ascii', 'ignore') for option in select.all_selected_options]
 
-            if element.tag_name == u'select':
-
-                select = SeleniumSelect(element)
-                options = []
-
-                for option in select.all_selected_options:
-                    options.append(option.text.encode('ascii', 'ignore'))
-
-                return options
-
-        return []
+        return options
 
     def select_by_index(self, option):
         """Select option at index [i]
 
-        :param int option: Select index
+        :param str option: Select index
         :return: True, if the option is selected
         :rtype: bool
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
+        option = self._to_int(option)
 
-            element = self.element()
+        if select and isinstance(option, int):
 
-            if element.tag_name == u'select':
+            try:
 
-                if isinstance(option, int) or isinstance(option, basestring):
+                select.select_by_index(option)
+                return True
 
-                    # Convert string to int
-                    if isinstance(option, str):
-                        if option.isdigit():
-                            option = int(option)
-
-                    select = SeleniumSelect(element)
-
-                    try:
-
-                        select.select_by_index(option)
-                        return True
-
-                    except NoSuchElementException:
-                        pass
+            except NoSuchElementException:
+                pass
 
         return False
 
@@ -398,21 +388,17 @@ class SelectMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
 
-            element = self.element()
+        if select and isinstance(option, basestring):
 
-            if element.tag_name == u'select' and isinstance(option, basestring):
+            try:
 
-                select = SeleniumSelect(element)
+                select.select_by_visible_text(option)
+                return True
 
-                try:
-
-                    select.select_by_visible_text(option)
-                    return True
-
-                except NoSuchElementException:
-                    pass
+            except NoSuchElementException:
+                pass
 
         return False
 
@@ -424,21 +410,17 @@ class SelectMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists():
+        select = self._get_selenium_select()
 
-            element = self.element()
+        if select and isinstance(option, basestring):
 
-            if element.tag_name == u'select' and isinstance(option, basestring):
+            try:
 
-                select = SeleniumSelect(element)
+                select.select_by_value(option)
+                return True
 
-                try:
-
-                    select.select_by_value(option)
-                    return True
-
-                except NoSuchElementException:
-                    pass
+            except NoSuchElementException:
+                pass
 
         return False
 
