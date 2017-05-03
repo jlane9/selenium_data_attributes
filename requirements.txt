@@ -1,2 +1,4 @@
-selenium>=2.48.0
+cssselect==1.0.1
+Fabric==1.13.2
 lxml==3.5.0
+selenium==3.4.1
