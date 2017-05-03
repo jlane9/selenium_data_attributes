@@ -1,3 +1,8 @@
+"""fabfile
+
+.. codeauthor:: John Lane <jlane@fanthreesixty.com>
+"""
+
 from contextlib import contextmanager as _contextmanager
 import os
 from fabric.api import local, prefix, task
@@ -119,6 +124,11 @@ def install_virtualenv():
 
 @task()
 def publish(version=None):
+    """Publish project to PyPi
+
+    :param basestring version: Version number
+    :return:
+    """
 
     if isinstance(version, basestring):
 

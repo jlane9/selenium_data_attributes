@@ -202,7 +202,7 @@ class SelectMixin(ElementMixin):
         :rtype: int
         """
 
-        if isinstance(value, int) or isinstance(value, basestring):
+        if isinstance(value, (basestring, int)):
 
             if isinstance(value, basestring):
                 if value.isdigit():
@@ -337,7 +337,7 @@ class SelectMixin(ElementMixin):
 
             options = select.all_selected_options
 
-            if len(options) > 0:
+            if options:
                 return options[0]
 
         return None

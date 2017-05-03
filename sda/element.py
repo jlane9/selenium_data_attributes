@@ -79,13 +79,13 @@ class SeleniumObject(object):
         if not self.driver:
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
-        if 'name_attr' in kwargs.keys():
+        if 'name_attr' in kwargs:
             self._name_attr = kwargs['name_attr'] if isinstance(kwargs['name_attr'], basestring) else 'data-qa-id'
 
         else:
             self._name_attr = 'data-qa-id'
 
-        if 'type_attr' in kwargs.keys():
+        if 'type_attr' in kwargs:
             self._name_attr = kwargs['type_attr'] if isinstance(kwargs['type_attr'], basestring) else 'data-qa-model'
 
         else:
@@ -150,15 +150,15 @@ class SeleniumObject(object):
 
         return self._wait_until(ec.invisibility_of_element_located, _by, path, timeout)
 
-    def wait_implicitly(self, s):
+    def wait_implicitly(self, seconds):
         """Wait a set amount of time in seconds
 
-        :param int s: Seconds to wait
+        :param int seconds: Seconds to wait
         :return:
         """
 
-        if isinstance(s, int):
-            self.driver.implicitly_wait(s)
+        if isinstance(seconds, int):
+            self.driver.implicitly_wait(seconds)
             return True
 
         return False
@@ -261,7 +261,7 @@ class Element(object):
         self.search_term = normalize(_by=by, path=path)
 
         # Add any additional attributes
-        for extra in kwargs.keys():
+        for extra in kwargs:
             self.__setattr__(extra, kwargs[extra])
 
     def __contains__(self, attribute):
@@ -278,8 +278,8 @@ class Element(object):
             tree = html.fromstring(str(source))
             root = tree.xpath('.')
 
-            if len(root) > 0:
-                return True if 'required' in root[0].keys() else False
+            if root:
+                return True if 'required' in root[0] else False
 
         return False
 
@@ -359,7 +359,7 @@ class Element(object):
             except InvalidSelectorException:
                 element = []
 
-            if len(element) > 0:
+            if element:
                 return element[0]
 
         return None

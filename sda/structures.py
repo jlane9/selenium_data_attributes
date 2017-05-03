@@ -9,8 +9,8 @@ import inspect
 import sys
 import warnings
 from selenium.webdriver.common.by import By
-from sda.element import *
-from sda.mixins import *
+from sda.element import Element, join
+from sda.mixins import ClickMixin, InputMixin, SelectMixin, SelectiveMixin, TextMixin
 
 __all__ = ['Button', 'Div', 'Image', 'InputCheckbox', 'InputRadio', 'InputText', 'Link', 'Select', 'Text']
 
@@ -343,7 +343,7 @@ class InputCheckbox(Element, SelectiveMixin):
 
         if self.exists():
             return Text(self.driver, By.XPATH, '//label[@for="{0}"]'.format(str(self.id))).visible_text() \
-                if len(self.id) > 0 else ''
+                if self.id else ''
 
 
 class InputRadio(InputCheckbox, SelectiveMixin):
@@ -435,7 +435,7 @@ class InputText(Element, InputMixin, ClickMixin):
 
         if self.exists():
             return Text(self.driver, By.XPATH, '//label[@for="{0}"]'.format(str(self.id))).visible_text() \
-                if len(self.id) > 0 else ''
+                if self.id else ''
 
 
 class Link(Button, ClickMixin, TextMixin):
@@ -606,7 +606,7 @@ class MultiSelect(Element):
         :return:
         """
 
-        if isinstance(idx, int) or isinstance(idx, basestring):
+        if isinstance(idx, (basestring, int)):
 
             # Convert string to integer
             if isinstance(idx, str):

@@ -18,7 +18,7 @@ def is_iterable(obj):
     :rtype: bool
     """
 
-    return isinstance(obj, tuple) or isinstance(obj, list)
+    return isinstance(obj, (list, tuple))
 
 
 class Locators(object):
