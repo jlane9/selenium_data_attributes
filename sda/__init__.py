@@ -5,20 +5,17 @@
 
 """
 
-import element
-import fixtures
-import locators
-import mixins
-import page
-import site
-import structures
+from sda import element
+from sda import fixtures
+from sda import locators
+from sda import mixins
+from sda import page
+from sda import site
+from sda import structures
 
 __author__ = 'jlane'
-__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
+__email__ = 'jlane@fanthreesixty.com'
 __license__ = "MIT"
 __version__ = '0.8.2'
-__contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Beta'
-__docformat__ = 'reStructuredText'
 
 __all__ = ['element', 'fixtures', 'locators', 'page', 'shortcuts', 'site', 'structures']
