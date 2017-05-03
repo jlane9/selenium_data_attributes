@@ -62,4 +62,6 @@ target/
 
 .idea/*
 
-publish.sh
+# Virtual environment files
+venv/
+bin/
