@@ -943,3 +943,6 @@ class Text(Element, TextMixin, ClickMixin):
     """
 
     pass
+
+MEMBERS = inspect.getmembers(sys.modules[__name__], predicate=lambda o: inspect.isclass(o) and issubclass(o, Element))
+TYPES = {_type[0].lower(): _type[1] for _type in MEMBERS}
