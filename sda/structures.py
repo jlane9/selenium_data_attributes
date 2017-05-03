@@ -480,6 +480,313 @@ class Link(Button, ClickMixin, TextMixin):
     pass
 
 
+class MultiSelect(Element):
+    """The MultiSelect implementation
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+
+            <div id="someClassId" class="someClass" isteven-multi-select input-model="some.model"
+            output-model="format.model" helper-elements="filter all none">
+                ...
+            </div>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value as well as "data-qa-model" with a type.
+
+        .. code-block:: html
+
+            <div data-qa-id="some.identifier" data-qa-model="multiselect" id="someClassId" class="someClass"
+            isteven-multi-select input-model="some.model" output-model="format.model" helper-elements="filter all none">
+                ...
+            </div>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            from selenium.webdriver import Chrome
+            from sampyl import App
+
+            wd = webdriver.Chrome('/path/to/chromedriver')
+            app = App(wd, "http://someurl.com/path")
+
+            # Opens the iSteven dropdown
+            app.page.some.identifier.expand()
+
+    """
+
+    @property
+    def _container(self):
+        """iSteven dropdown container
+
+        :return:
+        """
+
+        xpath = '/descendant-or-self::div[contains(@class, "checkboxLayer")]'
+
+        return Div(self.driver, *join(self.search_term, (By.XPATH, xpath)))
+
+    @property
+    def _toggle(self):
+        """Show/hide button
+
+        :return:
+        """
+
+        xpath = '/descendant-or-self::button[contains(@ng-click, "toggle")]'
+
+        return Button(self.driver, *join(self.search_term, (By.XPATH, xpath)))
+
+    @property
+    def _select_all(self):
+        """Select all button
+
+        :return:
+        """
+
+        xpath = '/descendant-or-self::button[contains(@ng-click, "all")]'
+
+        return Button(self.driver, *join(self.search_term, (By.XPATH, xpath)))
+
+    @property
+    def _select_none(self):
+        """Select none button
+
+        :return:
+        """
+
+        xpath = '/descendant-or-self::button[contains(@ng-click, "none")]'
+
+        return Button(self.driver, *join(self.search_term, (By.XPATH, xpath)))
+
+    @property
+    def _reset(self):
+        """Reset button
+
+        :return:
+        """
+
+        xpath = '/descendant-or-self::button[contains(@ng-click, "reset")]'
+
+        return Button(self.driver, *join(self.search_term, (By.XPATH, xpath)))
+
+    @property
+    def _filter(self):
+        """Search field
+
+        :return:
+        """
+
+        xpath = '/descendant-or-self::input[contains(@ng-click, "filter")]'
+
+        return InputText(self.driver, *join(self.search_term, (By.XPATH, xpath)))
+
+    @property
+    def _clear(self):
+        """Clear search button
+
+        :return:
+        """
+
+        xpath = '/descendant-or-self::button[contains(@ng-click, "clear")]'
+
+        return Button(self.driver, *join(self.search_term, (By.XPATH, xpath)))
+
+    def _get_index(self, idx):
+        """Return item at index 'i'
+
+        :param str idx: Index
+        :return:
+        """
+
+        if isinstance(idx, int) or isinstance(idx, basestring):
+
+            # Convert string to integer
+            if isinstance(idx, str):
+
+                if idx.isdigit():
+                    idx = int(idx)
+
+                else:
+                    raise TypeError('Error: Index must be of type int')
+
+            if idx in range(0, len(self.options())):
+                return Button(self.driver, *join(self.search_term,
+                                                 (By.XPATH, '/descendant-or-self::div[contains(@ng-repeat, '
+                                                            '"filteredModel")][{}]'.format(idx))))
+
+    def _get_text(self, text):
+        """Return selection that contains text criteria
+
+        :param str text: Text criteria
+        :return:
+        """
+
+        if isinstance(text, basestring):
+
+            return Button(self.driver, *join(self.search_term,
+                                             (By.XPATH, '/descendant-or-self::label[contains(., "{}")]/ancestor::div'
+                                                        '[contains(@ng-repeat, "filteredModel")]'.format(text))))
+
+    def expand(self):
+        """Show iSteven dropdown
+
+        :return:
+        """
+
+        if not self._container.is_displayed():
+            self._toggle.click()
+            self._container.wait_until_appears()
+
+    def collapse(self):
+        """Hide iSteven dropdown
+
+        :return:
+        """
+
+        if self._container.is_displayed():
+            self._toggle.click()
+            self._container.wait_until_disappears()
+
+    def select_all(self):
+        """Select all possible selections
+
+        :return:
+        """
+
+        self.expand()
+        self._select_all.click()
+
+    def select_none(self):
+        """Deselect all selections
+
+        :return:
+        """
+
+        self.expand()
+        self._select_none.click()
+
+    def reset(self):
+        """Reset selection to default state
+
+        :return:
+        """
+
+        self.expand()
+        self._reset.click()
+
+    def search(self, value, clear=True):
+        """Filter selections to those matching search criteria
+
+        :param str value: Search criteria
+        :param bool clear: Clear previous search criteria
+        :return:
+        """
+
+        self.expand()
+        self._filter.input(value, clear)
+
+    def clear_search(self):
+        """Click clear search button
+
+        :return:
+        """
+
+        self.expand()
+        self._clear.click()
+
+    def select_by_index(self, index):
+        """Select option at index 'i'
+
+        :param str index: Index
+        :return:
+        """
+
+        self.expand()
+
+        option = self._get_index(index)
+
+        if option:
+            if 'selected' not in option.class_:
+                option.click()
+
+    def select_by_text(self, text):
+        """Select option that matches text criteria
+
+        :param str text: Text criteria
+        :return:
+        """
+
+        self.expand()
+
+        option = self._get_text(text)
+
+        if option.exists():
+            option.click()
+
+    def deselect_by_index(self, index):
+        """Deselect option at index 'i'
+
+        :param str index: Index
+        :return:
+        """
+
+        self.expand()
+
+        option = self._get_index(index)
+
+        if option:
+            if 'selected' in option.class_:
+                option.click()
+
+    def deselect_by_text(self, text):
+        """Deselect option that matches text criteria
+
+        :param str text: Text criteria
+        :return:
+        """
+
+        self.expand()
+
+        option = self._get_text(text)
+
+        if option.exists():
+            option.click()
+
+    def options(self):
+        """Return all available options
+
+        :return: List of options
+        :rtype: list
+        """
+
+        search_term = join(self.search_term, (By.XPATH, '/descendant-or-self::div[contains(@ng-repeat, '
+                                                        '"filteredModel")]//label'))
+
+        return [element.get_attribute('textContent').encode('ascii', 'ignore')
+                for element in self.driver.find_elements(*search_term)]
+
+    def selected_options(self):
+        """Return all selected options
+
+        :return: List of selected options
+        :rtype: list
+        """
+
+        search_term = join(self.search_term, (By.XPATH, '/descendant-or-self::div[contains(@ng-repeat, '
+                                                        '"filteredModel") and contains(@class, "selected")]//label'))
+
+        return [element.get_attribute('textContent').encode('ascii', 'ignore')
+                for element in self.driver.find_elements(*search_term)]
+
+
 class Select(Element, SelectMixin):
     """The Select implementation
 
