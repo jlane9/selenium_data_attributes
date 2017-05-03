@@ -33,7 +33,7 @@ class Button(Element, ClickMixin, TextMixin):
 
         .. code-block:: html
 
-            <button data-qa-id="some-identifier" id="someClassId" class="someClass" on-click="javascript.function">
+            <button data-qa-id="some.identifier" id="someClassId" class="someClass" on-click="javascript.function">
                 Click Me
             </button>
 
@@ -49,7 +49,7 @@ class Button(Element, ClickMixin, TextMixin):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//button[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//button[@data-qa-id="some.identifier"]")
             b = structures.Button(driver, *locator)
 
             # Example usage
@@ -79,7 +79,7 @@ class Div(Element):
 
         .. code-block:: html
 
-            <div data-qa-id="some-identifier" id="someClassId" class="someClass">
+            <div data-qa-id="some.identifier" id="someClassId" class="someClass">
                 ...
             </div>
 
@@ -95,7 +95,7 @@ class Div(Element):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//button[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//button[@data-qa-id="some.identifier"]")
             d = structures.Button(driver, *locator)
 
     """
@@ -141,14 +141,18 @@ class Dropdown(Element, ClickMixin, TextMixin):
 
         .. code-block:: python
 
-            from selenium.webdriver import Chrome
-            from sampyl import App
+            import selenium
+            from selenium.webdriver.common.by import By
+            from selenium_data_attributes import structures
 
-            wd = webdriver.Chrome('/path/to/chromedriver')
-            app = App(wd, "http://someurl.com/path")
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
 
-            # Opens the dropdown
-            app.page.some.identifier.expand()
+            locator = (By.XPATH, "//input[@data-qa-id="some.identifier"]")
+            d = structures.Dropdown(driver, *locator)
+
+            # Example usage
+            d.expand()
 
     """
 
@@ -212,10 +216,57 @@ class Dropdown(Element, ClickMixin, TextMixin):
             return self._container.wait_until_disappears()
 
 
-
 class Form(Element):
+    """The Form implementation
+
+        **Example Use:**
+
+
+        Let's take the following example:
+
+        .. code-block:: html
+
+            <form id="someForm">
+                <input id="someClassId" type="checkbox" class="someClass">
+                ...
+            </form>
+
+
+        If the user wants to make the code above recognizable to the testing framework, they would add the attribute
+        "data-qa-id" with a unique value.
+
+        .. code-block:: html
+
+            <form id="someForm" data->
+                <input id="someClassId" type="checkbox" class="someClass">
+                ...
+            </form>
+
+
+        An example on how to interact with the element:
+
+        .. code-block:: python
+
+            import selenium
+            from selenium.webdriver.common.by import By
+            from selenium_data_attributes import structures
+
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
+
+            locator = (By.XPATH, "//input[@data-qa-id="some-identifier"]")
+            form = structures.Form(driver, *locator)
+
+            # Example usage
+            field = form.get_field('someClassId')
+    """
 
     def _get_field(self, field_name):
+        """Returns field with id `field_name`
+
+        :param basestring field_name: Form field to get
+        :return:
+        """
 
         if not isinstance(field_name, basestring):
             raise TypeError
@@ -228,6 +279,11 @@ class Form(Element):
             return elements[0]
 
     def get_field(self, field_name):
+        """Returns field with id `field_name`
+
+        :param basestring field_name: Form field to get
+        :return:
+        """
 
         field = self._get_field(field_name)
 
@@ -264,7 +320,7 @@ class Image(Element):
 
         .. code-block:: html
 
-            <img data-qa-id="some-identifier" id="someClassId" class="someClass" />
+            <img data-qa-id="some.identifier" id="someClassId" class="someClass" />
 
 
         An example on how to interact with the element:
@@ -278,7 +334,7 @@ class Image(Element):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//img[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//img[@data-qa-id="some.identifier"]")
             i = structures.Image(driver, *locator)
 
             # Returns tag attribute 'src'
@@ -313,7 +369,7 @@ class InputCheckbox(Element, SelectiveMixin):
 
         .. code-block:: html
 
-            <input data-qa-id="some-identifier" id="someClassId" type="checkbox" class="someClass">
+            <input data-qa-id="some.identifier" id="someClassId" type="checkbox" class="someClass">
 
 
         An example on how to interact with the element:
@@ -327,7 +383,7 @@ class InputCheckbox(Element, SelectiveMixin):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//input[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//input[@data-qa-id="some.identifier"]")
             c = structures.InputCheckbox(driver, *locator)
 
             # Example usage
@@ -364,7 +420,7 @@ class InputRadio(InputCheckbox, SelectiveMixin):
 
         .. code-block:: html
 
-            <input data-qa-id="some-identifier" id="someClassId" type="radio" class="someClass">
+            <input data-qa-id="some.identifier" id="someClassId" type="radio" class="someClass">
 
 
         An example on how to interact with the element:
@@ -378,7 +434,7 @@ class InputRadio(InputCheckbox, SelectiveMixin):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            r = structures.InputRadio(driver, "//input[@data-qa-id="some-identifier"]")
+            r = structures.InputRadio(driver, "//input[@data-qa-id="some.identifier"]")
 
             # Input Radio inherits from InputCheckbox
             r.select()
@@ -405,7 +461,7 @@ class InputText(Element, InputMixin, ClickMixin):
 
         .. code-block:: html
 
-            <input data-qa-id="some-identifier" id="someClassId" type="text" class="someClass">
+            <input data-qa-id="some.identifier" id="someClassId" type="text" class="someClass">
 
 
         An example on how to interact with the element:
@@ -419,7 +475,7 @@ class InputText(Element, InputMixin, ClickMixin):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//input[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//input[@data-qa-id="some.identifier"]")
             t = structures.InputText(driver, *locator)
 
             # Example usage
@@ -456,7 +512,7 @@ class Link(Button, ClickMixin, TextMixin):
 
         .. code-block:: html
 
-            <a data-qa-id="some-identifier" id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
+            <a data-qa-id="some.identifier" id="someClassId" class="someClass" href="/some/link/path">Click Me</a>
 
 
         An example on how to interact with the element:
@@ -470,7 +526,7 @@ class Link(Button, ClickMixin, TextMixin):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//a[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//a[@data-qa-id="some.identifier"]")
             l = structures.Link(driver, *locator)
 
             # Inherits from Button
@@ -511,14 +567,18 @@ class MultiSelect(Element):
 
         .. code-block:: python
 
-            from selenium.webdriver import Chrome
-            from sampyl import App
+            import selenium
+            from selenium.webdriver.common.by import By
+            from selenium_data_attributes import structures
 
-            wd = webdriver.Chrome('/path/to/chromedriver')
-            app = App(wd, "http://someurl.com/path")
+            driver = webdriver.FireFox()
+            driver.get('http://www.some-url.com')
 
-            # Opens the iSteven dropdown
-            app.page.some.identifier.expand()
+            locator = (By.XPATH, "//a[@data-qa-id="some.identifier"]")
+            m = structures.MultiSelect(driver, *locator)
+
+            # Example usage
+            l.expand()
 
     """
 
@@ -810,7 +870,7 @@ class Select(Element, SelectMixin):
 
         .. code-block:: html
 
-            <select data-qa-id="some-identifier" id="someClassId" class="someClass">
+            <select data-qa-id="some.identifier" id="someClassId" class="someClass">
                 <option value="1">Value 1</option>
                 <option value="2">Value 2</option>
                 <option value="3">Value 3</option>
@@ -829,7 +889,7 @@ class Select(Element, SelectMixin):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//input[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//input[@data-qa-id="some.identifier"]")
             s = structures.Select(driver, *locator)
 
             # Example usage. Returns ['Value 1', 'Value 2', 'Value 3', 'Value 4']
@@ -859,7 +919,7 @@ class Text(Element, TextMixin, ClickMixin):
 
         .. code-block:: html
 
-            <p data-qa-id="some-identifier" id="someClassId" class="someClass">
+            <p data-qa-id="some.identifier" id="someClassId" class="someClass">
                 ...
             </p>
 
@@ -875,7 +935,7 @@ class Text(Element, TextMixin, ClickMixin):
             driver = webdriver.FireFox()
             driver.get('http://www.some-url.com')
 
-            locator = (By.XPATH, "//p[@data-qa-id="some-identifier"]")
+            locator = (By.XPATH, "//p[@data-qa-id="some.identifier"]")
             d = structures.Text(driver, *locator)
 
             # Prints text inside text elements
