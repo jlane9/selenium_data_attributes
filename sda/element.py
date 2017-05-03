@@ -5,7 +5,6 @@
 
 """
 
-
 from lxml import html
 from lxml.cssselect import CSSSelector, SelectorError
 from selenium.webdriver.common.by import By
@@ -14,18 +13,11 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import InvalidSelectorException, TimeoutException
-from shortcuts import encode_ascii
-
-
-__author__ = 'jlane'
-__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
-__license__ = "MIT"
-__version__ = '0.8.2'
-__contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Beta'
-__docformat__ = 'reStructuredText'
+from sda.shortcuts import encode_ascii
 
 __all__ = ['Element', 'normalize', 'join']
+
+
 def normalize(_by, path, *args, **kwargs):
     """Convert all paths into a xpath selector
 
@@ -74,6 +66,104 @@ def join(*args):
     """
 
     return By.XPATH, ''.join([normalize(*item)[1] for item in args if isinstance(item, (list, tuple))])
+
+
+class SeleniumObject(object):
+    """The SeleniumObject implementation
+    """
+
+    def __init__(self, web_driver, **kwargs):
+
+        self.driver = web_driver if isinstance(web_driver, WebDriver) else None
+
+        if not self.driver:
+            raise TypeError("'web_driver' MUST be a selenium WebDriver element")
+
+        if 'name_attr' in kwargs.keys():
+            self._name_attr = kwargs['name_attr'] if isinstance(kwargs['name_attr'], basestring) else 'data-qa-id'
+
+        else:
+            self._name_attr = 'data-qa-id'
+
+        if 'type_attr' in kwargs.keys():
+            self._name_attr = kwargs['type_attr'] if isinstance(kwargs['type_attr'], basestring) else 'data-qa-model'
+
+        else:
+            self._type_attr = 'data-qa-model'
+
+    def _wait_until(self, expected_condition, _by, path, timeout=30):
+        """Wait until expected condition is fulfilled
+
+        :param func expected_condition: Selenium expected condition
+        :param str _by: Selector method
+        :param str path: Selector path
+        :param timeout: Wait timeout in seconds
+        :return:
+        """
+
+        wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
+
+        try:
+
+            if _by != 'element':
+
+                wait.until(expected_condition((_by, path)))
+                return True
+
+        except TimeoutException:
+            pass
+
+        return False
+
+    def wait_until_present(self, _by, path, timeout=30):
+        """Wait until the element is available to the DOM
+
+        :param str _by: Selector method
+        :param str path: Selector path
+        :param timeout: Wait timeout in seconds
+        :return:
+        """
+
+        return self._wait_until(ec.presence_of_element_located, _by, path, timeout)
+
+    def wait_until_appears(self, _by, path, timeout=30):
+        """Wait until the element appears
+
+        :param str _by: Selector method
+        :param str path: Selector path
+        :param int timeout: Wait timeout in seconds
+        :return: True, if the wait does not timeout
+        :rtype: bool
+        """
+
+        return self._wait_until(ec.visibility_of_element_located, _by, path, timeout)
+
+    def wait_until_disappears(self, _by, path, timeout=30):
+        """Wait until the element disappears
+
+        :param str _by: Selector method
+        :param str path: Selector path
+        :param int timeout: Wait timeout in seconds
+        :return: True, if the wait does not timeout
+        :rtype: bool
+        """
+
+        return self._wait_until(ec.invisibility_of_element_located, _by, path, timeout)
+
+    def wait_implicitly(self, s):
+        """Wait a set amount of time in seconds
+
+        :param int s: Seconds to wait
+        :return:
+        """
+
+        if isinstance(s, int):
+            self.driver.implicitly_wait(s)
+            return True
+
+        return False
+
+
 class Element(object):
     """The Element implementation
 
@@ -168,7 +258,7 @@ class Element(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         # Instantiate selector
-        self.search_term = normalize(by=by, path=path)
+        self.search_term = normalize(_by=by, path=path)
 
         # Add any additional attributes
         for extra in kwargs.keys():
