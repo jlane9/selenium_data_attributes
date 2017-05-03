@@ -12,7 +12,8 @@ from selenium.webdriver.common.by import By
 from sda.element import Element, join
 from sda.mixins import ClickMixin, InputMixin, SelectMixin, SelectiveMixin, TextMixin
 
-__all__ = ['Button', 'Div', 'Image', 'InputCheckbox', 'InputRadio', 'InputText', 'Link', 'Select', 'Text']
+__all__ = ['Button', 'Div', 'Dropdown', 'Form', 'Image', 'InputCheckbox', 'InputRadio', 'InputText', 'Link',
+           'MultiSelect', 'Select', 'Text']
 
 
 class Button(Element, ClickMixin, TextMixin):
