@@ -5,19 +5,12 @@
 
 """
 
-
+import inspect
+import sys
+import warnings
 from selenium.webdriver.common.by import By
-
-from element import *
-from mixins import *
-
-__author__ = 'jlane'
-__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
-__license__ = "MIT"
-__version__ = '0.8.2'
-__contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Beta'
-__docformat__ = 'reStructuredText'
+from sda.element import *
+from sda.mixins import *
 
 __all__ = ['Button', 'Div', 'Image', 'InputCheckbox', 'InputRadio', 'InputText', 'Link', 'Select', 'Text']
 

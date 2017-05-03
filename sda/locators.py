@@ -7,15 +7,6 @@
 
 import inspect
 
-
-__author__ = 'jlane'
-__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
-__license__ = "MIT"
-__version__ = '0.8.2'
-__contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Beta'
-__docformat__ = 'reStructuredText'
-
 __all__ = ['is_iterable', 'Locators']
 
 
@@ -69,17 +60,17 @@ class Locators(object):
         return dict(inspect.getmembers(self, self.is_locator))
 
     @staticmethod
-    def is_valid(by='', path=None):
+    def is_valid(_by='', path=None):
         """Returns true if the selenium selector is valid
 
-        :param str by: Selenium By locator
+        :param str _by: Selenium By locator
         :param str path: Locator value
         :return: True, if the selenium selector is valid
         :rtype: bool
         """
 
-        return True if by in ('class name', 'css selector', 'id', 'link text',
-                              'name', 'partial link text', 'tag name', 'xpath') and path else False
+        return True if _by in ('class name', 'css selector', 'id', 'link text',
+                               'name', 'partial link text', 'tag name', 'xpath') and path else False
 
     def is_locator(self, attrib=None):
         """Returns True if the class attribute is a valid locator

@@ -8,14 +8,6 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 from sda.locators import Locators
 
-__author__ = 'jlane'
-__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
-__license__ = "MIT"
-__version__ = '0.8.2'
-__contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Beta'
-__docformat__ = 'reStructuredText'
-
 __all__ = ['encode_ascii']
 
 
@@ -27,8 +19,19 @@ def encode_ascii(clean=False):
     """
 
     def encode_ascii_decorator(func):
+        """
+
+        :param func:
+        :return:
+        """
 
         def func_wrapper(*args, **kwargs):
+            """
+
+            :param args:
+            :param kwargs:
+            :return:
+            """
 
             text = func(*args, **kwargs)
 
@@ -62,8 +65,19 @@ def generate_elements(_class, locator):
     """
 
     def generate_elements_decorator(func):
+        """
+
+        :param func:
+        :return:
+        """
 
         def func_wrapper(*args, **kwargs):
+            """
+
+            :param args:
+            :param kwargs:
+            :return:
+            """
 
             web_driver = func(*args, **kwargs)
 

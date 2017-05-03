@@ -5,24 +5,15 @@
 
 """
 
-from element import *
 import inspect
-from shortcuts import encode_ascii
-from selenium.webdriver.remote.webdriver import WebDriver
 from urlparse import urlparse
-
-__author__ = 'jlane'
-__copyright__ = 'Copyright (c) 2016 FanThreeSixty'
-__license__ = "MIT"
-__version__ = '0.8.2'
-__contact__ = 'jlane@fanthreesixty.com'
-__status__ = 'Beta'
-__docformat__ = 'reStructuredText'
+from sda.element import Element, SeleniumObject
+from sda.shortcuts import encode_ascii
 
 __all__ = ['Page']
 
 
-class Page(object):
+class Page(SeleniumObject):
     """The Page Implementation
     """
 
@@ -35,17 +26,14 @@ class Page(object):
         :raises TypeError: If web_driver is not a Selenium WebDriver
         """
 
-        self.driver = web_driver if isinstance(web_driver, WebDriver) else None
-
-        if not self.driver:
-            raise TypeError("'web_driver' MUST be a selenium WebDriver element")
+        super(Page, self).__init__(web_driver)
 
         # Instantiate page-level URL validation
         self._url_validation = str(validation) if isinstance(validation, basestring) else ""
 
     def elements(self):
         """Returns all testable elements on a page
-        
+
         :return: Dictionary of WebElements
         :rtype: dict
         """
@@ -79,20 +67,20 @@ class Page(object):
     @encode_ascii()
     def title(self):
         """Return page title
-        
+
         :return: Page title
         :rtype: str
         """
-        
+
         return self.driver.title
 
     @property
     @encode_ascii()
     def url(self):
         """Current page URL
-        
+
         :return: Page URL
         :rtype: str
         """
-       
+
         return self.driver.current_url
