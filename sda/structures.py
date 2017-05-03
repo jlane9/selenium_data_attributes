@@ -210,6 +210,42 @@ class Dropdown(Element, ClickMixin, TextMixin):
                 self._toggle.click()
 
             return self._container.wait_until_disappears()
+
+
+
+class Form(Element):
+
+    def _get_field(self, field_name):
+
+        if not isinstance(field_name, basestring):
+            raise TypeError
+
+        xpath = '/descendant-or-self::*[((self::input and @type="text") or ' \
+                'self::textarea or self::select) and @name="{}"]'
+        elements = self.driver.find_elements(*join(self.search_term, (By.XPATH, xpath.format(field_name))))
+
+        if elements:
+            return elements[0]
+
+    def get_field(self, field_name):
+
+        field = self._get_field(field_name)
+
+        if field:
+
+            input_xpath = '/descendant-or-self::*[((self::input and @type="text") or self::textarea) and @name="{}"]'
+            select_xpath = '/descendant-or-self::*[self::select and @name="{}"]'
+
+            if field.tag_name == u'input' or field.tag_name == u'textarea':
+                return InputText(self.driver, *join(self.search_term, (By.XPATH, input_xpath.format(field_name))))
+
+            elif field.tag_name == u'select':
+                return Select(self.driver, *join(self.search_term, (By.XPATH, select_xpath.format(field_name))))
+
+            else:
+                warnings.warn('{} type not currently supported within form'.format(str(field.tag_name)))
+
+
 class Image(Element):
     """The Image implementation
 
