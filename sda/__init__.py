@@ -6,7 +6,6 @@
 """
 
 from sda import element
-from sda import fixtures
 from sda import locators
 from sda import mixins
 from sda import page
@@ -18,4 +17,4 @@ __email__ = 'jlane@fanthreesixty.com'
 __license__ = "MIT"
 __version__ = '0.8.2'
 
-__all__ = ['element', 'fixtures', 'locators', 'page', 'shortcuts', 'site', 'structures']
+__all__ = ['element', 'locators', 'page', 'shortcuts', 'site', 'structures']
