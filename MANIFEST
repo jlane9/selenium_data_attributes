@@ -3,6 +3,9 @@ setup.cfg
 setup.py
 sda/__init__.py
 sda/element.py
+sda/locators.py
+sda/mixins.py
 sda/page.py
+sda/shortcuts.py
 sda/site.py
 sda/structures.py
