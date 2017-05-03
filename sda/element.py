@@ -26,7 +26,43 @@ __status__ = 'Beta'
 __docformat__ = 'reStructuredText'
 
 __all__ = ['Element', 'normalize', 'join']
+def normalize(_by, path, *args, **kwargs):
+    """Convert all paths into a xpath selector
 
+    :param str _by: Selenium selector
+    :param str path: Selector value
+    :param args:
+    :param kwargs:
+    :return:
+    """
+
+    if args or kwargs:
+        pass
+
+    normalizers = dict([('class name', lambda x: '/descendant-or-self::*[contains(@class, "%s")]' % x),
+                        ('id', lambda x: '/descendant-or-self::*[@id="%s"]' % x),
+                        ('link text', lambda x: '/descendant-or-self::*[contains("input a button", name()) '
+                                                'and normalize-space(text()) = "%s"]' % x),
+                        ('name', lambda x: '/descendant-or-self::*[@name="%s"]' % x),
+                        ('partial link text', lambda x: '/descendant-or-self::*[contains("input a button", name()) '
+                                                        'and contains(normalize-space(text()), "%s")]' % x),
+                        ('tag name', lambda x: '/descendant-or-self::%s' % x),
+                        ('xpath', lambda x: x)])
+
+    if _by == 'css selector':
+
+        try:
+            return By.XPATH, '/%s' % CSSSelector(str(path)).path
+
+        except SelectorError:
+            return By.XPATH, ''
+
+    elif _by == 'element':
+        if isinstance(path, Element):
+            return path.search_term
+
+    else:
+        return By.XPATH, normalizers.get(_by, lambda x: '')(str(path))
 
 class Element(object):
     """The Element implementation
