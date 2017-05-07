@@ -7,6 +7,7 @@
 
 from lxml import html
 from lxml.cssselect import CSSSelector, SelectorError
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -332,6 +333,22 @@ class Element(object):
         """
 
         return self.element().value_of_css_property(str(prop)) if self.exists() else None
+
+    def drag(self, x_offset=0, y_offset=0):
+        """Drag element x,y pixels from its center
+
+        :param int x_offset: Pixels to move element to
+        :param int y_offset: Pixels to move element to
+        :return:
+        """
+
+        if self.exists() and isinstance(x_offset, int) and isinstance(y_offset, int):
+
+            action = ActionChains(self.driver)
+            action.click_and_hold(self.element()).move_by_offset(x_offset, y_offset).release().perform()
+            return True
+
+        return False
 
     def element(self):
         """Return the selenium web element object
