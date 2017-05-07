@@ -234,7 +234,7 @@ class Element(object):
         from my_project.my_web_page.page import MyWebPage
         from selenium import webdriver
 
-        # Instantiate webdriver
+        # Instantiate web driver
         wd = webdriver.Firefox()
 
         web_page = MyWebPage(wd)
@@ -246,7 +246,7 @@ class Element(object):
     def __init__(self, web_driver, by=By.XPATH, path=None, **kwargs):
         """Basic Selenium element
 
-        :param WebDriver web_driver: Selenium webdriver
+        :param WebDriver web_driver: Selenium web driver
         :param str by: By selector
         :param str path: selection value
         :return:
@@ -326,9 +326,6 @@ class Element(object):
     def css_property(self, prop):
         """Return the value of a CSS property for the element
 
-        .. warning::
-            value_of_css_property does not work with Firefox
-
         :param str prop: CSS Property
         :return: Value of a CSS property
         :rtype: str
@@ -337,7 +334,7 @@ class Element(object):
         return self.element().value_of_css_property(str(prop)) if self.exists() else None
 
     def element(self):
-        """Return the selenium webelement object
+        """Return the selenium web element object
 
         :return: Selenium WebElement
         :rtype: WebElement
