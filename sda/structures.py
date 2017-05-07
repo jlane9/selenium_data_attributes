@@ -269,7 +269,7 @@ class Form(Element):
         :return:
         """
 
-        if not isinstance(field_name, basestring):
+        if not isinstance(field_name, str):
             raise TypeError
 
         xpath = '/descendant-or-self::*[((self::input and @type="text") or ' \
@@ -667,7 +667,7 @@ class MultiSelect(Element):
         :return:
         """
 
-        if isinstance(idx, (basestring, int)):
+        if isinstance(idx, (str, int)):
 
             # Convert string to integer
             if isinstance(idx, str):
@@ -690,7 +690,7 @@ class MultiSelect(Element):
         :return:
         """
 
-        if isinstance(text, basestring):
+        if isinstance(text, str):
 
             return Button(self.driver, *join(self.search_term,
                                              (By.XPATH, '/descendant-or-self::label[contains(., "{}")]/ancestor::div'

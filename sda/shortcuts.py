@@ -36,7 +36,7 @@ def encode_ascii(clean=False):
             text = func(*args, **kwargs)
 
             # Convert UNICODE to ASCII
-            if isinstance(text, basestring):
+            if isinstance(text, str):
                 return text.encode('ascii', 'ignore').strip() if clean else text.encode('ascii', 'ignore')
 
             # Iterate list of UNICODE strings to ASCII
@@ -44,10 +44,10 @@ def encode_ascii(clean=False):
 
                 if clean:
                     return [item.encode('ascii', 'ignore').strip() for item in text
-                            if isinstance(item, basestring)]
+                            if isinstance(item, str)]
 
                 return [item.encode('ascii', 'ignore') for item in text
-                        if isinstance(item, basestring)]
+                        if isinstance(item, str)]
 
             return ''
 
@@ -81,7 +81,7 @@ def generate_elements(_class, locator):
 
             web_driver = func(*args, **kwargs)
 
-            # Make sure we receive a webdriver and locator is a valid locator set
+            # Make sure we receive a web driver and locator is a valid locator set
             if isinstance(web_driver, WebDriver) and (isinstance(locator, (list, tuple))):
 
                 if len(locator) == 2:

@@ -80,13 +80,13 @@ class SeleniumObject(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         if 'name_attr' in kwargs:
-            self._name_attr = kwargs['name_attr'] if isinstance(kwargs['name_attr'], basestring) else 'data-qa-id'
+            self._name_attr = kwargs['name_attr'] if isinstance(kwargs['name_attr'], str) else 'data-qa-id'
 
         else:
             self._name_attr = 'data-qa-id'
 
         if 'type_attr' in kwargs:
-            self._name_attr = kwargs['type_attr'] if isinstance(kwargs['type_attr'], basestring) else 'data-qa-model'
+            self._name_attr = kwargs['type_attr'] if isinstance(kwargs['type_attr'], str) else 'data-qa-model'
 
         else:
             self._type_attr = 'data-qa-model'
@@ -272,7 +272,7 @@ class Element(object):
         :rtype: bool
         """
 
-        if self.exists() and isinstance(attribute, basestring):
+        if self.exists() and isinstance(attribute, str):
 
             source = self.outerHTML
             tree = html.fromstring(str(source))
@@ -292,7 +292,7 @@ class Element(object):
         :rtype: str
         """
 
-        if self.exists() and isinstance(attribute, basestring):
+        if self.exists() and isinstance(attribute, str):
 
             # Special cases
             if attribute == "cls":

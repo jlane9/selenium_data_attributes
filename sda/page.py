@@ -29,7 +29,7 @@ class Page(SeleniumObject):
         super(Page, self).__init__(web_driver)
 
         # Instantiate page-level URL validation
-        self._url_validation = str(validation) if isinstance(validation, basestring) else ""
+        self._url_validation = str(validation) if isinstance(validation, str) else ""
 
     def elements(self):
         """Returns all testable elements on a page
