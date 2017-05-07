@@ -387,6 +387,15 @@ class Element(object):
 
         return self.element().is_displayed() if self.exists() else False
 
+    def parent(self):
+        """Returns the Selenium element for the current element
+
+        :return:
+        """
+
+        xpath = join(self.search_term, ('xpath', '/parent::*'))
+        return Element(self.driver, xpath[0], xpath[1])
+
     def scroll_to(self):
         """Scroll to the location of the element
 
