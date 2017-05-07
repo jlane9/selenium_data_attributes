@@ -6,6 +6,7 @@
 """
 
 from lxml import html
+import keyword
 from lxml.cssselect import CSSSelector, SelectorError
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -287,19 +288,21 @@ class Element(object):
     @encode_ascii()
     def __getattr__(self, attribute):
         """Returns the value of an attribute
+        
+        .. note:: class and for are both reserved keywords. Prepend/post-pend '_' to reference both.
 
         :param str attribute: Element attribute
         :return: Returns the string value
         :rtype: str
         """
 
-        if self.exists() and isinstance(attribute, str):
+        if self.exists():
 
-            # Special cases
-            if attribute == "cls":
-                attribute = "class"
+            if keyword.iskeyword(attribute.replace('_', '')):
+                attribute = attribute.replace('_', '')
 
-            attribute = str(attribute).replace('_', '-')
+            else:
+                attribute = attribute.replace('_', '-')
 
             return self.element().get_attribute(attribute)
 
