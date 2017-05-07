@@ -36,7 +36,7 @@ def encode_ascii(clean=False):
             text = func(*args, **kwargs)
 
             # Convert UNICODE to ASCII
-            if isinstance(text, str):
+            if isinstance(text, (str, unicode)):
                 return text.encode('ascii', 'ignore').strip() if clean else text.encode('ascii', 'ignore')
 
             # Iterate list of UNICODE strings to ASCII
@@ -44,10 +44,10 @@ def encode_ascii(clean=False):
 
                 if clean:
                     return [item.encode('ascii', 'ignore').strip() for item in text
-                            if isinstance(item, str)]
+                            if isinstance(item, (str, unicode))]
 
                 return [item.encode('ascii', 'ignore') for item in text
-                        if isinstance(item, str)]
+                        if isinstance(item, (str, unicode))]
 
             return ''
 

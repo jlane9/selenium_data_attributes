@@ -202,9 +202,9 @@ class SelectMixin(ElementMixin):
         :rtype: int
         """
 
-        if isinstance(value, (str, int)):
+        if isinstance(value, (str, unicode, int)):
 
-            if isinstance(value, str):
+            if isinstance(value, (str, unicode)):
                 if value.isdigit():
                     return int(value)
 
@@ -273,7 +273,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, str):
+        if select and isinstance(option, (str, unicode)):
 
             try:
 
@@ -295,7 +295,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, str):
+        if select and isinstance(option, (str, unicode)):
 
             try:
 
@@ -390,7 +390,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, str):
+        if select and isinstance(option, (str, unicode)):
 
             try:
 
@@ -412,7 +412,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, str):
+        if select and isinstance(option, (str, unicode)):
 
             try:
 

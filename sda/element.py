@@ -276,7 +276,7 @@ class Element(object):
         :rtype: bool
         """
 
-        if self.exists() and isinstance(attribute, str):
+        if self.exists() and isinstance(attribute, (str, unicode)):
 
             try:
                 self.driver.find_element(*join(self.search_term, ('xpath', '/self::*[boolean(@{})]'.format(attribute))))
