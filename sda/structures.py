@@ -158,7 +158,7 @@ class Dropdown(Element, ClickMixin, TextMixin):
     """
 
     _toggle_xpath = (By.XPATH, '/descendant-or-self::*[(contains(@class, "dropdown-toggle") or '
-                               '@ng-mouseover or @ng-click)]')
+                               '@ng-mouseover or @ng-click @on-click)]')
 
     @property
     def container(self):

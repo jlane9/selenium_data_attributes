@@ -130,7 +130,7 @@ def publish(version=None):
     :return:
     """
 
-    if isinstance(version, basestring):
+    if isinstance(version, str):
 
         with lcd(BASE_DIR):
 
