@@ -415,6 +415,27 @@ class Element(object):
 
         return self.element().tag_name if self.exists() else ''
 
+    def _wait_until(self, expected_condition, timeout=30):
+        """Base function for wait functions
+        
+        :param expected_condition: Expected condition, callable must return boolean
+        :param int timeout: Seconds before timeout 
+        :return: 
+        """
+
+        wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
+
+        try:
+
+            if self.search_term[0] != 'element' and callable(expected_condition):
+                wait.until(expected_condition(self.search_term))
+                return True
+
+        except TimeoutException:
+            pass
+
+        return False
+
     def wait_until_present(self, timeout=30):
         """Wait until the element is present
 
@@ -423,19 +444,7 @@ class Element(object):
         :rtype: bool
         """
 
-        wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
-
-        try:
-
-            if self.search_term[0] != 'element':
-
-                wait.until(ec.presence_of_element_located(self.search_term))
-                return True
-
-        except TimeoutException:
-            pass
-
-        return False
+        return self._wait_until(ec.presence_of_element_located, timeout)
 
     def wait_until_appears(self, timeout=30):
         """Wait until the element appears
@@ -445,19 +454,7 @@ class Element(object):
         :rtype: bool
         """
 
-        wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
-
-        try:
-
-            if self.search_term[0] != 'element':
-
-                wait.until(ec.visibility_of_element_located(self.search_term))
-                return True
-
-        except TimeoutException:
-            pass
-
-        return False
+        return self._wait_until(ec.visibility_of_element_located, timeout)
 
     def wait_until_disappears(self, timeout=30):
         """Wait until the element disappears
@@ -467,16 +464,4 @@ class Element(object):
         :rtype: bool
         """
 
-        wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
-
-        try:
-
-            if self.search_term[0] != 'element':
-
-                wait.until(ec.invisibility_of_element_located(self.search_term))
-                return True
-
-        except TimeoutException:
-            pass
-
-        return False
+        return self._wait_until(ec.invisibility_of_element_located, timeout)
