@@ -161,7 +161,7 @@ class Dropdown(Element, ClickMixin, TextMixin):
                                '@ng-mouseover or @ng-click)]')
 
     @property
-    def _container(self):
+    def container(self):
         """Dropdown container
 
         :return:
@@ -178,7 +178,7 @@ class Dropdown(Element, ClickMixin, TextMixin):
         return Div(self.driver, By.XPATH, '|'.join([xpath_term[1], child_term[1]]))
 
     @property
-    def _toggle(self):
+    def toggle(self):
         """Show/hide toggle button
 
         :return:
@@ -192,14 +192,14 @@ class Dropdown(Element, ClickMixin, TextMixin):
         :return:
         """
 
-        if not self._container.is_displayed():
+        if not self.container.is_displayed():
 
             if hover:
-                self._toggle.hover()
+                self.toggle.hover()
             else:
-                self._toggle.click()
+                self.toggle.click()
 
-            return self._container.wait_until_appears()
+            return self.container.wait_until_appears()
 
     def collapse(self, hover=False):
         """Hide dropdown
@@ -207,14 +207,14 @@ class Dropdown(Element, ClickMixin, TextMixin):
         :return:
         """
 
-        if self._container.is_displayed():
+        if self.container.is_displayed():
 
             if hover:
-                self._toggle.hover()
+                self.toggle.hover()
             else:
-                self._toggle.click()
+                self.toggle.click()
 
-            return self._container.wait_until_disappears()
+            return self.container.wait_until_disappears()
 
 
 class Form(Element):
