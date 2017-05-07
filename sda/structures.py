@@ -172,8 +172,8 @@ class Dropdown(Element, ClickMixin, TextMixin):
         child = '/descendant-or-self::*[(contains(@class, "dropdown-menu") or contains(@class, "tree") or @ng-show) ' \
                 'and (self::div or self::ul)]'
 
-        xpath_term = join(self.search_term, self._toggle, (By.XPATH, xpath))
-        child_term = join(self.search_term, self._toggle, (By.XPATH, child))
+        xpath_term = join(self.search_term, self.toggle, (By.XPATH, xpath))
+        child_term = join(self.search_term, self.toggle, (By.XPATH, child))
 
         return Div(self.driver, By.XPATH, '|'.join([xpath_term[1], child_term[1]]))
 
