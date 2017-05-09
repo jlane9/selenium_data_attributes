@@ -821,22 +821,29 @@ class MultiSelect(Element):
         if option.exists():
             option.click()
 
-    def options(self):
+    def options(self, include_group=True):
         """Return all available options
-
+        
+        :param bool include_group: True, to include groupings
         :return: List of options
         :rtype: list
         """
 
-        search_term = join(self.search_term, (By.XPATH, '/descendant-or-self::div[contains(@ng-repeat, '
-                                                        '"filteredModel")]//label'))
+        if include_group:
+            xpath = '/descendant-or-self::div[contains(@ng-repeat, "filteredModel")]//label'
+
+        else:
+            xpath = '/descendant-or-self::div[contains(@ng-repeat, "filteredModel") and ' \
+                    'not(contains(@class, "multiSelectGroup"))]//label'
+
+        search_term = join(self.search_term, (By.XPATH, xpath))
 
         return [element.get_attribute('textContent').encode('ascii', 'ignore')
                 for element in self.driver.find_elements(*search_term)]
 
     def selected_options(self):
         """Return all selected options
-
+        
         :return: List of selected options
         :rtype: list
         """
