@@ -10,7 +10,7 @@ import sys
 import warnings
 from selenium.webdriver.common.by import By
 from sda.element import Element, join
-from sda.mixins import ClickMixin, InputMixin, SelectMixin, SelectiveMixin, TextMixin
+from sda.mixins import ClickMixin, InputMixin, SelectMixin, SelectiveMixin, TextMixin, to_int
 
 __all__ = ['Button', 'Div', 'Dropdown', 'Form', 'Image', 'InputCheckbox', 'InputRadio', 'InputText', 'Link',
            'MultiSelect', 'Select', 'Text']
@@ -190,31 +190,57 @@ class Dropdown(Element, ClickMixin, TextMixin):
         """Show dropdown
 
         :return:
+        :rtype: bool
         """
 
         if not self.container.is_displayed():
 
             if hover:
                 self.toggle.hover()
+
             else:
                 self.toggle.click()
 
             return self.container.wait_until_appears()
 
+        return False
+
     def collapse(self, hover=False):
         """Hide dropdown
 
         :return:
+        :rtype: bool
         """
 
         if self.container.is_displayed():
 
             if hover:
                 self.toggle.hover()
+
             else:
                 self.toggle.click()
 
             return self.container.wait_until_disappears()
+
+        return False
+
+
+class Field(Element):
+    """Field implementation
+    """
+
+    def label(self):
+        """Returns the label for the input item
+
+        :return: Field label
+        :rtype: str
+        """
+
+        if self.exists():
+            return Text(self.driver, By.XPATH, '//label[@for="{0}"]'.format(str(self.id))).visible_text() \
+                if self.id else ''
+
+        return ''
 
 
 class Form(Element):
@@ -352,7 +378,7 @@ class Image(Element):
         return self.src
 
 
-class InputCheckbox(Element, SelectiveMixin):
+class InputCheckbox(Field, SelectiveMixin):
     """The InputCheckbox implementation
 
         **Example Use:**
@@ -391,16 +417,7 @@ class InputCheckbox(Element, SelectiveMixin):
             c.select()
     """
 
-    def label(self):
-        """Returns the label for the input item
-
-        :return: Returns Text object for label
-        :rtype: Text
-        """
-
-        if self.exists():
-            return Text(self.driver, By.XPATH, '//label[@for="{0}"]'.format(str(self.id))).visible_text() \
-                if self.id else ''
+    pass
 
 
 class InputRadio(InputCheckbox, SelectiveMixin):
@@ -444,7 +461,7 @@ class InputRadio(InputCheckbox, SelectiveMixin):
     pass
 
 
-class InputText(Element, InputMixin, ClickMixin):
+class InputText(Field, InputMixin, ClickMixin):
     """The InputText implementation
 
         **Example Use:**
@@ -483,16 +500,7 @@ class InputText(Element, InputMixin, ClickMixin):
             t.input('Hello World')
     """
 
-    def label(self):
-        """Returns the label for the input item
-
-        :return: Text object for label
-        :rtype: Text
-        """
-
-        if self.exists():
-            return Text(self.driver, By.XPATH, '//label[@for="{0}"]'.format(str(self.id))).visible_text() \
-                if self.id else ''
+    pass
 
 
 class Link(Button, ClickMixin, TextMixin):
@@ -667,21 +675,13 @@ class MultiSelect(Element):
         :return:
         """
 
-        if isinstance(idx, (str, unicode, int)):
+        idx = to_int(idx)
+        xpath = '/descendant-or-self::div[contains(@ng-repeat, "filteredModel")][{}]'
 
-            # Convert string to integer
-            if isinstance(idx, (str, unicode)):
-
-                if idx.isdigit():
-                    idx = int(idx)
-
-                else:
-                    raise TypeError('Error: Index must be of type int')
+        if isinstance(idx, int):
 
             if idx in range(0, len(self.options())):
-                return Button(self.driver, *join(self.search_term,
-                                                 (By.XPATH, '/descendant-or-self::div[contains(@ng-repeat, '
-                                                            '"filteredModel")][{}]'.format(idx))))
+                return Button(self.driver, *join(self.search_term, (By.XPATH, xpath.format(idx))))
 
     def _get_text(self, text):
         """Return selection that contains text criteria
@@ -690,58 +690,68 @@ class MultiSelect(Element):
         :return:
         """
 
-        if isinstance(text, (str, unicode)):
+        xpath = '/descendant-or-self::label[contains(., "{}")]/ancestor::div[contains(@ng-repeat, "filteredModel")]'
 
-            return Button(self.driver, *join(self.search_term,
-                                             (By.XPATH, '/descendant-or-self::label[contains(., "{}")]/ancestor::div'
-                                                        '[contains(@ng-repeat, "filteredModel")]'.format(text))))
+        if isinstance(text, (str, unicode)):
+            return Button(self.driver, *join(self.search_term, (By.XPATH, xpath.format(text))))
 
     def expand(self):
         """Show iSteven dropdown
 
         :return:
+        :rtype: bool
         """
 
         if not self._container.is_displayed():
+
             self._toggle.click()
-            self._container.wait_until_appears()
+            return self._container.wait_until_appears()
+
+        return False
 
     def collapse(self):
         """Hide iSteven dropdown
 
         :return:
+        :rtype: bool
         """
 
         if self._container.is_displayed():
+
             self._toggle.click()
-            self._container.wait_until_disappears()
+            return self._container.wait_until_disappears()
+
+        return False
 
     def select_all(self):
         """Select all possible selections
 
         :return:
+        :rtype: bool
         """
 
         self.expand()
-        self._select_all.click()
+        return self._select_all.click()
 
     def select_none(self):
         """Deselect all selections
 
         :return:
+        :rtype: bool
         """
 
         self.expand()
-        self._select_none.click()
+        return self._select_none.click()
 
     def reset(self):
         """Reset selection to default state
 
         :return:
+        :rtype: bool
         """
 
         self.expand()
-        self._reset.click()
+        return self._reset.click()
 
     def search(self, value, clear=True):
         """Filter selections to those matching search criteria
@@ -749,77 +759,89 @@ class MultiSelect(Element):
         :param str value: Search criteria
         :param bool clear: Clear previous search criteria
         :return:
+        :rtype: bool
         """
 
         self.expand()
-        self._filter.input(value, clear)
+        return self._filter.input(value, clear)
 
     def clear_search(self):
         """Click clear search button
 
         :return:
+        :rtype: bool
         """
 
         self.expand()
-        self._clear.click()
+        return self._clear.click()
 
     def select_by_index(self, index):
         """Select option at index 'i'
 
         :param str index: Index
         :return:
+        :rtype: bool
         """
 
         self.expand()
 
         option = self._get_index(index)
 
-        if option:
-            if 'selected' not in option.class_:
-                option.click()
+        if option.exists() and 'selected' not in option.class_:
+            return option.click()
+
+        return False
 
     def select_by_text(self, text):
         """Select option that matches text criteria
 
         :param str text: Text criteria
         :return:
+        :rtype: bool
         """
 
         self.expand()
 
         option = self._get_text(text)
 
-        if option.exists():
+        if option.exists() and 'selected' not in option.class_:
             option.click()
+
+        return False
 
     def deselect_by_index(self, index):
         """Deselect option at index 'i'
 
         :param str index: Index
         :return:
+        :rtype: bool
         """
 
         self.expand()
 
         option = self._get_index(index)
 
-        if option:
-            if 'selected' in option.class_:
-                option.click()
+        if option.exists() and 'selected' in option.class_:
+            option.click()
+
+        return False
 
     def deselect_by_text(self, text):
         """Deselect option that matches text criteria
 
         :param str text: Text criteria
         :return:
+        :rtype: bool
         """
 
         self.expand()
 
         option = self._get_text(text)
 
-        if option.exists():
+        if option.exists() and 'selected' in option.class_:
             option.click()
+
+        return False
 
     def options(self, include_group=True):
         """Return all available options
