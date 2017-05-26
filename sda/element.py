@@ -35,15 +35,19 @@ def normalize(_by, path, *args, **kwargs):
     if args or kwargs:
         pass
 
-    normalizers = dict([('class name', lambda x: '/descendant-or-self::*[contains(@class, "%s")]' % x),
-                        ('id', lambda x: '/descendant-or-self::*[@id="%s"]' % x),
-                        ('link text', lambda x: '/descendant-or-self::*[contains("input a button", name()) '
-                                                'and normalize-space(text()) = "%s"]' % x),
-                        ('name', lambda x: '/descendant-or-self::*[@name="%s"]' % x),
-                        ('partial link text', lambda x: '/descendant-or-self::*[contains("input a button", name()) '
-                                                        'and contains(normalize-space(text()), "%s")]' % x),
-                        ('tag name', lambda x: '/descendant-or-self::%s' % x),
-                        ('xpath', lambda x: x)])
+    xpath = '/descendant-or-self::*[{}]'
+
+    normalizers = dict([
+        ('class name', lambda x: xpath.format('contains(@class, "%s")' % x)),
+        ('id', lambda x: xpath.format('@id="%s"' % x)),
+        ('link text', lambda x: xpath.format('contains("input a button", name()) and '
+                                             'normalize-space(text()) = "%s"' % x)),
+        ('name', lambda x: xpath.format('@name="%s"' % x)),
+        ('partial link text', lambda x: xpath.format('contains("input a button", name()) and '
+                                                     'contains(normalize-space(text()), "%s")' % x)),
+        ('tag name', lambda x: '/descendant-or-self::%s' % x),
+        ('xpath', lambda x: x)
+    ])
 
     if _by == 'css selector':
 
@@ -103,6 +107,7 @@ class SeleniumObject(object):
         :param str path: Selector path
         :param timeout: Wait timeout in seconds
         :return:
+        :rtype: bool
         """
 
         wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)
@@ -126,6 +131,7 @@ class SeleniumObject(object):
         :param str path: Selector path
         :param timeout: Wait timeout in seconds
         :return:
+        :rtype: bool
         """
 
         return self._wait_until(ec.presence_of_element_located, _by, path, timeout)
@@ -159,6 +165,7 @@ class SeleniumObject(object):
 
         :param int seconds: Seconds to wait
         :return:
+        :rtype: bool
         """
 
         if isinstance(seconds, int):
@@ -300,13 +307,8 @@ class Element(object):
 
         if self.exists():
 
-            if keyword.iskeyword(attribute.replace('_', '')):
-                attribute = attribute.replace('_', '')
-
-            else:
-                attribute = attribute.replace('_', '-')
-
-            return self.element().get_attribute(attribute)
+            replacement = '' if keyword.iskeyword(attribute.replace('_', '')) else '-'
+            return self.element().get_attribute(attribute.replace('_', replacement))
 
         return ''
 
@@ -318,7 +320,7 @@ class Element(object):
         :rtype: str
         """
 
-        return self.outerHTML if self.exists() else ''
+        return '<{} by={} path={}>'.format(self.__class__.__name__, *self.search_term)
 
     def blur(self):
         """Simulate moving the cursor out of focus of this element.
@@ -337,7 +339,7 @@ class Element(object):
         :rtype: str
         """
 
-        return self.element().value_of_css_property(str(prop)) if self.exists() else None
+        return self.element().value_of_css_property(str(prop)) if self.exists() else ''
 
     def drag(self, x_offset=0, y_offset=0):
         """Drag element x,y pixels from its center
@@ -399,6 +401,15 @@ class Element(object):
         """
 
         return self.driver.execute_script('arguments[0].focus();', self.element()) if self.is_displayed() else None
+
+    def html(self):
+        """Returns HTML representation of the element
+
+        :return: HTML representation of the element
+        :rtype: str
+        """
+
+        return self.outerHTML if self.exists() else ''
 
     def is_displayed(self):
         """Return True, if the element is visible
@@ -463,9 +474,7 @@ class Element(object):
                 return True
 
         except TimeoutException:
-            pass
-
-        return False
+            return False
 
     def wait_until_present(self, timeout=30):
         """Wait until the element is present
