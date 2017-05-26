@@ -6,7 +6,7 @@
 """
 
 import inspect
-from urlparse import urlparse
+from urlparse import urlparse, urljoin
 from sda.element import Element, SeleniumObject
 from sda.shortcuts import encode_ascii
 
@@ -17,11 +17,11 @@ class Page(SeleniumObject):
     """The Page Implementation
     """
 
-    def __init__(self, web_driver, validation=""):
+    def __init__(self, web_driver, url_path="/"):
         """Web page element
 
         :param WebDriver web_driver: Selenium webdriver
-        :param str validation: regular expression to check URL
+        :param str url_path: URL path after net location
         :return:
         :raises TypeError: If web_driver is not a Selenium WebDriver
         """
@@ -29,7 +29,7 @@ class Page(SeleniumObject):
         super(Page, self).__init__(web_driver)
 
         # Instantiate page-level URL validation
-        self._url_validation = str(validation) if isinstance(validation, (str, unicode)) else ""
+        self._url_path = url_path if isinstance(url_path, (str, unicode)) else "/"
 
     def elements(self):
         """Returns all testable elements on a page
@@ -47,10 +47,7 @@ class Page(SeleniumObject):
         :rtype: bool
         """
 
-        page_url = ''.join([urlparse(self._url_validation).netloc, urlparse(self._url_validation).path])
-        current_url = ''.join([urlparse(self.url).netloc, urlparse(self.url).path])
-
-        return page_url == current_url if page_url != "" else True
+        return self._url_path == urlparse(self.url).path
 
     @staticmethod
     def is_element(attrib=None):
@@ -62,6 +59,19 @@ class Page(SeleniumObject):
         """
 
         return not(inspect.isroutine(attrib)) and isinstance(attrib, Element)
+
+    def navigate_to(self):
+        """Navigate to path
+
+        :return:
+        """
+
+        if not self.in_view():
+
+            current_url = urlparse(self.url)
+            return self.driver.get(urljoin('{}://{}'.format(current_url.scheme, current_url.netloc), self._url_path))
+
+        self.driver.refresh()
 
     @property
     @encode_ascii()
