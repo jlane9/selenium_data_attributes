@@ -297,7 +297,7 @@ class Element(object):
     @encode_ascii()
     def __getattr__(self, attribute):
         """Returns the value of an attribute
-        
+
         .. note:: class and for are both reserved keywords. Prepend/post-pend '_' to reference both.
 
         :param str attribute: Element attribute
@@ -459,10 +459,10 @@ class Element(object):
 
     def _wait_until(self, expected_condition, timeout=30):
         """Base function for wait functions
-        
+
         :param expected_condition: Expected condition, callable must return boolean
-        :param int timeout: Seconds before timeout 
-        :return: 
+        :param int timeout: Seconds before timeout
+        :return:
         """
 
         wait = WebDriverWait(self.driver, timeout) if isinstance(timeout, int) else WebDriverWait(self.driver, 30)

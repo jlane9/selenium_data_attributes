@@ -845,7 +845,7 @@ class MultiSelect(Element):
 
     def options(self, include_group=True):
         """Return all available options
-        
+
         :param bool include_group: True, to include groupings
         :return: List of options
         :rtype: list
@@ -865,7 +865,7 @@ class MultiSelect(Element):
 
     def selected_options(self):
         """Return all selected options
-        
+
         :return: List of selected options
         :rtype: list
         """
