@@ -15,6 +15,25 @@ from selenium.webdriver.common.action_chains import ActionChains
 __all__ = ['ClickMixin', 'InputMixin', 'SelectMixin', 'SelectiveMixin', 'TextMixin']
 
 
+def to_int(value):
+    """Coerce string to int
+
+    :param str value: String integer
+    :return:
+    :rtype: int
+    """
+
+    if isinstance(value, (str, unicode, int)):
+
+        if isinstance(value, (str, unicode)):
+
+            if value.isdigit():
+                return int(value)
+
+        else:
+            return value
+
+
 class ElementMixin(object):
     """The ElementMixin Implementation
 
@@ -84,9 +103,9 @@ class ClickMixin(ElementMixin):
         :return:
         """
 
-        if self.exists():
+        element = self.element()
 
-            element = self.element()
+        if element:
 
             try:
 
@@ -107,9 +126,9 @@ class ClickMixin(ElementMixin):
         :return:
         """
 
-        if self.exists():
+        element = self.element()
 
-            element = self.element()
+        if element:
 
             try:
 
@@ -127,9 +146,9 @@ class ClickMixin(ElementMixin):
         :return:
         """
 
-        if self.exists():
+        element = self.element()
 
-            element = self.element()
+        if element:
 
             try:
 
@@ -158,9 +177,9 @@ class InputMixin(ElementMixin):
         :rtype: bool
         """
 
-        if self.exists():
+        element = self.element()
 
-            element = self.element()
+        if element:
 
             if 'clear' in kwargs:
                 element.clear()
@@ -192,23 +211,6 @@ class InputMixin(ElementMixin):
 class SelectMixin(ElementMixin):
     """The SelectMixin implementation
     """
-
-    @staticmethod
-    def _to_int(value):
-        """Coerce string to int
-
-        :param str value: String integer
-        :return:
-        :rtype: int
-        """
-
-        if isinstance(value, (str, unicode, int)):
-
-            if isinstance(value, (str, unicode)):
-                if value.isdigit():
-                    return int(value)
-
-            return value
 
     def _get_selenium_select(self):
         """Returns a SeleniumSelect representation of a select element
@@ -249,7 +251,7 @@ class SelectMixin(ElementMixin):
         """
 
         select = self._get_selenium_select()
-        option = self._to_int(option)
+        option = to_int(option)
 
         if select and isinstance(option, int):
 
@@ -331,16 +333,9 @@ class SelectMixin(ElementMixin):
         :rtype: WebElement
         """
 
-        select = self._get_selenium_select()
+        selected = self.selected_options()
 
-        if select:
-
-            options = select.all_selected_options
-
-            if options:
-                return options[0]
-
-        return None
+        return selected[0] if selected else None
 
     def selected_options(self):
         """Returns a list of selected options
@@ -366,7 +361,7 @@ class SelectMixin(ElementMixin):
         """
 
         select = self._get_selenium_select()
-        option = self._to_int(option)
+        option = to_int(option)
 
         if select and isinstance(option, int):
 
@@ -435,7 +430,7 @@ class SelectiveMixin(ClickMixin):
         :return:
         """
 
-        return self.click() if self.selected() else None
+        return self.click() if self.selected() else False
 
     def select(self):
         """Select this element
@@ -443,7 +438,7 @@ class SelectiveMixin(ClickMixin):
         :return:
         """
 
-        return self.click() if not self.selected() else None
+        return self.click() if not self.selected() else False
 
     def selected(self):
         """Return True if element is selected
