@@ -15,6 +15,6 @@ from sda import structures
 __author__ = 'jlane'
 __email__ = 'jlane@fanthreesixty.com'
 __license__ = "MIT"
-__version__ = '0.9.0'
+__version__ = '0.9.1'
 
 __all__ = ['element', 'locators', 'page', 'shortcuts', 'site', 'structures']
