@@ -1,4 +1,7 @@
-"""SDA setup.py
+"""setup.py
+
+..codeauthor:: John Lane <jlane@fanthreesixty.com>
+
 """
 
 from setuptools import setup, find_packages
