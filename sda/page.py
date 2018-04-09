@@ -7,14 +7,13 @@
 
 from __future__ import unicode_literals
 import inspect
-import sys
 from sda.element import Element, SeleniumObject
 from sda.shortcuts import encode_ascii
 
-if sys.version_info >= (3, 0):
-    from urllib.parse import urljoin, urlparse
-elif (3, 0) > sys.version_info >= (2, 5):
+try:
     from urlparse import urljoin, urlparse
+except (ImportError, ModuleNotFoundError):
+    from urllib.parse import urljoin, urlparse
 
 
 __all__ = ['Page']
