@@ -1,5 +1,5 @@
-cssselect==1.0.1
-Fabric==1.13.2
-lxml==3.8.0
+cssselect>=1.0.0
+Fabric>=1.14.0
+lxml>=4.2.0
 pytest==3.5.0
-selenium==3.4.3
+selenium>=3.11.0
