@@ -5,6 +5,7 @@
 
 """
 
+from __future__ import unicode_literals
 import inspect
 import sys
 import warnings
@@ -295,7 +296,7 @@ class Form(Element):
         :return:
         """
 
-        if not isinstance(field_name, (str, unicode)):
+        if not isinstance(field_name, str):
             raise TypeError
 
         xpath = '/descendant-or-self::*[((self::input and @type="text") or ' \
@@ -692,7 +693,7 @@ class MultiSelect(Element):
 
         xpath = '/descendant-or-self::label[contains(., "{}")]/ancestor::div[contains(@ng-repeat, "filteredModel")]'
 
-        if isinstance(text, (str, unicode)):
+        if isinstance(text, str):
             return Button(self.driver, *join(self.search_term, (By.XPATH, xpath.format(text))))
 
     def expand(self):
@@ -973,6 +974,7 @@ class Text(Element, TextMixin, ClickMixin):
     """
 
     pass
+
 
 MEMBERS = inspect.getmembers(sys.modules[__name__], predicate=lambda o: inspect.isclass(o) and issubclass(o, Element))
 TYPES = {_type[0].lower(): _type[1] for _type in MEMBERS}

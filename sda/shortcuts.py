@@ -5,6 +5,7 @@
 
 """
 
+from __future__ import unicode_literals
 from selenium.webdriver.remote.webdriver import WebDriver
 from sda.locators import Locators
 
@@ -36,7 +37,7 @@ def encode_ascii(clean=False):
             text = func(*args, **kwargs)
 
             # Convert UNICODE to ASCII
-            if isinstance(text, (str, unicode)):
+            if isinstance(text, str):
                 return text.encode('ascii', 'ignore').strip() if clean else text.encode('ascii', 'ignore')
 
             # Iterate list of UNICODE strings to ASCII
@@ -44,10 +45,10 @@ def encode_ascii(clean=False):
 
                 if clean:
                     return [item.encode('ascii', 'ignore').strip() for item in text
-                            if isinstance(item, (str, unicode))]
+                            if isinstance(item, str)]
 
                 return [item.encode('ascii', 'ignore') for item in text
-                        if isinstance(item, (str, unicode))]
+                        if isinstance(item, str)]
 
             return ''
 

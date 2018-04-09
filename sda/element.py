@@ -5,6 +5,7 @@
 
 """
 
+from __future__ import unicode_literals
 import keyword
 from lxml.cssselect import CSSSelector, SelectorError
 from selenium.webdriver.common.action_chains import ActionChains
@@ -283,7 +284,7 @@ class Element(object):
         :rtype: bool
         """
 
-        if self.exists() and isinstance(attribute, (str, unicode)):
+        if self.exists() and isinstance(attribute, str):
 
             try:
                 self.driver.find_element(*join(self.search_term, ('xpath', '/self::*[boolean(@{})]'.format(attribute))))

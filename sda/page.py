@@ -5,10 +5,17 @@
 
 """
 
+from __future__ import unicode_literals
 import inspect
-from urlparse import urlparse, urljoin
+import sys
 from sda.element import Element, SeleniumObject
 from sda.shortcuts import encode_ascii
+
+if sys.version_info >= (3, 0):
+    from urllib.parse import urljoin, urlparse
+elif (3, 0) > sys.version_info >= (2, 5):
+    from urlparse import urljoin, urlparse
+
 
 __all__ = ['Page']
 
@@ -29,7 +36,7 @@ class Page(SeleniumObject):
         super(Page, self).__init__(web_driver)
 
         # Instantiate page-level URL validation
-        self._url_path = url_path if isinstance(url_path, (str, unicode)) else "/"
+        self._url_path = url_path if isinstance(url_path, str) else "/"
 
     def elements(self):
         """Returns all testable elements on a page

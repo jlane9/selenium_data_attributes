@@ -5,9 +5,14 @@
 
 """
 
-from urlparse import urlparse
+import sys
 from sda.element import SeleniumObject
 from sda.shortcuts import encode_ascii
+
+if sys.version_info >= (3, 0):
+    from urllib.parse import urlparse
+elif (3, 0) > sys.version_info >= (2, 5):
+    from urlparse import urlparse
 
 __all__ = ['Site']
 
