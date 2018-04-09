@@ -9,6 +9,9 @@ Welcome to Selenium Data Attributes's documentation!
 .. image:: https://travis-ci.org/jlane9/selenium_data_attributes.svg?branch=master
    :target: https://travis-ci.org/jlane9/selenium_data_attributes
 
+.. image:: https://coveralls.io/repos/github/jlane9/selenium_data_attributes/badge.svg?branch=master
+   :target: https://coveralls.io/github/jlane9/selenium_data_attributes?branch=master
+
 .. image:: https://badge.fury.io/py/sda.svg
    :target: https://badge.fury.io/py/sda
 

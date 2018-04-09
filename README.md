@@ -1,6 +1,7 @@
 Selenium Data Attributes
 ========================
 [![Build Status](https://travis-ci.org/jlane9/selenium_data_attributes.svg?branch=master)](https://travis-ci.org/jlane9/selenium_data_attributes)
+[![Coverage Status](https://coveralls.io/repos/github/jlane9/selenium_data_attributes/badge.svg?branch=master)](https://coveralls.io/github/jlane9/selenium_data_attributes?branch=master)
 [![PyPI version](https://badge.fury.io/py/sda.svg)](https://badge.fury.io/py/sda)
 [![Python version](https://img.shields.io/pypi/pyversions/sda.svg)](https://pypi.python.org/pypi/sda)
 [![License](https://img.shields.io/pypi/l/sda.svg)](https://pypi.python.org/pypi/sda)
