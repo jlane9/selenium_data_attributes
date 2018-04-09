@@ -1,4 +1,5 @@
 cssselect==1.0.1
 Fabric==1.13.2
 lxml==3.8.0
+pytest==3.5.0
 selenium==3.4.3
