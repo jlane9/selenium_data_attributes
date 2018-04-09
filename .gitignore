@@ -64,4 +64,5 @@ target/
 
 # Virtual environment files
 venv/
+venv3/
 bin/
