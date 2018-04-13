@@ -7,6 +7,7 @@
 
 from __future__ import unicode_literals
 import inspect
+from six import string_types
 import sys
 import warnings
 from selenium.webdriver.common.by import By
@@ -296,7 +297,7 @@ class Form(Element):
         :return:
         """
 
-        if not isinstance(field_name, str):
+        if not isinstance(field_name, string_types):
             raise TypeError
 
         xpath = '/descendant-or-self::*[((self::input and @type="text") or ' \
@@ -693,7 +694,7 @@ class MultiSelect(Element):
 
         xpath = '/descendant-or-self::label[contains(., "{}")]/ancestor::div[contains(@ng-repeat, "filteredModel")]'
 
-        if isinstance(text, str):
+        if isinstance(text, string_types):
             return Button(self.driver, *join(self.search_term, (By.XPATH, xpath.format(text))))
 
     def expand(self):

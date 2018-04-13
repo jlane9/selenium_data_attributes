@@ -7,6 +7,7 @@
 
 from __future__ import unicode_literals
 import inspect
+from six import string_types
 from sda.element import Element, SeleniumObject
 from sda.shortcuts import encode_ascii
 
@@ -35,7 +36,7 @@ class Page(SeleniumObject):
         super(Page, self).__init__(web_driver)
 
         # Instantiate page-level URL validation
-        self._url_path = url_path if isinstance(url_path, str) else "/"
+        self._url_path = url_path if isinstance(url_path, string_types) else "/"
 
     def elements(self):
         """Returns all testable elements on a page

@@ -5,6 +5,7 @@
 
 """
 
+from six import string_types
 from sda.shortcuts import encode_ascii
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -23,9 +24,9 @@ def to_int(value):
     :rtype: int
     """
 
-    if isinstance(value, (str, unicode, int)):
+    if isinstance(value, (string_types, int)):
 
-        if isinstance(value, (str, unicode)):
+        if isinstance(value, string_types):
 
             if value.isdigit():
                 return int(value)
@@ -275,7 +276,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, (str, unicode)):
+        if select and isinstance(option, string_types):
 
             try:
 
@@ -297,7 +298,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, (str, unicode)):
+        if select and isinstance(option, string_types):
 
             try:
 
@@ -385,7 +386,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, (str, unicode)):
+        if select and isinstance(option, string_types):
 
             try:
 
@@ -407,7 +408,7 @@ class SelectMixin(ElementMixin):
 
         select = self._get_selenium_select()
 
-        if select and isinstance(option, (str, unicode)):
+        if select and isinstance(option, string_types):
 
             try:
 
