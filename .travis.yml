@@ -8,6 +8,6 @@ install:
   - pip install -r requirements.txt
   - pip install -e .
 script:
-  - pytest --pep8 sda --cov sda/ --cov-report term-missing test/
+  - pytest --driver BrowserStack --capability os "OS X" --capability os_version "El Capitan" --pep8 sda --cov sda/ --cov-report term-missing test/
 after_success:
   - coveralls
