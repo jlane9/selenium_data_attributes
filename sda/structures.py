@@ -317,21 +317,32 @@ class Form(Element):
         :return:
         """
 
+        types = {
+            'input': InputText,
+            'textarea': InputText,
+            'select': Select
+        }
+
+        paths = {
+            'input': '/descendant-or-self::*[((self::input and @type="text") or self::textarea) and @name="{}"]',
+            'textarea': '/descendant-or-self::*[((self::input and @type="text") or self::textarea) and @name="{}"]',
+            'select': '/descendant-or-self::*[self::select and @name="{}"]'
+
+        }
+
         field = self._get_field(field_name)
 
-        if field:
+        if not field:
+            return
 
-            input_xpath = '/descendant-or-self::*[((self::input and @type="text") or self::textarea) and @name="{}"]'
-            select_xpath = '/descendant-or-self::*[self::select and @name="{}"]'
+        field_type = types.get(field.tag_name, None)
+        field_path = paths.get(field.tag_name, None)
 
-            if field.tag_name == u'input' or field.tag_name == u'textarea':
-                return InputText(self.driver, *join(self.search_term, (By.XPATH, input_xpath.format(field_name))))
+        if field_type:
+            field_type(self.driver, *join(self.search_term, (By.XPATH, field_path.format(field_name))))
 
-            elif field.tag_name == u'select':
-                return Select(self.driver, *join(self.search_term, (By.XPATH, select_xpath.format(field_name))))
-
-            else:
-                warnings.warn('{} type not currently supported within form'.format(str(field.tag_name)))
+        else:
+            warnings.warn('{} type not currently supported within form'.format(str(field.tag_name)))
 
 
 class Image(Element):
