@@ -7,6 +7,7 @@
 
 from __future__ import unicode_literals
 import inspect
+import re
 from six import string_types
 from sda.element import Element, SeleniumObject
 
@@ -27,7 +28,7 @@ class Page(SeleniumObject):
         """Web page element
 
         :param WebDriver web_driver: Selenium webdriver
-        :param str url_path: URL path after net location
+        :param str url_path: URL path after net location. Use Open API spec
         :return:
         :raises TypeError: If web_driver is not a Selenium WebDriver
         """
@@ -53,7 +54,7 @@ class Page(SeleniumObject):
         :rtype: bool
         """
 
-        return self._url_path == urlparse(self.url).path
+        return bool(re.match('^' + re.sub(r'(:\w+)', '.+', self._url_path) + '$', urlparse(self.url).path))
 
     @staticmethod
     def is_element(attrib=None):
@@ -66,16 +67,22 @@ class Page(SeleniumObject):
 
         return not(inspect.isroutine(attrib)) and isinstance(attrib, Element)
 
-    def navigate_to(self):
+    def navigate_to(self, *args):
         """Navigate to path
 
         :return:
         """
 
+        try:
+            path = re.sub(r'(:\w+)', '{}', self._url_path).format(*args)
+
+        except IndexError:
+            raise IndexError('URL path does not contain the correct number of args')
+
         if not self.in_view():
 
             current_url = urlparse(self.url)
-            return self.driver.get(urljoin('{}://{}'.format(current_url.scheme, current_url.netloc), self._url_path))
+            return self.driver.get(urljoin('{}://{}'.format(current_url.scheme, current_url.netloc), path))
 
         self.driver.refresh()
 
