@@ -188,6 +188,19 @@ class Dropdown(Element, ClickMixin, TextMixin):
 
         return Button(self.driver, *join(self.search_term, self._toggle_xpath))
 
+    def _hover_or_click(self, hover):
+        """Toggle by hovering or clicking
+
+        :param bool hover: True, hover instead of clicking
+        :return:
+        """
+
+        if hover:
+            self.toggle.hover()
+
+        else:
+            self.toggle.click()
+
     def expand(self, hover=False):
         """Show dropdown
 
@@ -196,12 +209,7 @@ class Dropdown(Element, ClickMixin, TextMixin):
         """
 
         if not self.container.is_displayed():
-
-            if hover:
-                self.toggle.hover()
-
-            else:
-                self.toggle.click()
+            self._toggle_or_hover(hover)
 
             return self.container.wait_until_appears()
 
@@ -215,12 +223,7 @@ class Dropdown(Element, ClickMixin, TextMixin):
         """
 
         if self.container.is_displayed():
-
-            if hover:
-                self.toggle.hover()
-
-            else:
-                self.toggle.click()
+            self._toggle_or_hover(hover)
 
             return self.container.wait_until_disappears()
 
