@@ -90,13 +90,15 @@ class SeleniumObject(object):
             raise TypeError("'web_driver' MUST be a selenium WebDriver element")
 
         if 'name_attr' in kwargs:
-            self._name_attr = kwargs['name_attr'] if isinstance(kwargs['name_attr'], string_types) else DEFAULT_NAME_ATTR
+            self._name_attr = kwargs['name_attr'] \
+                if isinstance(kwargs['name_attr'], string_types) else DEFAULT_NAME_ATTR
 
         else:
             self._name_attr = DEFAULT_NAME_ATTR
 
         if 'type_attr' in kwargs:
-            self._name_attr = kwargs['type_attr'] if isinstance(kwargs['type_attr'], string_types) else DEFAULT_TYPE_ATTR
+            self._name_attr = kwargs['type_attr'] \
+                if isinstance(kwargs['type_attr'], string_types) else DEFAULT_TYPE_ATTR
 
         else:
             self._type_attr = DEFAULT_TYPE_ATTR
