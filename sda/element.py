@@ -380,12 +380,10 @@ class Element(object):
 
                 # Locate element
                 element = self.driver.find_elements(*self.search_term)
+                return element[0] if element else None
 
             except InvalidSelectorException:
-                element = []
-
-            if element:
-                return element[0]
+                pass
 
         return None
 
