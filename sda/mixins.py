@@ -24,15 +24,11 @@ def to_int(value):
     :rtype: int
     """
 
-    if isinstance(value, (string_types, int)):
+    if isinstance(value, int):
+        return value
 
-        if isinstance(value, string_types):
-
-            if value.isdigit():
-                return int(value)
-
-        else:
-            return value
+    elif isinstance(value, string_types):
+        return int(value) if value.isdigit() else None
 
 
 class ElementMixin(object):
