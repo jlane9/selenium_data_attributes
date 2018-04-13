@@ -16,7 +16,6 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import InvalidSelectorException, TimeoutException, NoSuchElementException
-from sda.shortcuts import encode_ascii
 
 __all__ = ['Element', 'normalize', 'join']
 
@@ -298,7 +297,6 @@ class Element(object):
 
         return False
 
-    @encode_ascii()
     def __getattr__(self, attribute):
         """Returns the value of an attribute
 
@@ -316,7 +314,6 @@ class Element(object):
 
         return ''
 
-    @encode_ascii()
     def __repr__(self):
         """Returns HTML representation of the element
 
@@ -334,7 +331,6 @@ class Element(object):
 
         return self.driver.execute_script('arguments[0].blur();', self.element()) if self.is_displayed() else None
 
-    @encode_ascii()
     def css_property(self, prop):
         """Return the value of a CSS property for the element
 
@@ -449,7 +445,6 @@ class Element(object):
             self.driver.execute_script(script, element)
 
     @property
-    @encode_ascii()
     def tag_name(self):
         """Returns element tag name
 

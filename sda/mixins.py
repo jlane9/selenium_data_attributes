@@ -6,7 +6,6 @@
 """
 
 from six import string_types
-from sda.shortcuts import encode_ascii
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import Select as SeleniumSelect
@@ -188,7 +187,6 @@ class InputMixin(ElementMixin):
         return False
 
     @property
-    @encode_ascii()
     def value(self):
         """Return value of input
 
@@ -454,7 +452,6 @@ class TextMixin(ElementMixin):
     def __str__(self):
         return self.text()
 
-    @encode_ascii(clean=True)
     def text(self):
         """Returns the text within an element
 
@@ -462,9 +459,8 @@ class TextMixin(ElementMixin):
         :rtype: str
         """
 
-        return self.element().get_attribute('textContent') if self.exists() else ''
+        return str(self.element().get_attribute('textContent')).strip() if self.exists() else ''
 
-    @encode_ascii(clean=True)
     def visible_text(self):
         """Returns the visible text within an element
 
@@ -472,4 +468,4 @@ class TextMixin(ElementMixin):
         :rtype: str
         """
 
-        return self.element().text if self.exists() else ''
+        return str(self.element().text).strip() if self.exists() else ''

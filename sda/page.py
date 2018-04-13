@@ -9,7 +9,6 @@ from __future__ import unicode_literals
 import inspect
 from six import string_types
 from sda.element import Element, SeleniumObject
-from sda.shortcuts import encode_ascii
 
 try:
     from urlparse import urljoin, urlparse
@@ -81,7 +80,6 @@ class Page(SeleniumObject):
         self.driver.refresh()
 
     @property
-    @encode_ascii()
     def title(self):
         """Return page title
 
@@ -92,7 +90,6 @@ class Page(SeleniumObject):
         return self.driver.title
 
     @property
-    @encode_ascii()
     def url(self):
         """Current page URL
 

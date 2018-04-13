@@ -6,7 +6,6 @@
 """
 
 from sda.element import SeleniumObject
-from sda.shortcuts import encode_ascii
 
 try:
     from urlparse import urljoin, urlparse
@@ -83,7 +82,6 @@ class Site(SeleniumObject):
         return urlparse(self.url).path
 
     @property
-    @encode_ascii()
     def url(self):
         """Current page URL
 
