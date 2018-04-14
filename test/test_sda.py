@@ -121,14 +121,14 @@ class TestExampleSite(object):
         site = ExampleSite(selenium)
         site.driver.get('https://example.com/')
 
-        assert site.example.header.is_displayed() == True
+        assert site.example.header.is_displayed() is True
 
     def test_get_is_disabled(self, selenium):
 
         site = ExampleSite(selenium)
         site.driver.get('https://example.com/')
 
-        assert site.example.link.is_disabled() == False
+        assert site.example.link.is_disabled() is False
 
     def test_get_parent(self, selenium):
 
