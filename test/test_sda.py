@@ -1,5 +1,14 @@
 from selenium.webdriver.common.by import By
-from sda import Page, Site, structures
+from sda import Locators, Page, Site, structures
+
+
+class ExampleLocators(Locators):
+    """
+    """
+
+    HEADER = (By.XPATH, '//h1')
+    TEXT = (By.XPATH, '//p[1]')
+    LINK = (By.XPATH, '//p[2]/a')
 
 
 class ExamplePage(Page):
@@ -14,9 +23,9 @@ class ExamplePage(Page):
 
         super(ExamplePage, self).__init__(web_driver)
 
-        self.header = structures.Text(web_driver, By.XPATH, '//h1')
-        self.text = structures.Text(web_driver, By.XPATH, '//p[1]')
-        self.link = structures.Link(web_driver, By.XPATH, '//p[2]/a')
+        self.header = structures.Text(web_driver, *ExampleLocators.HEADER)
+        self.text = structures.Text(web_driver, *ExampleLocators.TEXT)
+        self.link = structures.Link(web_driver, *ExampleLocators.LINK)
 
 
 class ExampleSite(Site):

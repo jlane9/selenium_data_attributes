@@ -7,7 +7,7 @@
 
 import inspect
 
-__all__ = ['is_iterable', 'Locators']
+__all__ = ['Locators']
 
 
 def is_iterable(obj):
