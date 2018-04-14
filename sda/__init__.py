@@ -15,6 +15,6 @@ from sda.site import Site
 __author__ = 'jlane'
 __email__ = 'jlane@fanthreesixty.com'
 __license__ = "MIT"
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 __all__ = ['shortcuts', 'structures', 'Element', 'Locators', 'Page', 'Site']
