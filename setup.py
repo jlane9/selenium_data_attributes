@@ -22,7 +22,7 @@ setup(
     keywords='testing selenium qa web automation',
     install_requires=['lxml', 'cssselect'],
     license=__license__,
-    classifiers=['Development Status :: 4 - Beta',
+    classifiers=['Development Status :: 5 - Production/Stable',
                  'Intended Audience :: Developers',
                  'Programming Language :: Python :: 2.6',
                  'Programming Language :: Python :: 2.7',
