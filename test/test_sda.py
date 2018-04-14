@@ -66,3 +66,39 @@ class TestExampleSite(object):
         site.driver.get('https://example.com/')
 
         assert str(site.example.title) == 'Example Domain'
+
+    def test_get_domain(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert str(site.domain) == 'example.com'
+
+    def test_get_path(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert str(site.path) == '/'
+
+    def test_get_page_url(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert str(site.example.url) == 'https://example.com/'
+
+    def test_get_elements(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert len(site.example.elements()) == 3
+
+    def test_navigate_to(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+        site.example.navigate_to()
+
+        assert str(site.example.url) == 'https://example.com/'
