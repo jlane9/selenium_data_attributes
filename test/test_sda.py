@@ -102,3 +102,37 @@ class TestExampleSite(object):
         site.example.navigate_to()
 
         assert str(site.example.url) == 'https://example.com/'
+
+    def test_locators_dict(self):
+
+        locators = {"HEADER": (By.XPATH, '//h1'), "TEXT": (By.XPATH, '//p[1]'), "LINK": (By.XPATH, '//p[2]/a')}
+
+        assert ExampleLocators().as_dict() == locators
+
+    def test_get_tag_name(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert str(site.example.header.tag_name) == 'h1'
+
+    def test_get_is_displayed(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert site.example.header.is_displayed() == True
+
+    def test_get_is_disabled(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert site.example.link.is_disabled() == False
+
+    def test_get_parent(self, selenium):
+
+        site = ExampleSite(selenium)
+        site.driver.get('https://example.com/')
+
+        assert str(site.example.header.parent().tag_name) == 'div'
